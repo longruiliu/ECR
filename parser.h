@@ -4,11 +4,11 @@
 #include <string>
 #include <vector>
 
-void retUserList(vector <UserInfo> &);
-void retMsgList(vector <groupMsg> &);
-void retSessionID(int);
-void retGroupID(int);
-void retUserInfo(map <std:string, std::string> &);
+//void retUserList(std::vector <UserInfo> &);
+//void retMsgList(std::vector <groupMsg> &);
+//void retSessionID(int);
+//void retGroupID(int);
+//void retUserInfo(std::map <std:string, std::string> &);
 
 struct Request {
     int sessionID, op;
@@ -16,7 +16,7 @@ struct Request {
 };
 
 struct Response {
-    int statusID;
+    int sessionID;
     std::string payload;
 };
 
