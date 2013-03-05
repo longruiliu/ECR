@@ -1,3 +1,7 @@
+/*
+  Protocol parser module
+*/
+
 #include <json/json.h>
 #include "parser.h"
 
@@ -56,7 +60,6 @@ void reqHandler(int token, std::string str)
 {
     Request req = stringToRequest(str);
     switch (req.op) {
-        
     }
 }
 

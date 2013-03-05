@@ -10,15 +10,4 @@
 //void retGroupID(int);
 //void retUserInfo(std::map <std:string, std::string> &);
 
-struct Request {
-    int sessionID, op;
-    std::string payload;
-};
-
-struct Response {
-    int sessionID;
-    std::string payload;
-};
-
-
 #endif
