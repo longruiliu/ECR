@@ -6,26 +6,23 @@
 #include <vector>
 #include "protocol.h"
 
-std::string jsonToString(Json::Value &);
-Json::Value stringToJson(std::string &);
+int jsonToString(Json::Value &, std::string &);
+int stringToJson(std::string &, Json::Value &);
 
-std::string jsonToString(Json::Value &json) {
+int jsonToString(Json::Value &json, std::string &ret) {
     Json::FastWriter writer;
-    return writer.write(json);
+    ret = writer.write(json);
 }
 
-Json::Value stringToJson(std::string &str) {
+int stringToJson(std::string &str, Json::Value &json) {
     Json::Reader reader;
-    Json::Value ret;
-    if (reader.parse(str, ret))
-        // add a "ERROR" property for the result json obj
-        ret["ERROR"] = "false";
-    else
-        ret["ERROR"] = "true";
-    return ret;
+    if (!reader.parse(str, json)) return ERROR;
+    return 0;
 }
 
-int reqHandler(std::string &request, std::string &response)
+int requestHandler(std::string &request, std::string &response)
 {
-    
+    Json::Value json;
+    if (stringToJson(request, json) == ERROR)
+        return INVALID_REQUEST;
 }
