@@ -1,0 +1,5 @@
+ROOT=/home/ronald/program/ECR/src-srv
+INCLUDEDIR=-I$(ROOT) -I$(ROOT)/user -I$(ROOT)/group
+CXXFLAG= -c -DDEBUG $(INCLUDEDIR)  -std=c++11 -g
+LINKERFLAG=
+CXX = g++
