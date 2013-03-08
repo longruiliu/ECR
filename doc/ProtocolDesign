@@ -1,22 +1,135 @@
-协议列表：
-组协议
-	组管理
-		建立组
-		删除组
-		添加成员
-		删除成员
-	发送组信息
-	请求加入组
-	获取组成员列表
-	发送特权信息
+## * 表示报文为被动发送
+
+请求报文结构  token(32bit), sessionID(32bit), op(32bit), payload
+应答报文结构  token(32bit), statusID(32bit), payload
+
+SessionID [group/regular]
+1 组协议	group [manage/sendmsg/joinreq/userlist/redmsg]
+1.1 组管理  manage [del/add/useradd/userdel]
+1.1.1 建立组 add , 系统将会为group分配ID 
+Payload: <group name>
+Res: Group ID
+1.1.2 删除组 del
+Payload:  <group ID>
+Res: <NULL>
+1.1.3 添加成员 useradd
+Payload:  <user ID>
+Res: <NULL>
+1.1.4 删除成员 userdel 
+Payload: <user ID>
+Res: <NULL>
+
+1.2 发送组信息 sendmsg 
+Payload: <user ID> <message>
+Res: <NULL>
+
+1.3 请求加入组 joinreq
+如果SessionID对应的用户有权限进行组管理，则立即将User ID对应的用户加入组
+否则，将向Group ID的管理员发送加入组的请求。
+Payload: <User ID> <group ID> <message>
+Res: <NULL>
+
+1.4 退出组 quitreq
+如果SessionID对应的用户是本组的创建者，则：1、它可以踢出本组由<User ID>指定的任何人。2、它不可以踢出自己
+否则，当且仅当SessionID对应的用户等于<User ID>，则将<User ID> 退出该组。
+Payload: <User ID> <group ID>
+Res: <NULL>
+
+1.5 获取组成员列表 userlist
+Payload: <Group ID>
+Res: [<User ID>]
+
+1.6 发送特权消息 redmsg 
+Payload: <group ID> <message>
+Res: <NULL>
+
+
+
+
+
+2 常规协议  regular [login/logout/sendmsg/userlist/userinfo/manage/status]
+2.1 登录 login
+Payload: <username> <passwd>
+Res: <SessionID>
+
+2.2 注销 logout
+Payload: <NULL>
+Res: <NULL>
+
+2.3 发送消息 sendmsg
+Payload: <user ID> <message>
+Res: <NULL>
+
+2.4 获取用户列表 userlist
+Payload: <NULL>
+Res: [<User ID>]
+
+2.5 获取用户信息 userinfo
+Payload: <user ID>
+Res: UserInfo
+
+2.6 用户管理 manage [add/modify/del]
+默认只有管理员能进行以下操作
+2.6.1 添加用户		add 
+Payload: <usename> <passwd> UserInfo
+Res: <NULL>
+2.6.2 修改用户信息		modify
+如果User ID是请求者，则允许更改
+否则，仅当请求者是管理员时才允许修改
+Payload: <user ID> <new name> <new passwd> <new phone>(UserInfo)
+Res: <NULL>
+2.6.3 删除用户		del
+Payload: <user ID>
+Res: <NULL>
+
+2.7 在线状态监测	 status
+Payload: <NULL>
+Res: <NULL>
+
+
+
+
+错误状态码列表：
+成功 successful
+组协议	group [manage/msg/joinreq/userlist/redmsg]
+	组管理	  manage [del/add/useradd/userdel]
+		建立组 add <group ID>  系统将会为group分配ID, 哪个管理员创建的群由哪个管理员负责, 如果创建一个群已经存在
+													 那么这个管理员也将拥有这个群的管理权限
+		删除组 del [ok/failed]
+					failed <message> 有两种情况可以导致失败， 1、自己不具有管理权限 2、删除的组不存在
+					                 若删除的组有两个以上的管理员，那么等价于自己退出这个组。
+		添加成员 useradd [ok/failed]
+					ok <user ID>
+					failed <message> 只有一种情况， 添加的成员用户名已经存在
+		删除成员 userdel [ok/failed]
+		      failed <message> 删除的成员不存在，或者删除的成员是管理员， 管理员的账户只能手动配置
+	发送组信息  
+	           当一个用户发送给另一个群消息时，有两个可能性， 1、服务器返回消息:消息不可达 2、服务器把消息投递给客户
+	           msg <message>
+	请求加入组 
+	        这个请求不会得到服务器立即应答， 管理员审核过了以后，服务器才给出应答
+	        joinreq <message> , 这里的message可以使管理员定义好的消息
+	请求退出组 quitreq [ok/failed]
+					ok 表示成功退出小组
+					failed <message> 有两种可能， 1、退出的组不存在。 2、自己不再该组中
+	获取组成员列表 userlist <User ID 1>:<User ID 2>...
+	发送特权信息 msg <message> 消息不可达、或消息成功投递
 常规协议
-	登录
-	注销
-	发送消息
-	获取用户列表
-	获取用户信息
-	用户管理
+  regular [login/logout/sendmsg/userlist/userinfo/manage/status]
+	登录 login [ok/failed]
+	注销 logout [ok/failed]
+	发送消息 msg <message> 消息不可达或者消息投递成功
+	获取用户列表 userlist <user ID1>: <user ID 2>...
+	获取用户信息 userinfo <information>
+	用户管理 manage [add/modify/del]
 		添加用户
+		add [ok/failed]
+		failed <message> 用户已经存在
 		修改用户信息
+		modify [ok/failed]
+			failed <message> 用户不存在
 		删除用户
+		del [ok/failed] 用户不存在
 	在线状态监测
+		
+
