@@ -41,17 +41,22 @@ int requestHandler(std::string &request) {
     if(!root["method"])
         return ERR_METHOD_EXPECTED;
 
+    // check sessionID
+
     if (root["type"] == "group") {
         switch (root["method"]) {
         case "add":
-            addGroupMember(int sessionID, int groupID, int newmemberID, std::string msg);
+            addGroup(srcID, groupName);
             break;
         case "del":
-            delGroupMember(int sessionID, int groupID, int memberID);
+            delGroup(srcID, groupID);
             break;
         case "adduser":
-            
+            addGroupMember(srcID, groupID, newmemberID, msg);
+            break;
         case "deluser":
+            delGroupMember(srcID, groupID, memberID);
+            break;
         case "sendmsg":
         case "joinreq":
         case "quitreq":
