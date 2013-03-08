@@ -10,10 +10,10 @@ sessindID           <sessionID>
 type                group
 method              add | del | adduser | deluser | sendmsg | joinreq |\
                     quitreq | userlist | redmsg
-params              (add)<Group ID> |
+params              (add)<Group Name> |
                     (del)<Group ID> |
                     (sendmsg)<Group ID> <Newline> <Text> |
-                    (joinreq)<User ID> <Newline> <GroupID> <Newline> <Text>|
+                    (joinreq)<User ID> <Newline> <GroupID> <Newline> <Text> |
                     (quitreq)<User ID> <Newline> <GroupID> |
                     (userlist)<Group ID> |
                     (redmsg)<Group ID> <Newline> <message>

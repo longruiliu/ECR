@@ -1,8 +1,8 @@
 protocol.o: protocol.cc
-	g++ -c protocol.cc -Iinclude -g
+	clang++ -c protocol.cc -Iinclude -g -Wall
 
 protocol: protocol.o
-	g++ -Llib protocol.o -ljson -o protocol -g
+	clang++ -Llib protocol.o -ljson -o protocol -g -Wall
 
 clean:
 	rm *.o

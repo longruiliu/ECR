@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 enum {
-    INVALID_REQUEST
+    ERR_INVALID_REQUEST
 };
 const int ERROR = -1;
 int requestHandler(std::string &request);
