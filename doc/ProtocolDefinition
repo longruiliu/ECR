@@ -6,6 +6,7 @@ Key                 Value
 [to] // TBD
 [from] // TBD
 
+sessindID           <sessionID>
 type                group
 method              add | del | adduser | deluser | sendmsg | joinreq |\
                     quitreq | userlist | redmsg
@@ -34,9 +35,18 @@ params              (login)<User ID> <PASSWD> |
 
 ** Response
 Key                 Value
+userInfo            <User Info>
+sessionID           <sessionID>
+userList            <User ID> <User ID> ...
+groupName           <Group Name>
+groupID             <Group ID>
 
 * Error Code
+    SESSIONID_EXPECTED
+    METHOD_EXPECTED
+    TYPE_EXPECTED
+    PARAMS_EXPECTED
     INVALID_METHOD
     INVALID_PARAMS
-    TYPE_NOT_SPECIFIED
+    INVALID_TYPE
     
