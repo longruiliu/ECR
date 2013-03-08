@@ -37,7 +37,7 @@ params              (login)<User ID> <PASSWD> |
 Key                 Value
 userInfo            <User Info>
 sessionID           <sessionID>
-userList            <User ID> <User ID> ...
+userList            <User ID> ...
 groupName           <Group Name>
 groupID             <Group ID>
 
