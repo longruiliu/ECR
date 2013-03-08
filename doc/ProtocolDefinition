@@ -12,25 +12,26 @@ method              add | del | adduser | deluser | sendmsg | joinreq |\
                     quitreq | userlist | redmsg
 params              (add)<Group ID> |
                     (del)<Group ID> |
-                    (adduser)<User ID> |
-                    (deluser)<User ID> |
-                    (sendmsg)<User ID> <Newline> <Text> |
+                    (sendmsg)<Group ID> <Newline> <Text> |
                     (joinreq)<User ID> <Newline> <GroupID> <Newline> <Text>|
                     (quitreq)<User ID> <Newline> <GroupID> |
                     (userlist)<Group ID> |
                     (redmsg)<Group ID> <Newline> <message>
+                    (fetchmsg) <Group ID> <timestamp>
                     /* <Newline> defines as UNIX style '\n' */
 
                     /* If not specified, just use the '\n'(as above) as the default parameter delimiter */
 type                regular
 method              login | logout | sendmsg | userlist | userinfo |\
-                    add | modify | del | status
+                    add | modify | del | keep-alive | fetch
 params              (login)<User ID> <PASSWD> |
+                    (logout)|
                     (sendmsg)<User ID> <Text> |
                     (userinfo)<User ID> |
                     (add)<User Name> <PASSWD> <User Info> |
                     (modify)<User ID> <New Name> <New PASSWD> <New Phone> <User Info> |
                     (del)<User ID>
+                    (fetchmsg) <timestamp>
 
 
 ** Response
@@ -42,11 +43,13 @@ groupName           <Group Name>
 groupID             <Group ID>
 
 * Error Code
-    SESSIONID_EXPECTED
-    METHOD_EXPECTED
-    TYPE_EXPECTED
-    PARAMS_EXPECTED
-    INVALID_METHOD
-    INVALID_PARAMS
-    INVALID_TYPE
+    ERR_SESSIONID_EXPECTED
+    ERR_METHOD_EXPECTED
+    ERR_TYPE_EXPECTED
+    ERR_PARAMS_EXPECTED
+    ERR_INVALID_METHOD
+    ERR_INVALID_PARAMS
+    ERR_INVALID_TYPE
+    ERR_OK
+    ERR_NOT_IN_GROUP
     
