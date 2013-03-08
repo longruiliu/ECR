@@ -1,0 +1,42 @@
+Protocol Definition
+
+* Structure
+** Request
+Key                 Value
+[to] // TBD
+[from] // TBD
+
+type                group
+method              add | del | adduser | deluser | sendmsg | joinreq |\
+                    quitreq | userlist | redmsg
+params              (add)<Group ID> |
+                    (del)<Group ID> |
+                    (adduser)<User ID> |
+                    (deluser)<User ID> |
+                    (sendmsg)<User ID> <Newline> <Text> |
+                    (joinreq)<User ID> <Newline> <GroupID> <Newline> <Text>|
+                    (quitreq)<User ID> <Newline> <GroupID> |
+                    (userlist)<Group ID> |
+                    (redmsg)<Group ID> <Newline> <message>
+                    /* <Newline> defines as UNIX style '\n' */
+
+                    /* If not specified, just use the '\n'(as above) as the default parameter delimiter */
+type                regular
+method              login | logout | sendmsg | userlist | userinfo |\
+                    add | modify | del | status
+params              (login)<User ID> <PASSWD> |
+                    (sendmsg)<User ID> <Text> |
+                    (userinfo)<User ID> |
+                    (add)<User Name> <PASSWD> <User Info> |
+                    (modify)<User ID> <New Name> <New PASSWD> <New Phone> <User Info> |
+                    (del)<User ID>
+
+
+** Response
+Key                 Value
+
+* Error Code
+    INVALID_METHOD
+    INVALID_PARAMS
+    TYPE_NOT_SPECIFIED
+    

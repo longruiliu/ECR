@@ -4,17 +4,18 @@
 
 #include <json/json.h>
 #include <vector>
+#include <string>
 #include "protocol.h"
 
-int rootToString(Json::Value &, std::string &);
-int stringToJson(std::string &, Json::Value &);
+static int jsonToString(Json::Value &, std::string &);
+static int stringToJson(std::string &, Json::Value &);
 
-int rootToString(Json::Value &root, std::string &ret) {
+static int jsonToString(Json::Value &root, std::string &ret) {
     Json::FastWriter writer;
     ret = writer.write(root);
 }
 
-int stringToJson(std::string &str, Json::Value &root) {
+static int stringToJson(std::string &str, Json::Value &root) {
     Json::Reader reader;
     if (!reader.parse(str, root))
         return ERROR;

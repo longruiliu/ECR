@@ -1,4 +1,4 @@
-## * 表示报文为被动发送
+# * 表示报文为被动发送
 
 请求报文结构  token(32bit), sessionID(32bit), op(32bit), payload
 应答报文结构  token(32bit), statusID(32bit), payload
