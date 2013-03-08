@@ -1,7 +1,7 @@
 /*
   Protocol layer module
 */
-
+#include "src-svr/logic.h"
 #include <json/json.h>
 #include <vector>
 #include <string>
@@ -27,6 +27,15 @@ int requestHandler(std::string &request, std::string &response) {
     if (stringToJson(request, root) == ERROR)
         return INVALID_REQUEST;
     // call logic layer module
+    if (root["type"] == "group") {
+        switch (root["method"]) {
+            
+        }
+    } else if (root["type"] == "regular") {
+        switch (root["method"]) {
+            
+        }
+    }
     return 0;
 }
 

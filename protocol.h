@@ -6,5 +6,5 @@ enum {
     INVALID_REQUEST
 };
 const int ERROR = -1;
-int requestHandler(std::string &request, std::string &responese);
+int requestHandler(std::string &request);
 #endif
