@@ -1,7 +1,8 @@
 /*
   Protocol layer module
 */
-#include "src-svr/logic.h"
+#include "logic/logic.h"
+#include "logic/sessionControl"
 #include <json/json.h>
 #include <vector>
 #include <string>
@@ -22,20 +23,58 @@ static int stringToJson(std::string &str, Json::Value &root) {
     return 0;
 }
 
-int requestHandler(std::string &request, std::string &response) {
+int requestHandler(std::string &request) {
     Json::Value root;
     if (stringToJson(request, root) == ERROR)
         return INVALID_REQUEST;
     // call logic layer module
+    int sessionID;
+
+    if (root["sessionID"])
+        sessionID = root["sessionID"].asInt();
+    else
+        return ERR_SESSIONID_EXPECTED;
+
+    if (!root["type"])
+        return ERR_TYPE_EXPECTED;
+
+    if(!root["method"])
+        return ERR_METHOD_EXPECTED;
+
     if (root["type"] == "group") {
         switch (root["method"]) {
+        case "add":
+            addGroupMember(int sessionID, int groupID, int newmemberID, std::string msg);
+            break;
+        case "del":
+            delGroupMember(int sessionID, int groupID, int memberID);
+            break;
+        case "adduser":
             
+        case "deluser":
+        case "sendmsg":
+        case "joinreq":
+        case "quitreq":
+        case "userlist":
+        case "redmsg":
+        default: return ERR_INVALID_METHOD;
         }
     } else if (root["type"] == "regular") {
         switch (root["method"]) {
-            
+        case "login":
+        case "logout":
+        case "sendmsg":
+        case "userlist":
+        case "userinfo":
+        case "add":
+        case "modify":
+        case "del":
+        case "keep-alive":
+        case "fetch":
+        default: return ERR_INVALID_METHOD;
         }
-    }
+    } else
+        return ERR_INVALID_TYPE;
     return 0;
 }
 
