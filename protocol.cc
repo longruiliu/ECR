@@ -10,6 +10,7 @@
 #include "src-srv/logic/sessionControl.h"
 #include "src-srv/logic/logic.h"
 
+const int ARG_MAX = 10;
 typedef std::vector <std::string> Args;
 
 static int jsonToString(Json::Value &, std::string &);
@@ -28,18 +29,22 @@ static int stringToJson(std::string &str, Json::Value &root) {
     return 0;
 }
 
-static int getLines(std::string lines, std::vector <std::string> &line) {
-    int prev = 0, len = lines.size();
-    for (int i = 0; i != len; i++) {
+static int getParams(std::string lines, std::vector <std::string> &line, int argc = ARG_MAX) {
+    int prev = 0, len = lines.size(), cnt = 0;
+    for (int i = 0; i != len && cnt < argc; i++) {
         if (lines[i] == '\n') {
-            if (i-prev)
+            if (i-prev) {
                 line.push_back(lines.substr(prev, i-prev));
+                cnt++;
+            }
             prev = i+1;
         }
     }
-    if (len-1-prev)
+    if (len-1-prev>0) {
         line.push_back(lines.substr(prev, len-1-prev));
-    return line.size();
+        cnt++;
+    }
+    return cnt;
 }
 
 int requestHandler(std::string &request) {
@@ -76,7 +81,7 @@ int requestHandler(std::string &request) {
             delGroup(srcID, groupID);
         } else if (method == "adduser") {
             Args argv;
-            if (getLines(params, argv) != 3)
+            if (getParams(params, argv) != 3)
                 return ERR_INVALID_PARAMS;
             int groupID, newMemberID;
             sscanf(argv[0].c_str(), "%d", &groupID);
@@ -86,14 +91,14 @@ int requestHandler(std::string &request) {
         } else if (method == "deluser") {
             Args argv;
             int groupID, memberID;
-            if (getLines(params, argv) != 2)
+            if (getParams(params, argv) != 2)
                 return ERR_INVALID_PARAMS;
             sscanf(argv[0].c_str(), "%d", &groupID);
             sscanf(argv[1].c_str(), "%d", &memberID);
             delGroupMember(srcID, groupID, memberID);
         } else if (method == "sendmsg") {
             Args argv;
-            if (getLines(params, argv) != 2)
+            if (getParams(params, argv) != 2)
                 return ERR_INVALID_PARAMS;
             int groupID;
             sscanf(argv[0].c_str(), "%d", &groupID);
@@ -102,16 +107,60 @@ int requestHandler(std::string &request) {
         } else if (method == "joinreq") {
         } else if (method =="quitreq") {
         } else if (method == "userlist") {
+            int groupID;
+            sscanf(params.c_str(), "%d", &groupID);
+            fetchMemberList(srcID, groupID);
         } else if (method == "redmsg") {
+            Args argv;
+            if (getParams(params, argv) != 2)
+                return ERR_INVALID_PARAMS;
+            int groupID;
+            sscanf(argv[0].c_str(), "%d", &groupID);
+            std::string msg = argv[1];
+            sendGroupMsg(srcID, groupID, msg);
         } else
             return ERR_INVALID_METHOD;
     } else if (root["type"] == "regular") {
         if (method == "login") {
+            Args argv;
+            if (getParams(params, argv) != 2)
+                return ERR_INVALID_PARAMS;
+            int userID;
+            std::string passwd;
+            sscanf(argv[0].c_str(), "%d", &userID);
+            passwd = argv[1];
+            login(userID, passwd);
         } else if (method == "logout") {
+            logout(srcID);
         } else if (method == "sendmsg") {
+            int dstID;
+            std::string msg;
+            Args argv;
+            if (getParams(params, argv) != 2)
+                return ERR_INVALID_PARAMS;
+            sscanf(argv[0].c_str(), "%d", &dstID);
+            msg = argv[1];
+            sendMsg(srcID, dstID, msg);
         } else if (method == "userlist") {
         } else if (method == "userinfo") {
+            int dstID;
+            sscanf(params.c_str(), "%d", &dstID);
+            getUserInfo(srcID, dstID);
         } else if (method == "add") {
+            std::string userName, passwd;
+            std::map<std::string, std::string> userInfo;
+            Args argv;
+            if (getParams(params, argv) != 3)
+                return ERR_INVALID_PARAMS;
+            userName = argv[0];
+            passwd = argv[1];
+            Json::Value root;
+            Json::Reader reader;
+            if (!reader.parse(argv[2], root))
+                return ERR_INVALID_PARAMS;
+            for (__typeof(root.begin()) it = root.begin(); it != root.end(); it++)
+                userInfo[] = it;
+            addUser(srcID, userName, passwd, userInfo);
         } else if (method == "modify") {
         } else if (method == "del") {
         } else if (method == "keep-alive") {
