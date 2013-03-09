@@ -10,7 +10,7 @@
 #include "src-srv/logic/sessionControl.h"
 #include "src-srv/logic/logic.h"
 
-const int ARG_MAX = 10;
+const int LINE_MAX = 10;
 typedef std::vector <std::string> Args;
 
 static int jsonToString(Json::Value &, std::string &);
@@ -29,9 +29,19 @@ static int stringToJson(std::string &str, Json::Value &root) {
     return 0;
 }
 
-static int getParams(std::string lines, std::vector <std::string> &line, int argc = ARG_MAX) {
+static int jsonToMap(Json::Value &root, std::map <std::string, std::string> &ret) {
+    for (__typeof(root.begin()) it = root.begin(); it != root.end(); it++) {
+        if (it.key().isString() && (*it).isString())
+            ret[it.key().asString()] = (*it).asString();
+        else
+            return ERROR;
+    }
+    return 0;
+}
+
+static int getParams(std::string lines, std::vector <std::string> &line, int limit = LINE_MAX) {
     int prev = 0, len = lines.size(), cnt = 0;
-    for (int i = 0; i != len && cnt < argc; i++) {
+    for (int i = 0; i != len && cnt < limit; i++) {
         if (lines[i] == '\n') {
             if (i-prev) {
                 line.push_back(lines.substr(prev, i-prev));
@@ -150,7 +160,7 @@ int requestHandler(std::string &request) {
             std::string userName, passwd;
             std::map<std::string, std::string> userInfo;
             Args argv;
-            if (getParams(params, argv) != 3)
+            if (getParams(params, argv, 2) != 3)
                 return ERR_INVALID_PARAMS;
             userName = argv[0];
             passwd = argv[1];
@@ -158,13 +168,35 @@ int requestHandler(std::string &request) {
             Json::Reader reader;
             if (!reader.parse(argv[2], root))
                 return ERR_INVALID_PARAMS;
-            for (__typeof(root.begin()) it = root.begin(); it != root.end(); it++)
-                userInfo[] = it;
+            if (jsonToMap(root, userInfo) == ERROR)
+                return ERR_INVALID_PARAMS;
             addUser(srcID, userName, passwd, userInfo);
         } else if (method == "modify") {
+            int userID;
+            std::string newName, newPasswd;
+            std::map <std::string, std::string> newInfo;
+            Args argv;
+            if (getParams(params, argv, 3) != 4)
+                return ERR_INVALID_PARAMS;
+            sscanf(argv[0].c_str(), "%d", &userID);
+            newName = argv[1];
+            newPasswd = argv[2];
+            Json::Value root;
+            Json::Reader reader;
+            if (!reader.parse(argv[3], root))
+                return ERR_INVALID_PARAMS;
+            if (jsonToMap(root, newInfo) == ERROR)
+                return ERR_INVALID_PARAMS;
+            modifyUser(srcID, userID, newName, newPasswd, newInfo);
         } else if (method == "del") {
+            int userID;
+            sscanf(params.c_str(), "%d", &userID);
+            delUser(srcID, userID);
         } else if (method == "keep-alive") {
         } else if (method == "fetch") {
+            time_t since;
+            sscanf(params.c_str(), "%u", &since);
+            fetchMsg(srcID, since);
         } else
             return ERR_INVALID_METHOD;
     } else
