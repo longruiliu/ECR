@@ -36,26 +36,6 @@ static int jsonToMap(Json::Value &root, std::map <std::string, std::string> &ret
     return 0;
 }
 
-/*
-  static int getParams(std::string lines, std::vector <std::string> &line, int limit = LINE_MAX) {
-    int prev = 0, len = lines.size(), cnt = 0;
-    for (int i = 0; i != len && cnt < limit; i++) {
-        if (lines[i] == '\n') {
-            if (i-prev) {
-                line.push_back(lines.substr(prev, i-prev));
-                cnt++;
-            }
-            prev = i+1;
-        }
-    }
-    if (len-1-prev>0) {
-        line.push_back(lines.substr(prev, len-1-prev));
-        cnt++;
-    }
-    return cnt;
-}
-*/
-
 int requestHandler(std::string &request) {
     Json::Value root;
     if (stringToJson(request, root) == ERROR)
@@ -64,7 +44,7 @@ int requestHandler(std::string &request) {
 
     int sessionID;
     if (root.isMember("sessionID"))
-        sessionID = root["sessionID"].asInt();
+        sscanf(root["sessionID"].asString().c_str(), "%d", &sessionID);
     else
         return ERR_SESSIONID_EXPECTED;
 
