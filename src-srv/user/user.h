@@ -13,6 +13,10 @@ class user
 public:
   static time_t keepAliveIntv;
 	int userID;
+	string userName;
+	string pwd;
+	int previlege;
+	string info;
 	int privMask;
 	int IP;
   time_t lastKA;
