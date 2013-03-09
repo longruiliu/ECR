@@ -40,11 +40,11 @@ public:
 	void printUserList();
 	void printMsgList();
 	#endif
+  void lockGroup();
+	void releaseGroup();
 
 protected:
 private:
-	void lockGroup();
-	void releaseGroup();
 };
 
 #endif

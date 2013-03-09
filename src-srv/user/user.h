@@ -11,9 +11,18 @@
 class user
 {
 public:
+  static time_t keepAliveIntv;
 	int userID;
 	int privMask;
 	int IP;
+  time_t lastKA;
+
+  //Privilege query
+  bool canUserMg();
+  bool canGroupMg();
+
+  bool needClean();
+  std::vector<msgRecord> msgList;
 #ifdef DEBUG
 	void printUser();
 #endif

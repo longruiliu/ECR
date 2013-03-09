@@ -1,0 +1,9 @@
+本文档描述需要进行数据持久化的内存对象及其关系
+
+
+需要持久化的内存对象包括
+user/userMgm.h:userList 用户列表，包括其中的每个用户信息
+group/groupManager.h:groupList 组列表，包括所有组的基本信息
+group/group.h:  group::msgList 组信息集合，与组成1对多关系
+group/group.h:  group::groupMember 组成员集合，使组和用户成多对多关系
+
