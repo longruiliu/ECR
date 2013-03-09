@@ -10,9 +10,6 @@
 #include "src-srv/logic/sessionControl.h"
 #include "src-srv/logic/logic.h"
 
-const int LINE_MAX = 10;
-typedef std::vector <std::string> Args;
-
 static int jsonToString(Json::Value &, std::string &);
 static int stringToJson(std::string &, Json::Value &);
 
@@ -39,7 +36,8 @@ static int jsonToMap(Json::Value &root, std::map <std::string, std::string> &ret
     return 0;
 }
 
-static int getParams(std::string lines, std::vector <std::string> &line, int limit = LINE_MAX) {
+/*
+  static int getParams(std::string lines, std::vector <std::string> &line, int limit = LINE_MAX) {
     int prev = 0, len = lines.size(), cnt = 0;
     for (int i = 0; i != len && cnt < limit; i++) {
         if (lines[i] == '\n') {
@@ -56,6 +54,7 @@ static int getParams(std::string lines, std::vector <std::string> &line, int lim
     }
     return cnt;
 }
+*/
 
 int requestHandler(std::string &request) {
     Json::Value root;
@@ -78,95 +77,94 @@ int requestHandler(std::string &request) {
     // check sessionID
 
     int srcID = sessionID;
-    std::string params = root.get("params", "").asString();
-    std::string method = root.get("method", "").asString();
+    if (!root["params"].isArray())
+        return ERR_INVALID_PARAMS;
+    Json::Value params = root["params"];
+    std::string method = root["method"].asString();
 
     if (root["type"] == "group") {
         if (method == "add") {
-            std::string groupName = params;
+            std::string groupName = params[0U].asString();
             addGroup(srcID, groupName);
         } else if (method == "del") {
             int groupID;
-            sscanf(params.c_str(), "%d", &groupID);
+            sscanf(params[0U].asString().c_str(), "%d", &groupID);
             delGroup(srcID, groupID);
         } else if (method == "adduser") {
-            Args argv;
-            if (getParams(params, argv) != 3)
+            if (params.size() != 3)
                 return ERR_INVALID_PARAMS;
             int groupID, newMemberID;
-            sscanf(argv[0].c_str(), "%d", &groupID);
-            sscanf(argv[1].c_str(), "%d", &newMemberID);
-            std::string msg = argv[2];
+            sscanf(params[0U].asString().c_str(), "%d", &groupID);
+            sscanf(params[1U].asString().c_str(), "%d", &newMemberID);
+            std::string msg = params[2].asString();
             addGroupMember(srcID, groupID, newMemberID, msg);
         } else if (method == "deluser") {
-            Args argv;
             int groupID, memberID;
-            if (getParams(params, argv) != 2)
+            if (params.size() != 2)
                 return ERR_INVALID_PARAMS;
-            sscanf(argv[0].c_str(), "%d", &groupID);
-            sscanf(argv[1].c_str(), "%d", &memberID);
+            sscanf(params[0U].asString().c_str(), "%d", &groupID);
+            sscanf(params[1U].asString().c_str(), "%d", &memberID);
             delGroupMember(srcID, groupID, memberID);
         } else if (method == "sendmsg") {
-            Args argv;
-            if (getParams(params, argv) != 2)
+            if (params.size() != 2)
                 return ERR_INVALID_PARAMS;
             int groupID;
-            sscanf(argv[0].c_str(), "%d", &groupID);
-            std::string msg = argv[1];
+            sscanf(params[0U].asString().c_str(), "%d", &groupID);
+            std::string msg = params[1].asString();
             sendGroupMsg(srcID, groupID, msg);
         } else if (method == "joinreq") {
         } else if (method =="quitreq") {
         } else if (method == "userlist") {
             int groupID;
-            sscanf(params.c_str(), "%d", &groupID);
+            if (params.size() != 1)
+                return ERR_INVALID_PARAMS;
+            sscanf(params[0U].asString().c_str(), "%d", &groupID);
             fetchMemberList(srcID, groupID);
         } else if (method == "redmsg") {
-            Args argv;
-            if (getParams(params, argv) != 2)
+            if (params.size() != 2)
                 return ERR_INVALID_PARAMS;
             int groupID;
-            sscanf(argv[0].c_str(), "%d", &groupID);
-            std::string msg = argv[1];
+            sscanf(params[0U].asString().c_str(), "%d", &groupID);
+            std::string msg = params[1].asString();
             sendGroupMsg(srcID, groupID, msg);
         } else
             return ERR_INVALID_METHOD;
     } else if (root["type"] == "regular") {
         if (method == "login") {
-            Args argv;
-            if (getParams(params, argv) != 2)
+            if (params.size() != 2)
                 return ERR_INVALID_PARAMS;
             int userID;
             std::string passwd;
-            sscanf(argv[0].c_str(), "%d", &userID);
-            passwd = argv[1];
+            sscanf(params[0U].asString().c_str(), "%d", &userID);
+            passwd = params[1U].asString();
             login(userID, passwd);
         } else if (method == "logout") {
             logout(srcID);
         } else if (method == "sendmsg") {
             int dstID;
             std::string msg;
-            Args argv;
-            if (getParams(params, argv) != 2)
+            if (params.size() != 2)
                 return ERR_INVALID_PARAMS;
-            sscanf(argv[0].c_str(), "%d", &dstID);
-            msg = argv[1];
+            sscanf(params[0U].asString().c_str(), "%d", &dstID);
+            msg = params[1U].asString();
             sendMsg(srcID, dstID, msg);
         } else if (method == "userlist") {
         } else if (method == "userinfo") {
             int dstID;
-            sscanf(params.c_str(), "%d", &dstID);
+            if (params.size() != 1)
+                return ERR_INVALID_PARAMS;
+            sscanf(params[0U].asString().c_str(), "%d", &dstID);
             getUserInfo(srcID, dstID);
         } else if (method == "add") {
             std::string userName, passwd;
             std::map<std::string, std::string> userInfo;
-            Args argv;
-            if (getParams(params, argv, 2) != 3)
+            if (params.size() != 3)
                 return ERR_INVALID_PARAMS;
-            userName = argv[0];
-            passwd = argv[1];
+            userName = params[0U].asString();
+            passwd = params[1U].asString();
             Json::Value root;
             Json::Reader reader;
-            if (!reader.parse(argv[2], root))
+            if (!reader.parse(params[2U].asString(), root))
                 return ERR_INVALID_PARAMS;
             if (jsonToMap(root, userInfo) == ERROR)
                 return ERR_INVALID_PARAMS;
@@ -175,27 +173,30 @@ int requestHandler(std::string &request) {
             int userID;
             std::string newName, newPasswd;
             std::map <std::string, std::string> newInfo;
-            Args argv;
-            if (getParams(params, argv, 3) != 4)
+            if (params.size() != 4)
                 return ERR_INVALID_PARAMS;
-            sscanf(argv[0].c_str(), "%d", &userID);
-            newName = argv[1];
-            newPasswd = argv[2];
+            sscanf(params[0U].asString().c_str(), "%d", &userID);
+            newName = params[1U].asString();
+            newPasswd = params[2U].asString();
             Json::Value root;
             Json::Reader reader;
-            if (!reader.parse(argv[3], root))
+            if (!reader.parse(params[3U].asString(), root))
                 return ERR_INVALID_PARAMS;
             if (jsonToMap(root, newInfo) == ERROR)
                 return ERR_INVALID_PARAMS;
             modifyUser(srcID, userID, newName, newPasswd, newInfo);
         } else if (method == "del") {
             int userID;
-            sscanf(params.c_str(), "%d", &userID);
+            if (params.size() != 1)
+                return ERR_INVALID_PARAMS;
+            sscanf(params[0U].asString().c_str(), "%d", &userID);
             delUser(srcID, userID);
         } else if (method == "keep-alive") {
         } else if (method == "fetch") {
             time_t since;
-            sscanf(params.c_str(), "%u", &since);
+            if (params.size() != 1)
+                return ERR_INVALID_PARAMS;
+            sscanf(params[0U].asString().c_str(), "%u", &since);
             fetchMsg(srcID, since);
         } else
             return ERR_INVALID_METHOD;

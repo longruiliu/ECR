@@ -19,6 +19,9 @@ void test() {
     Json::Value root;
     root["first"] = 1;
     root["second"] = 2;
+    root["third"].append("fuck");
+    std::cout << root.size() << std::endl;
+    std::cout << root["third"].size() << std::endl;
     std::map <std::string, std::string> hash;
     jsonToMap(root, hash);
 }
