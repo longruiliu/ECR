@@ -17,6 +17,9 @@ void delGroup(int groupID);
 group& findGroup(int groupID);
 group& findGroup(std::string groupName);
 
+
+void lockGrouplist();
+void releaseGrouplist();
 extern std::vector<group> groupList;
 
 #endif
