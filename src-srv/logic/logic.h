@@ -11,7 +11,7 @@ int sendRedMsg(int srcID, int groupID, const std::string& msg);
 int addGroup(int srcID, const std::string& groupName);
 int delGroup(int srcID, int groupID);
 
-int addGroupMember(int srcID,int groupID, int newMemberID, const std::string& msg);
+int addGroupMember(int srcID,int groupID, int newMemberID, const std::string& msg); //Coded, not test
 int delGroupMember(int srcID, int groupID, int memberID);
 
 int fetchMemberList(int srcID, int groupID);
@@ -24,8 +24,8 @@ int logout(int srcID);
 
 int getUserInfo(int srcID, int dstID);
 
-int addUser(int srcID, const std::string& userName, const std::string& passwd, const std::map<std::string, std::string>& userInfo);
-int modifyUser(int srcID, int userID, const std::string& newName, const std::string& newPasswd, const std::map<std::string, std::string>& newInfo); 
+int addUser(int srcID, const std::string& userName, const std::string& passwd, const std::string& userInfo);
+int modifyUser(int srcID, int userID, const std::string& newName, const std::string& newPasswd, const std::string& newInfo); 
 int delUser(int srcID, int userID);
 
 //P2P
@@ -41,6 +41,7 @@ enum {
     ERR_INVALID_PARAMS,
     ERR_INVALID_TYPE,
     ERR_OK,
-    ERR_NOT_IN_GROUP
+    ERR_NOT_IN_GROUP,
+    ERR_NO_PRIVILEGE
 };
 #endif /* _LOGIC_H_ */

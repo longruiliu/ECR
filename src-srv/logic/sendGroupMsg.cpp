@@ -4,14 +4,14 @@
 
 using namespace std;
 
-int sendGroupMsg(int sessionID, int groupID, const string& msg)
+int sendGroupMsg(int srcID, int groupID, const string& msg)
 {
 	struct sendMsgAg* v = (struct sendMsgAg*) argv;
 	if (dstID > 0)
 		return ERR_INVAILD;
 	else
 	{
-		group g = mainGM.findGroup(dstID);
+		group g = findGroup(dstID);
 		if (g.isInGroup(srcID))
 		{	
 			g.postMsg(dstID, msg);
@@ -22,5 +22,9 @@ int sendGroupMsg(int sessionID, int groupID, const string& msg)
 	}
 }
 
-int sendRegMsg(int sessionID
+int sendRegMsg(int srcID, int groupID, const string& msg)
+{
+  string tmp = string("<div style='color:red'>") + msg + string("</div>"); 
+  sendGroupMsg(src, groupID, msg);
+}
 
