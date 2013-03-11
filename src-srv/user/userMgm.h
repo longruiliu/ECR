@@ -1,5 +1,6 @@
 #ifndef _USERMGM_H_
 #define _USERMGM_H_ 
-#include<vecotr>
+#include<vector>
+#include<string>
 std::vector<user> userList;
 #endif /* _USERMGM_H_ */

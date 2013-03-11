@@ -13,6 +13,7 @@ class user;
 
 #include "groupMsg.h"
 #include<vector>
+#include<string>
 
 class group
 {
@@ -30,6 +31,8 @@ public:
 	int groupID;
  	std::string groupName;
  	int creatorID;
+	string g_name;
+	string g_info;
  	time_t lastMsgTime;
  	time_t oldestMemTime;
 
