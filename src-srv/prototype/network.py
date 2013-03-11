@@ -6,11 +6,21 @@ SERVER_PORT = 2333
 BACKLOG = 127
 
 def responseHandler(method, args):
-    apply(responseHandlers[method], args)
+    """
+    Call correspond response handler to respond.
+    """
+    return apply(responseHandlers[method], args)
+
+def requestHandler(**request):
+    """
+    Call correspond request handler according to the request.
+    """
     
-def requestHander(**request):
     if not request.has_key("type"):
         return ERR_TYPE_EXPECTED
+    if not request.has_key("method"):
+        return ERR_METHOD_EXPECTED
+    
     req_type = request["type"]
     if req_type == "regular":
         pass
@@ -18,22 +28,24 @@ def requestHander(**request):
         pass
     else:
         return ERR_INVALID_TYPE
-        
+    
 def recvRoutine(sock, addr):
+    """
+    When new request arrives, call this routine to respond.
+    """
     recv = sock.recv()
     request = json.load(recv)
     if type(request) is not dict:
         return ERR_INVALID_REQUEST
-    requestHandler(request)
+    return requestHandler(request)
 
 def main():
-     sock = socket.socket()
-     sock.bind((0, SERVER_PORT))
-     sock.listen(BACKLOG)
-     while (1):
-         newsock, addr = sockt.accpet()
-         # thread handler
-         thread.start_new_thread(routine, (newsock, addr))
+    sock = socket.socket()
+    sock.bind(('localhost', SERVER_PORT))
+    sock.listen(BACKLOG)
+    while (1):
+        newsock, addr = sock.accept()
+        thread.start_new_thread(recvRoutine, newsock, addr)
     
 if __name__ == '__main__':
     main()
