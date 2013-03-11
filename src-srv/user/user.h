@@ -11,7 +11,6 @@
 class user
 {
 public:
-  static time_t keepAliveIntv;
 	int userID;
 	string userName;
 	string pwd;
@@ -25,7 +24,6 @@ public:
   bool canGroupMg();
   bool isRoot();
 
-  bool needClean();
   std::vector<msgRecord> msgList;
   
   void pushNotify(int type, int extra);
@@ -35,6 +33,5 @@ public:
 #endif
 };
 
-user& findUser(int userID);
 
 #endif

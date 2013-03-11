@@ -24,8 +24,8 @@ int logout(int srcID);
 
 int getUserInfo(int srcID, int dstID);
 
-int addUser(int srcID, const std::string& userName, const std::string& passwd, const std::map<std::string, std::string>& userInfo);
-int modifyUser(int srcID, int userID, const std::string& newName, const std::string& newPasswd, const std::map<std::string, std::string>& newInfo); 
+int addUser(int srcID, const std::string& userName, const std::string& passwd, const std::string& userInfo);
+int modifyUser(int srcID, int userID, const std::string& newName, const std::string& newPasswd, const std::string& newInfo); 
 int delUser(int srcID, int userID);
 
 //P2P
