@@ -12,7 +12,7 @@ class group;
 
 #include <group/group.h>
 
-int addGroup(std::string groupName, int creatorID);
+int addGroup(const std::string& groupName, int creatorID);
 void delGroup(int groupID);
 group& findGroup(int groupID);
 group& findGroup(std::string groupName);

@@ -15,14 +15,17 @@ public:
 	int userID;
 	int privMask;
 	int IP;
-  time_t lastKA;
 
   //Privilege query
   bool canUserMg();
   bool canGroupMg();
+  bool isRoot();
 
   bool needClean();
   std::vector<msgRecord> msgList;
+  
+  void pushNotify(int type, int extra);
+  void sendMsg(int srcID, const std::string& msg);
 #ifdef DEBUG
 	void printUser();
 #endif
