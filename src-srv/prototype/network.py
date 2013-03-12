@@ -1,10 +1,32 @@
 import json
 import socket
 import thread
+import mutex
+import pickle
+from requestHandlers import *
+from responseHandlers import *
 
 SERVER_PORT = 2333
 BACKLOG = 127
+sockMapMutex = mutex.mutex()
+sockMap = {}
 
+def sendResponse():
+    """
+    When finished serializing the objects, call this function to send result.
+    """
+    
+    # release thread/socket binding
+    ident = thread.get_ident()
+    sockMapMutex.lock()
+    sockMap.pop(ident)
+    sockMapMutex.unlock()
+    
+def sendNotification(addr, msg):
+    """
+    Async notification conducted by server.
+    """
+    
 def responseHandler(method, args):
     """
     Call correspond response handler to respond.
@@ -33,6 +55,12 @@ def recvRoutine(sock, addr):
     """
     When new request arrives, call this routine to respond.
     """
+    ident = thread.get_ident()
+
+    sockMapMutex.lock()
+    sockMap[ident] = (sock, addr)
+    sockMapMutex.unlock()
+
     recv = sock.recv()
     request = json.load(recv)
     if type(request) is not dict:
