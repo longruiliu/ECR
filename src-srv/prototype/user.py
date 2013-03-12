@@ -10,12 +10,20 @@ class User:
         self.passwd = passwd
         self.userInfo = userInfo
         self.privMask = privMask
+        self.mailbox = []
     def canGroupMg(self):
         return self.checkPriv(logic.PRIVIEGE_MASK_GROUPMG)
     def canUserMg(self):
         return self.checkPriv(logic.PRIVIEGE_MASK_USERMG)
+    def isRoot(self):
+        return self.checkPriv(logic.PRIVIEGE_MASK_ROOT)
     def checkPriv(self, mask):
         return not ((self.privMask & mask) == 0)
+    def sendMsg(self,msg):
+        self.mailbox.append(msg)
+    def fetchMsg(self):
+        return self.mailbox[:]
+        
 
 def findUser(userID):
     if userID in userList:

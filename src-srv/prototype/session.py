@@ -5,7 +5,8 @@ sessionList_uk = {}
 sessionList_sk = {}
 
 def renewUser(userID):
-    sessionList_uk[userID] = sessionList_uk[userID][:-1]+(time.time(),)
+    if sessionList_uk.has_key(userID):
+        sessionList_uk[userID] = sessionList_uk[userID][:-1]+(time.time(),)
 
 def cleanDeadUser():
     deadline = time.time() - KAI
@@ -14,19 +15,22 @@ def cleanDeadUser():
             deregisterSession(v[0])
 
 def registerSession(userID, IP):
-    if userID in sessionList_uk:
+    if sessionList_uk.has_key(userID):
         sessionID = sessionList_uk[userID][0]
         deregisterSession(sessionID)
     while True:
         sessionID = random.randint(0, 2**31)
-        if not (sessionID in sessionList_sk):
+        if not (sessionList_sk.has_key(sessionID)):
             break
     sessionList_sk[sessionID] = userID
     sessionList_uk[userID] = (sessionID, IP, time.time())
     return sessionID
     
+def getUserIP(userID):
+    return sessionList_uk[userID][1]
 
 def getUserIDBySession(sessionID):
+    #ToDo: optimize this by using has_key
     if sessionID in sessionList_sk:
         return sessionList_sk[sessionID]
     return None

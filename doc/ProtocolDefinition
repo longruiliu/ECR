@@ -29,7 +29,7 @@ params              (login)<User ID> <PASSWD> |
                     (sendmsg)<User ID> <Text> |
                     (userinfo)<User ID> |
                     (add)<User Name> <PASSWD> <User Info> |
-                    (modify)<User ID> <New Name> <New PASSWD> <New Phone> <User Info> |
+                    (modify)<User ID> <New Name> <New PASSWD> <Privilege Mask> <User Info> |
                     (del)<User ID>
                     (fetchmsg) <timestamp>
 
@@ -52,4 +52,5 @@ groupID             <Group ID>
     ERR_INVALID_TYPE
     ERR_OK
     ERR_NOT_IN_GROUP
-    
+    ERR_NO_PRIVILEGE
+    ERR_WRONG_PASSWD 
