@@ -6,4 +6,4 @@ class MsgRecord(object):
         self.msgText = msgText
         self.timestamp = time.time()
     def __str__(self):
-        return "Msg Dump from %d to %d:\n%s" %(sendorID, targetID, msgText)
+        return "Msg Dump from %d to %d @ %f:\n%s" %(self.sendorID, self.targetID,self.timestamp, self.msgText)

@@ -1,13 +1,21 @@
 import random
+import logic
 userList = {}
 #It should be always in mind that all User ID are negative
 
 class User:
-    def __init__(self, userID, userName, passwd, userInfo):
+    def __init__(self, userID, userName, passwd, userInfo, privMask = 0):
         self.userID = userID
         self.userName = userName
         self.passwd = passwd
         self.userInfo = userInfo
+        self.privMask = privMask
+    def canGroupMg(self):
+        return self.checkPriv(logic.PRIVIEGE_MASK_GROUPMG)
+    def canUserMg(self):
+        return self.checkPriv(logic.PRIVIEGE_MASK_USERMG)
+    def checkPriv(self, mask):
+        return not ((self.privMask & mask) == 0)
 
 def findUser(userID):
     if userID in userList:
@@ -20,6 +28,7 @@ def addUser(userName, passwd, userInfo):
         if userID not in userList:
             break
     userList[userID] = User(userID, userName, passwd, userInfo)
+    return userID
 
 def delUser(userID):
     """
