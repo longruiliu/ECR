@@ -1,22 +1,13 @@
-from user import *
 from group import *
+from user import *
 
-groupHandlers = {
-    "add": addGroup,
-    "del": delGroup,
-    "adduser": addGroupMember,
-    "deluser": delGroupMember,
-    "userlist": fetchMemberList,
-    "redmsg": sendResMsg
-    }
-
-regularHandlers = {
-    "login": login,
-    "logout": logout,
-    "sendmsg": sendMsg,
-    "userinfo": getUserInfo,
-    "add": addUser,
-    "modify": modifyUser,
-    "del": delUser,
-    "fetch": fetchMsg
+requestHandlers = {
+    "regular": {
+        "add": {"func": addUser, "args": [int]},
+        "del": {"func": delUser, "args": [int]},
+        }
+    "group": {
+        "add": {"func": addGroup, "args": [str, int]},
+        "del": {"func": delGroup, "args": [int]},
+        }
     }
