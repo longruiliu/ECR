@@ -8,18 +8,21 @@
 #if !defined(__ServerLogic_user_h)
 #define __ServerLogic_user_h
 
+#include<string>
+#include"../msgRecord.h"
+
 class user
 {
 public:
 	int userID;
-	string userName;
-	string pwd;
+	std::string userName;
+	std::string pwd;
 	int previlege;
-	string info;
-	int privMask;
+	std::string info;
 	int IP;
 
   //Privilege query
+  user(int,std::string,std::string,int,std::string,int);
   bool canUserMg();
   bool canGroupMg();
   bool isRoot();

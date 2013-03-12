@@ -10,13 +10,16 @@
 
 class group;
 
-#include <group/group.h>
+#include "group.h"
 
 int addGroup(const std::string& groupName, int creatorID);
 void delGroup(int groupID);
 group& findGroup(int groupID);
 group& findGroup(std::string groupName);
 
+
+void lockGrouplist();
+void releaseGrouplist();
 extern std::vector<group> groupList;
 
 #endif

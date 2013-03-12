@@ -2,7 +2,11 @@
 #define _USERMGM_H_ 
 #include<vector>
 #include<string>
-std::vector<user> userList;
+#include"user.h"
+
+void lockUserlist();
+void releaseUserlist();
+extern std::vector<user> userList;
 
 user& findUser(int userID);
 
