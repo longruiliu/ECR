@@ -13,12 +13,23 @@ sockMap = {}
 
 def checkParams(req_type, req_method, req_params):
     params = requestHandlers[req_type][req_method]["args"]
+    ret = []
     if len(params) != req_params:
         return None
     for i in xrange(len(params)):
-        if type(req_params[i]) is not type(params[i]):
-            return None
-    return params
+        if type(req_params[i]) is not params[i]:
+            try:
+                req_params[i] = params[i](req_params[i])
+            except:
+                try:
+                    proto = (params[i])()
+                    if (req_params[i].keys() != proto.__dict__.keys()):
+                        return None
+                    else:
+                        for k in req_params[i].keys():
+                            proto.__dict__[k] = req_params[i][k]
+                        req_params[i] = proto
+    return req_params
     
 def sendResponse():
     """
