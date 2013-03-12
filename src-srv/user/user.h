@@ -16,7 +16,6 @@ public:
 	string pwd;
 	int previlege;
 	string info;
-	int privMask;
 	int IP;
 
   //Privilege query
