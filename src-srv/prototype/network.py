@@ -4,7 +4,7 @@ import thread
 import mutex
 import pickle
 from requestHandlers import *
-from responseHandlers import *
+
 
 SERVER_PORT = 2333
 BACKLOG = 127
@@ -43,11 +43,8 @@ def requestHandler(**request):
     if not request.has_key("method"):
         return ERR_METHOD_EXPECTED
     
-    req_type = request["type"]
     if req_type == "regular":
-        pass
     elif req_type == "group":
-        pass
     else:
         return ERR_INVALID_TYPE
     

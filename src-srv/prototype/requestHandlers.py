@@ -1,3 +1,6 @@
+from user import *
+from group import *
+
 groupHandlers = {
     "add": addGroup,
     "del": delGroup,
