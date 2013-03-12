@@ -74,6 +74,13 @@ def fetchGroupMsg(srcID, groupID, since):
     else:
         return (ERR_NOT_IN_GROUP, None)
 
+def fetchGroupList(srcID):
+    gpL = []
+    for i in group.groupList:
+        if i.isInGroup(srcID):
+            gpL.append((i.groupID, i.groupName))
+    return (ERR_OK, gpL)
+
 def login(userID, passwd, IP):
     ur = user.findUser(userID)
     print passwd, ur.passwd, ur.passwd == passwd

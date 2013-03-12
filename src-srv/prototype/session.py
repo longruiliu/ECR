@@ -30,8 +30,7 @@ def getUserIP(userID):
     return sessionList_uk[userID][1]
 
 def getUserIDBySession(sessionID):
-    #ToDo: optimize this by using has_key
-    if sessionID in sessionList_sk:
+    if sessionList_sk.has_key(sessionID):
         return sessionList_sk[sessionID]
     return None
 
