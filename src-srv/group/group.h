@@ -31,8 +31,8 @@ public:
 	int groupID;
  	std::string groupName;
  	int creatorID;
-	string g_name;
-	string g_info;
+	std::string g_name;
+	std::string g_info;
  	time_t lastMsgTime;
  	time_t oldestMemTime;
 

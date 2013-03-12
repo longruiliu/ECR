@@ -10,7 +10,7 @@
 
 class group;
 
-#include <group/group.h>
+#include "group.h"
 
 int addGroup(const std::string& groupName, int creatorID);
 void delGroup(int groupID);

@@ -11,19 +11,20 @@ Database::Database()
 
 Database::~Database()
 {
+	close();
 }
 
 bool Database::open()
 {
-	if (sqlite3_open("ECR.db",_database) == SQLITE_OK)
+	if (sqlite3_open("ECR.db",&_database) == SQLITE_OK)
 		return true;
 	return false;
 }
 
-vector<vector<string> > Database::query(char* query)
+std::vector<std::vector<std::string> > Database::query(char* query)
 {
     sqlite3_stmt *statement;
-    std::vector<vector<string> > results;
+    std::vector<std::vector<std::string> > results;
  
     if(sqlite3_prepare_v2(_database, query, -1, &statement, 0) == SQLITE_OK)
     {
@@ -35,7 +36,7 @@ vector<vector<string> > Database::query(char* query)
              
             if(result == SQLITE_ROW)
             {
-	        std::vector<string> values;
+	        std::vector<std::string> values;
                 for(int col = 0; col < cols; col++)
                 {
                     values.push_back((char*)sqlite3_column_text(statement, col));
@@ -51,10 +52,9 @@ vector<vector<string> > Database::query(char* query)
         sqlite3_finalize(statement);
     }
      
-    string error = sqlite3_errmsg(_database);
+    std::string error = sqlite3_errmsg(_database);
     if(error != "not an error") 
-	    std::cout << query << " " << error << endl;
-     
+	    std::cout << query << " " << error << std::endl;
     return results; 
 }
 
@@ -64,23 +64,27 @@ void Database::saveUserlist()
 {
 	char sqlBuf[1024];
 	lockUserlist();
+#ifdef DEBUG
+	printf("size:%d\n",userList.size());
+#endif
 	for (std::vector<user>::iterator it = userList.begin();it < userList.end();it++)
 	{
 		//judge whether the user exist before
-		char *sql = "select * from User where id=%d";
+		char *sql = "select * from User where user_id=%d";
 		sprintf(sqlBuf,sql,(*it).userID);
 		if (!query(sqlBuf).size())
 		{
 			//insert the user to DB
-			char *sql2 = "insert into User values(%d,%s,%s,%d,%s)";
-			sprintf(sqlBuf,sql2,(*it).userID,(*it).userName,(*it).pwd,(*it).previlege,(*it).info);
+			char *sql2 = "insert into User values(%d,'%s','%s',%d,'%s')";
+			//string.c_str() is a function to change class string to c string
+			sprintf(sqlBuf,sql2,(*it).userID,(*it).userName.c_str(),(*it).pwd.c_str(),(*it).previlege,(*it).info.c_str());
 			query(sqlBuf);
 		}
 		else
 		{
 			//update the information of this user
-			char *sql2 = "update User set u_name=%s,pwd=%s,previlege=%d,info=%s where user_id=%d";
-			sprintf(sqlBuf,sql2,(*it).userName,(*it).pwd,(*it).previlege,(*it).info,(*it).user_ID);
+			char *sql2 = "update User set u_name='%s',pwd='%s',previlege=%d,info='%s' where user_id=%d";
+			sprintf(sqlBuf,sql2,(*it).userName.c_str(),(*it).pwd.c_str(),(*it).previlege,(*it).info.c_str(),(*it).userID);
 			query(sqlBuf);
 		}
 	}

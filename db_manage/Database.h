@@ -7,7 +7,6 @@
 #ifndef __DATABASE_H__
 #define __DATABASE_H__
 
-#include<string>
 #include<vector>
 #include<sqlite3.h>
 #include<cstdio>
@@ -17,15 +16,16 @@
 #include"../src-srv/group/group.h"
 #include"../src-srv/group/groupManager.h"
 
-
+class user;
+extern std::vector<user> userList;
 class Database
 {
 	private:
 		sqlite3 *_database;
 	public:
 		Database();
-		bool open()
-		std::vector<vector<string>> query(char *query)
+		bool open();
+		std::vector<std::vector<std::string> > query(char *query);
 
 		void saveUserlist();
 		void saveGrouplist();
@@ -34,7 +34,7 @@ class Database
 
 
 		void close();
-		～Database();
+		~Database();
 };
 
 #endif
