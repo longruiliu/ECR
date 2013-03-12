@@ -7,11 +7,12 @@
 
 #include "groupMsg.h"
 #include <time.h>
-#include "proto.h"
-#include "user.h"
+#include "../protocol/proto.h"
+#include "../user/user.h"
 #include "group.h"
-#include "serial.h"
-#include "net.h"
+#include "../serial.h"
+#include"../user/userMgm.h"
+#include "../net.h"
 
 #include <iostream>
 
@@ -48,7 +49,7 @@ int group::postMsg(int srcID,const std::string& msg)
 
 	//Send notify to all group members
 	for (auto i = groupMember.begin(); i != groupMember.end(); i++)
-		sendNotify(findUser(*i).IP, NOTIFY_NEW_GROUP_MSG);
+		sendNotify(findUser(*i).IP, NOTIFY_NEW_GROUP_MSG,0);
 }
 
 void group::addUser(int userID)
@@ -83,10 +84,18 @@ void group::releaseGroup()
 	return;
 }
 
-group::group(const std::string& name, int creator)
+group::group()
+{
+	groupName = "";
+	creatorID = 0;
+	groupInfo = "null";
+}
+
+group::group(const std::string& name, int creator,const std::string &info = "null")
 {
 	groupName = name;
 	creatorID = creator;
+	groupInfo = info;
 }
 
 /*group::group(db* sDB, int gID)

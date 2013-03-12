@@ -25,14 +25,14 @@ public:
 	void addUser(int userID);
 	void delUser(int UserID);
 
-	group(const std::string& name, int creator);
+	group();
+	group(const std::string& name, int creator,const std::string& info);
 	//group(* sDB, int gID);
 
 	int groupID;
- 	std::string groupName;
  	int creatorID;
-	std::string g_name;
-	std::string g_info;
+ 	std::string groupName;
+	std::string groupInfo;
  	time_t lastMsgTime;
  	time_t oldestMemTime;
 
@@ -43,8 +43,9 @@ public:
 	void printUserList();
 	void printMsgList();
 	#endif
-  void lockGroup();
-	void releaseGroup();
+public:
+	void lockGroup();
+        void releaseGroup();
 
 protected:
 private:

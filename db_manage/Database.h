@@ -11,13 +11,19 @@
 #include<sqlite3.h>
 #include<cstdio>
 #include<iostream>
+#include<time.h>
 #include<cstdlib>
 #include"../src-srv/user/userMgm.h"
 #include"../src-srv/group/group.h"
 #include"../src-srv/group/groupManager.h"
 
 class user;
+class group;
+class groupMsg;
+
 extern std::vector<user> userList;
+extern std::vector<group> groupList;
+
 class Database
 {
 	private:

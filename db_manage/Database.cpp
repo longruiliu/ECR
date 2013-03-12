@@ -64,9 +64,6 @@ void Database::saveUserlist()
 {
 	char sqlBuf[1024];
 	lockUserlist();
-#ifdef DEBUG
-	printf("size:%d\n",userList.size());
-#endif
 	for (std::vector<user>::iterator it = userList.begin();it < userList.end();it++)
 	{
 		//judge whether the user exist before
@@ -90,7 +87,72 @@ void Database::saveUserlist()
 	}
 	releaseUserlist();
 }	
- 
+
+void Database::saveGrouplist()
+{
+	char sqlBuf[1024];
+	group *lock = new group();
+	(*lock).lockGroup();
+	for (std::vector<group>::iterator it = groupList.begin();it < groupList.end();it++)
+	{
+		//judge whether the group exist before
+		char *sql = "select * from Group_list where g_name='%s'";
+		sprintf(sqlBuf,sql,(*it).groupName.c_str());
+		if (!query(sqlBuf).size())
+		{
+			//insert the group to DB
+			char *sql2 = "insert into Group_list(creator_id,g_name,g_info) values(%d,'%s','%s')";
+			sprintf(sqlBuf,sql2,(*it).creatorID,(*it).groupName.c_str(),(*it).groupInfo.c_str());
+			query(sqlBuf);
+		}
+		else
+		{
+			//update the information of this group
+			//but just group name and information can be updated
+			char *sql2 = "update Group_list set g_name='%s',g_info='%s' where group_id=%d";
+			sprintf(sqlBuf,sql2,(*it).groupName.c_str(),(*it).groupInfo.c_str(),(*it).groupID);
+			query(sqlBuf);
+		}
+	}
+	(*lock).releaseGroup();
+	delete lock;
+}
+
+void Database::saveMsgMem()
+{
+	char sqlBuf[1024];
+	group *lock = new group();
+	(*lock).lockGroup();
+
+	//save group messages
+	for (std::vector<group>::iterator it = groupList.begin();it < groupList.end();it++)
+	{
+		std::vector<groupMsg> tmp = (*it).msgList;
+		for (std::vector<groupMsg>::iterator p = tmp.begin();it < tmp.end();p++)
+		{
+			char *sql = "insert into Message(group_id,user_id,send_time,m_type,content) values(%d,%d,'%s',%d,'%s')";
+			//asctime((gmtime(time_t))) is change time to normal type
+			sprintf(sqlBuf,sql,(*p).targetID,(*p).srcID,asctime(gmtime((*p).postTime)),(*p).msgType,(*p).msgText.c_str());
+			query(sqlBuf);
+		}
+	}
+
+	//save group members
+	for (std::vector<group>::iterator it = groupList.begin();it < groupList.end();it++)
+	{
+		std::vector<int> tmp = (*it).groupMember;
+		for (std::vector<int>::iterator p = tmp.begin();it < tmp.end();p++)
+		{
+			char *sql2 = "insert into User_Group(user_id,group_id) values(%d,%d)";
+			sprintf(sqlBuf,sql2,*p,(*it).groupID);
+			query(sqlBuf);
+		}
+	}
+
+	(*lock).releaseGroup();
+	delete lock;
+}
+
 void Database::close()
 {
     sqlite3_close(_database);  
