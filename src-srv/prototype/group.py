@@ -56,7 +56,11 @@ class Group():
         Post a message to the group
         """
         self.msgList.append(GroupMsg(srcID, self.groupID, False, msg))
-        #ToDo:  Send notify to all group member by UDP
+    def postRedMsg(self, srcID, msg):
+        """
+        Post a message to the group
+        """
+        self.msgList.append(GroupMsg(srcID, self.groupID, True, msg))
     
     def isInGroup(self, userID):
         """
@@ -78,7 +82,7 @@ class Group():
         Delete a user from this group
         You can delete a non-exist user and there would be no trouble
         """
-        if userID in self.groupMember
+        if userID in self.groupMember:
             del self.groupMember[userID]
 
 class GroupMsg(msgRecord.MsgRecord):
@@ -86,6 +90,9 @@ class GroupMsg(msgRecord.MsgRecord):
         super(GroupMsg, self).__init__(sendorID, targetID, msgText)
         self.isRed = isRed
     def __str__(self):
-        output = 'This is a groupMsg, Is Red:' + isRed+"\n"
+        if self.isRed:
+            output = 'This is a red groupMsg\n'
+        else:
+            output = 'This is a groupMsg\n'
         output += super(GroupMsg, self).__str__()
         return output
