@@ -43,11 +43,8 @@ def requestHandler(**request):
     if not request.has_key("method"):
         return ERR_METHOD_EXPECTED
     
-    req_type = request["type"]
     if req_type == "regular":
-        pass
     elif req_type == "group":
-        pass
     else:
         return ERR_INVALID_TYPE
     
