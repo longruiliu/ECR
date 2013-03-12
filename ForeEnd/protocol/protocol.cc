@@ -38,6 +38,7 @@ static std::string intToString(int val) {
     return ret;
 }
 
+/*
 static std::string serialUserList(UserList &ul) {
     Json::Value root;
     std::string ret;
@@ -49,7 +50,9 @@ static std::string serialUserList(UserList &ul) {
         return ret;
     return "";
 }
+*/
 
+/*
 static std::string serialUserInfo(UserInfo &ui) {
     Json::Value root;
     for (__typeof(ui.begin()) it = ui.begin(); it != ui.end(); it++)
@@ -59,10 +62,10 @@ static std::string serialUserInfo(UserInfo &ui) {
         return ret;
     return "";
 }
+*/
 
 int Request::setSessionID(int val) {
-    std::string sessionID = intToString(val);
-    root["sessionID"] = sessionID;
+    root["sessionID"] = val;
     return 0;
 }
 
@@ -77,7 +80,6 @@ int Request::setMethod(std::string &method) {
 }
 
 int Request::addParams(int val) {
-    std::string t = intToString(val);
     root["params"].append(t);
     return 0;
 }
@@ -88,14 +90,15 @@ int Request::addParams(std::string &s) {
 }
 
 int Request::addParams(UserInfo &ui) {
-    std::string ret = serialUserInfo(ui);
-    root["params"].append(ret);
+    root["params"].append(ui);
     return 0;
 }
 
 int Request::addParams(UserList &ul) {
-    std::string ret = serialUserList(ul);
-    root["params"].append(ret);
+    Json::ArrayValue arr;
+    for (int i = 0; i != sizeof(ul); i++)
+        arr.append(ul[i]);
+    root["params"].append(arr);
     return 0;
 }
 
@@ -129,11 +132,12 @@ int Response::getUserList(UserList &ul) const {
 }
 
 int Response::getSessionID() const {
-    if (!root.isMember("sessionID") || !root["sessionID"].isString())
+    if (!root.isMember("sessionID") || !root["sessionID"].isInt())
         return ERROR;
-    return stringToInt(root["sessionID"].asString());
+    return root["sessionID"].asInt();
 }
 
+/* this method have to be rewrite */
 int Response::getUserInfo(UserInfo &ui) const {
     if (!root.isMember("userInfo") || !root["userInfo"].isString())
         return ERROR;
@@ -158,7 +162,7 @@ int Response::getGroupName(std::string &ret) const {
 }
 
 int Response::getGroupID() const {
-    if (!root.isMember("group") || !root["groupID"].isString())
+    if (!root.isMember("group") || !root["groupID"].isInt())
         return ERROR;
-    return stringToInt(root["groupID"].asString());
+    return root["groupID"].asInt();
 }

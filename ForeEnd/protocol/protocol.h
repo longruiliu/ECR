@@ -6,7 +6,7 @@
 #include <vector>
 #include <json/json.h>
 
-typedef std::map <std::string, std::string> UserInfo;
+typedef std::string UserInfo;
 typedef std::vector <int> UserList;
 const int ERROR = ~0;
 
