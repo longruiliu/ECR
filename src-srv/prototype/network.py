@@ -3,7 +3,7 @@ import socket
 import thread
 import mutex
 import pickle
-from requestHandlers import *
+from requestHandlers import requestHandlers
 
 
 SERVER_PORT = 2333
@@ -11,6 +11,15 @@ BACKLOG = 127
 sockMapMutex = mutex.mutex()
 sockMap = {}
 
+def checkParams(req_type, req_method, req_params):
+    params = requestHandlers[req_type][req_method]["args"]
+    if len(params) != req_params:
+        return None
+    for i in xrange(len(params)):
+        if type(req_params[i]) is not type(params[i]):
+            return None
+    return params
+    
 def sendResponse():
     """
     When finished serializing the objects, call this function to send result.
@@ -42,12 +51,18 @@ def requestHandler(**request):
         return ERR_TYPE_EXPECTED
     if not request.has_key("method"):
         return ERR_METHOD_EXPECTED
-    
-    if req_type == "regular":
-    elif req_type == "group":
-    else:
-        return ERR_INVALID_TYPE
-    
+    if not request.has_key("params"):
+        return ERR_PARAMS_EXPECTED
+
+    req_type = request["type"]
+    req_method = request["method"]
+    req_params = request["params"]
+
+    method = requestHandlers[req_type][req_method]["func"]
+    params = checkParams(req_type, req_method, req_params)
+    if method != None and params != None:
+        apply(method, params)
+
 def recvRoutine(sock, addr):
     """
     When new request arrives, call this routine to respond.
