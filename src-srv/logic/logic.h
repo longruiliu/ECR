@@ -18,7 +18,7 @@ int fetchMemberList(int srcID, int groupID);
 int fetchGroupMsg(int srcID, int groupID, time_t since);
 
 //User Control
-int login(int userID, const std::string& passwd);
+int login(int userID, const std::string& passwd, int IP);
 int logout(int srcID);
 
 
@@ -27,6 +27,8 @@ int getUserInfo(int srcID, int dstID);
 int addUser(int srcID, const std::string& userName, const std::string& passwd, const std::string& userInfo);
 int modifyUser(int srcID, int userID, const std::string& newName, const std::string& newPasswd, const std::string& newInfo); 
 int delUser(int srcID, int userID);
+
+int keepAlive(int srcID);
 
 //P2P
 int sendMsg(int srcID, int dstID, const std::string& msg);

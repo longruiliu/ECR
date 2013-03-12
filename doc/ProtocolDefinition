@@ -9,7 +9,7 @@ Key                 Value
 sessindID           <sessionID>
 type                group
 method              add | del | adduser | deluser | sendmsg | joinreq |\
-                    quitreq | userlist | redmsg
+                    quitreq | userlist | redmsg | fetchmsg | fetchgrp
 params              (add)<Group Name> |
                     (del)<Group ID> |
                     (sendmsg)<Group ID> <Text> |
@@ -18,18 +18,20 @@ params              (add)<Group Name> |
                     (userlist)<Group ID> |
                     (redmsg)<Group ID> <message>
                     (fetchmsg) <Group ID> <timestamp>
+                    (fetchgrp) 
 
 type                regular
 method              login | logout | sendmsg | userlist | userinfo |\
-                    add | modify | del | keep-alive | fetch
+                    add | modify | del | keepalive | fetch
 params              (login)<User ID> <PASSWD> |
                     (logout)|
                     (sendmsg)<User ID> <Text> |
                     (userinfo)<User ID> |
                     (add)<User Name> <PASSWD> <User Info> |
-                    (modify)<User ID> <New Name> <New PASSWD> <New Phone> <User Info> |
-                    (del)<User ID>
-                    (fetchmsg) <timestamp>
+                    (modify)<User ID> <New Name> <New PASSWD> <Privilege Mask> <User Info> |
+                    (del)<User ID> |
+                    (fetchmsg) |
+                    (keepalive)
 
 
 ** Response
@@ -50,6 +52,11 @@ groupID             <Group ID>
     ERR_INVALID_TYPE
     ERR_OK
     ERR_NOT_IN_GROUP
+<<<<<<< HEAD
+    ERR_NO_PRIVILEGE
+    ERR_WRONG_PASSWD 
+=======
     
 * Notes
 Protocol layer will inhibit the details of constructing a valid request.
+>>>>>>> 297b6cd05dc26d89c2780722446a125912a53c16
