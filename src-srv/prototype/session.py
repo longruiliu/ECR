@@ -36,6 +36,8 @@ def getUserIDBySession(sessionID):
     return None
 
 def deregisterSession(sessionID):
+    if not sessionList_sk.has_key(sessionID):
+        return
     uID = sessionList_sk[sessionID]
     del sessionList_sk[sessionID]
     del sessionList_uk[uID]

@@ -11,6 +11,6 @@ class MsgRecord(object):
         self.targetID = targetID
         self.msgText = msgText
         self.timestamp = time.time()
-        self.typeID = UNKNOWN
+        self.typeID = MSG_TYPE_UNKNOWN
     def __str__(self):
         return "Msg Dump from %d to %d @ %f:\n%s" %(self.sendorID, self.targetID,self.timestamp, self.msgText)

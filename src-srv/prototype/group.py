@@ -20,6 +20,7 @@ def addGroup(groupName, creator):
         if groupID not in groupList:
             break
     tmp.groupID = groupID
+    tmp.addMember(creator)
     groupList[groupID] = tmp
     return groupID
 
@@ -47,7 +48,7 @@ class Group():
         """
         a = -1
         for (i,p) in enumerate(self.msgList):
-            if time > p.timestamp:
+            if time < p.timestamp:
                 a = i
                 break
         return self.msgList[a:]

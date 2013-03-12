@@ -1,5 +1,8 @@
 import os
+import session
 import sys
+import user
+import group
 
 ERR_SESSIONID_EXPECTED, ERR_METHOD_EXPECTED, ERR_TYPE_EXPECTED, ERR_PARAMS_EXPECTED, ERR_INVALID_METHOD, ERR_INVALID_PARAMS, ERR_INVALID_TYPE, ERR_OK, ERR_NOT_IN_GROUP, ERR_NO_PRIVILEGE, ERR_WRONG_PASSWD= range(11)
 
@@ -27,7 +30,6 @@ def addGroup(srcID, groupName):
     ur = user.findUser(srcID)
     if ur.canGroupMg():
         gid = group.addGroup(groupName, srcID)
-        retObj(gid)
         return (ERR_OK,gid)
     else:
         return (ERR_NO_PRIVILEGE,None)
@@ -61,21 +63,20 @@ def delGroupMember(srcID, groupID, memberID):
 def fetchMemberList(srcID, groupID):
     gp = group.findGroup(groupID)
     if gp.isInGroup(srcID):
-        retObj(gp.groupMember)
+        return (ERR_OK, gp.groupMember)
     else:
-        return ERR_NOT_IN_GROUP
-    return ERR_OK
+        return (ERR_NOT_IN_GROUP, None)
 
 def fetchGroupMsg(srcID, groupID, since):
     gp = group.findGroup(groupID)
     if (gp.isInGroup(srcID)):
-        retObj(gp.getMsg(since))
+        return (ERR_OK, gp.getMsg(since))
     else:
-        return ERR_NOT_IN_GROUP
-    return ERR_OK
+        return (ERR_NOT_IN_GROUP, None)
 
 def login(userID, passwd, IP):
     ur = user.findUser(userID)
+    print passwd, ur.passwd, ur.passwd == passwd
     if ur != None and ur.passwd == passwd:
         return (ERR_OK, session.registerSession(userID, IP))
     else:
@@ -86,19 +87,19 @@ def logout(sessionID):
     return (ERR_OK,None)
 
 def getUserInfo(srcID, dstID):
-    ur = user.findUser(srcID)
+    ur = user.findUser(dstID)
     return (ERR_OK, {'userName':ur.userName, 'userInfo':ur.userInfo})
 
 def addUser(srcID, userName, passwd, userInfo):
     ur = user.findUser(srcID)
     if (ur.canUserMg()):
         return (ERR_OK, user.addUser(userName, passwd, userInfo))
-    else
+    else:
         return (ERR_NO_PRIVILEGE, None)
 
 def modifyUser(srcID, userID, newName, newPriv, newPasswd, newInfo):
     srcUr = user.findUser(srcID)
-    if (not newPriv==-1) and (not srcUr.isRoot())
+    if (not newPriv==-1) and (not srcUr.isRoot()):
         return (ERR_NO_PRIVILEGE, None)
     if (srcUr.canUserMg() or srcID == userID):
         ur = user.findUser(userID)

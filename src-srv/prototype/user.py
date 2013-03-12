@@ -12,11 +12,11 @@ class User:
         self.privMask = privMask
         self.mailbox = []
     def canGroupMg(self):
-        return self.checkPriv(logic.PRIVIEGE_MASK_GROUPMG)
+        return self.checkPriv(logic.PRIVILEGE_MASK_GROUPMG)
     def canUserMg(self):
-        return self.checkPriv(logic.PRIVIEGE_MASK_USERMG)
+        return self.checkPriv(logic.PRIVILEGE_MASK_USERMG)
     def isRoot(self):
-        return self.checkPriv(logic.PRIVIEGE_MASK_ROOT)
+        return self.checkPriv(logic.PRIVILEGE_MASK_ROOT)
     def checkPriv(self, mask):
         return not ((self.privMask & mask) == 0)
     def sendMsg(self,msg):
