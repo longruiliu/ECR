@@ -3,6 +3,8 @@ import socket
 import thread
 import mutex
 import pickle
+import logic
+import session
 from requestHandlers import requestHandlers
 
 
@@ -12,6 +14,9 @@ sockMapMutex = mutex.mutex()
 sockMap = {}
 
 def checkParams(req_type, req_method, req_params):
+    """
+    Deprecated function.
+    """
     params = requestHandlers[req_type][req_method]["args"]
     ret = []
     if len(params) != req_params:
@@ -29,6 +34,8 @@ def checkParams(req_type, req_method, req_params):
                         for k in req_params[i].keys():
                             proto.__dict__[k] = req_params[i][k]
                         req_params[i] = proto
+                except:
+                    return None
     return req_params
     
 def sendResponse():
@@ -53,6 +60,20 @@ def responseHandler(method, args):
     """
     return apply(responseHandlers[method], args)
 
+def paramsFormalizer(**request):
+    req_type = request["type"]
+    req_method = request["method"]
+    params = request["params"][:]
+
+    if req_method != 'login':
+        srcID = getUserIDBySession(request["sessionID"])
+        params.insert(0, srcID)
+    else:
+        ident = thread.get_ident()
+        ip = sockMap[ident][1]
+        params.append(ip)
+    return params
+
 def requestHandler(**request):
     """
     Call correspond request handler according to the request.
@@ -69,10 +90,13 @@ def requestHandler(**request):
     req_method = request["method"]
     req_params = request["params"]
 
-    method = requestHandlers[req_type][req_method]["func"]
-    params = checkParams(req_type, req_method, req_params)
-    if method != None and params != None:
-        apply(method, params)
+    method = requestHandlers[req_type][req_method]
+    params = paramsFormalizer(request)
+
+    if params == None:
+        return ERR_INVALID_PARAMS
+
+    return apply(method, params)
 
 def recvRoutine(sock, addr):
     """
@@ -88,7 +112,7 @@ def recvRoutine(sock, addr):
     request = json.load(recv)
     if type(request) is not dict:
         return ERR_INVALID_REQUEST
-    return requestHandler(request)
+    requestHandler(request)
 
 def main():
     sock = socket.socket()

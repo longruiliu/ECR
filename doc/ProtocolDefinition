@@ -12,15 +12,13 @@ method              add | del | adduser | deluser | sendmsg | joinreq |\
                     quitreq | userlist | redmsg
 params              (add)<Group Name> |
                     (del)<Group ID> |
-                    (sendmsg)<Group ID> <Newline> <Text> |
-                    (joinreq)<User ID> <Newline> <GroupID> <Newline> <Text> |
-                    (quitreq)<User ID> <Newline> <GroupID> |
+                    (sendmsg)<Group ID> <Text> |
+                    (joinreq)<User ID> <GroupID> <Text> |
+                    (quitreq)<User ID> <GroupID> |
                     (userlist)<Group ID> |
-                    (redmsg)<Group ID> <Newline> <message>
+                    (redmsg)<Group ID> <message>
                     (fetchmsg) <Group ID> <timestamp>
-                    /* <Newline> defines as UNIX style '\n' */
 
-                    /* If not specified, just use the '\n'(as above) as the default parameter delimiter */
 type                regular
 method              login | logout | sendmsg | userlist | userinfo |\
                     add | modify | del | keep-alive | fetch
