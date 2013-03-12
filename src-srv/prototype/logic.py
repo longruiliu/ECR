@@ -104,7 +104,7 @@ def addUser(srcID, userName, passwd, userInfo):
     else:
         return (ERR_NO_PRIVILEGE, None)
 
-def modifyUser(srcID, userID, newName, newPriv, newPasswd, newInfo):
+def modifyUser(srcID, userID, newName, newPasswd, newPriv, newInfo):
     srcUr = user.findUser(srcID)
     if (not newPriv==-1) and (not srcUr.isRoot()):
         return (ERR_NO_PRIVILEGE, None)
@@ -136,6 +136,7 @@ def sendMsg(srcID, dstID, msg):
 
 def fetchMsg(srcID):
     return (ERR_OK, user.findUser(srcID).fetchMsg())
+
 def postFetchMsg(srcID):
     user.findUser(srcID).mailbox = []
 
