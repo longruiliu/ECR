@@ -62,10 +62,11 @@ def sendResponse(result):
     sock.send(ret)
     return ERR_OK
     
-def sendNotification(addr, msg):
+def sendNotification(addr, notifyType, extra):
     """
     Async notification conducted by server.
     """
+    print "New UDP pack to ", addr, notifyType, extra 
     
 def responseHandler(method, args):
     """
