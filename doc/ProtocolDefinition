@@ -41,6 +41,7 @@ sessionID           <sessionID>
 userList            <User ID> ...
 groupName           <Group Name>
 groupID             <Group ID>
+groupMsg            <groupMsg> ...
 
 * Error Code
     ERR_SESSIONID_EXPECTED
