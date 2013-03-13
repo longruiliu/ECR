@@ -10,6 +10,7 @@
 const int ERROR = ~0;
 
 typedef std::map <std::string, std::string> UserInfo;
+typedef std::map <std::string, std::string> RequestBackup;
 
 class Wrapper;
 
@@ -29,6 +30,8 @@ private:
 
 class Response {
 public:
+    RequestBackup reqBak;
+    bool status;
     int getUserInfo(UserInfo &) const;
     int getSessionID() const;
     int getUserList(UserList &) const;

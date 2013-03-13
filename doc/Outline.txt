@@ -1,5 +1,70 @@
 ECR::USay概要设计
 
-*层次结构
-________
-用户层
+* 层次结构
+
+        用户层                  数据库
+______________________________________________
+        逻辑层                  逻辑层
+______________________________________________
+        网络层                  网络层
+
+* 协议设计
+** 结构
+*** 请求报文
+______________________________________________
+<sessionID> | <type> | <method> | <params>
+______________________________________________
+*** 响应报文
+______________________________________________
+<status> | <result> |
+______________________________________________
+
+** 同步
+*** 协议采用一问一答的的同步设计，请求的链接会一直维持直到响应到来或者超时。
+
+** 语义
+*** 请求
+type            method          params                                  语义
+regular         login           <User ID> <PASSWD>                      登录服务器
+                logout                                                  登出服务器
+                sendmsg         <User ID> <Text>                        请求服务器发送<Text>到<User ID>
+                userinfo        <User ID>                               获取<User ID>的用户信息
+                add             <User Name> <PASSWD> <User Info>        
+                modify          <User ID> <New Name> <New PASSWD> \     修改用户信息
+                                <Privilege Mask> <User Info>
+                del             <User ID>                               删除用户
+                fetchmsg                                                向服务器请求发送给本用户的消息
+                keepalive
+group           add             <Group Name>                            添加群并命名为<Group Name>
+                del             <Group ID>                              删除群<Group ID>
+                sendmsg         <Group ID> <Text>                       向群<Group ID>发送<Text>
+                joinreq         <User ID> <Group ID> <Text>             请求将<User ID>加入到群<Group ID>
+                quitreq         <User ID> <Group ID>                    请求将<User ID>踢出群<Group ID>
+                userlist        <Group ID>                              请求群<Group ID>的用户列表
+                redmsg          <Group ID> <Text>                       向群<Group ID>发送紧急信息
+                fetcgmsg        <Group ID> <timestamp>                  请求在<timestamp>之后新的群<Group ID>的消息列表
+                fetchgrp
+*** 响应
+根据不同请求，响应内容是如下所列
+status          result
+SUCC/FAIL       <User Info>
+                <sessionID>
+                <User ID> ...
+                <Group Name>
+                <Group ID>
+                <groupMsg> ...
+
+** 错误码
+    ERR_SESSIONID_EXPECTED              sessionID缺失
+    ERR_METHOD_EXPECTED                 请求方法缺失
+    ERR_TYPE_EXPECTED                   请求类型缺失
+    ERR_PARAMS_EXPECTED                 请求参数缺失
+    ERR_INVALID_METHOD                  无效的请求方法
+    ERR_INVALID_PARAMS                  无效的请求参数
+    ERR_INVALID_TYPE                    无效的请求类型
+    ERR_OK                              成功执行请求
+    ERR_NOT_IN_GROUP                    用户不在群里
+    ERR_NO_PRIVILEGE                    权限不足
+    ERR_WRONG_PASSWD                    密码错误
+
+

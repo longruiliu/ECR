@@ -10,7 +10,7 @@ requestHandlers = {
         "del": delUser,
         "fetchmsg": fetchMsg,
         "keepalive":keepAlive
-        }
+        },
     "group": {
         "add": addGroup,
         "del": delGroup,
