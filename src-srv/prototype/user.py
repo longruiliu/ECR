@@ -21,6 +21,9 @@ class User:
         return not ((self.privMask & mask) == 0)
     def sendMsg(self,msg):
         self.mailbox.append(msg)
+        IP = session.getUserIP(self.userID)
+        if IP!=-1:
+            network.sendNotification(IP, msgRecord.NOTIFY_P2P_MSG, msg.typeID)
     def fetchMsg(self):
         return self.mailbox[:]
         

@@ -27,7 +27,10 @@ def registerSession(userID, IP):
     return sessionID
     
 def getUserIP(userID):
-    return sessionList_uk[userID][1]
+    if sessionList_uk.has_key(userID):
+        return sessionList_uk[userID][1]
+    else:
+        return -1
 
 def getUserIDBySession(sessionID):
     if sessionList_sk.has_key(sessionID):
