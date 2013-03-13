@@ -65,13 +65,15 @@ def paramsFormalizer(**request):
     req_method = request["method"]
     params = request["params"][:]
 
-    if req_method != 'login':
-        srcID = getUserIDBySession(request["sessionID"])
-        params.insert(0, srcID)
-    else:
+    if req_method == 'login':
         ident = thread.get_ident()
         ip = sockMap[ident][1]
         params.append(ip)
+    elif req_method == 'logout':
+        
+    else:
+        srcID = getUserIDBySession(request["sessionID"])
+        params.insert(0, srcID)
     return params
 
 def requestHandler(**request):
