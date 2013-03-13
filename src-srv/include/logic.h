@@ -26,7 +26,7 @@ int logout(int sessionID);
 int getUserInfo(int srcID, int dstID);
 
 int addUser(int srcID, const std::string& userName, const std::string& passwd, const std::string& userInfo);
-int modifyUser(int srcID, int userID, const std::string& newName, const std::string& newPasswd, const std::string& newInfo); 
+int modifyUser(int srcID, int userID, const std::string& newName, const std::string& newPasswd, const std::string& newInfo);
 int delUser(int srcID, int userID);
 
 int keepAlive(int srcID);

@@ -6,6 +6,7 @@
 #include <vector>
 #include <json/json.h>
 #include <msgRecord.h>
+#include <network.h>
 
 const int ERROR = ~0;
 

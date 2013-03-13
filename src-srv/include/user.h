@@ -9,7 +9,7 @@
 #define __ServerLogic_user_h
 
 #include<string>
-#include"../msgRecord.h"
+#include"msgRecord.h"
 
 class user
 {

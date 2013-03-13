@@ -6,9 +6,17 @@
 #include <cstdio>
 #include <vector>
 #include <string>
-#include "protocol.h"
-#include "src-srv/logic/sessionControl.h"
-#include "src-srv/logic/logic.h"
+#include <user.h>
+#include <protocol.h>
+#include <groupMsg.h>
+#include <group.h>
+#include <logic.h>
+#include <msgRecord.h>
+#include <network.h>
+#include <net.h>
+#include <serial.h>
+#include <proto.h>
+
 
 static int jsonToString(Json::Value &, std::string &);
 static int stringToJson(std::string &, Json::Value &);
@@ -114,11 +122,11 @@ int requestHandler(std::string &request) {
         if (method == "login") {
             if (params.size() != 2)
                 return ERR_INVALID_PARAMS;
-            int userID;
+            int userID, IP;
             std::string passwd;
             userID = params[0U].asInt();
             passwd = params[1U].asString();
-            login(userID, passwd);
+            login(userID, passwd, IP);
         } else if (method == "logout") {
             logout(srcID);
         } else if (method == "sendmsg") {
@@ -137,8 +145,8 @@ int requestHandler(std::string &request) {
             dstID = params[0U].asInt();
             getUserInfo(srcID, dstID);
         } else if (method == "add") {
-            std::string userName, passwd;
-            std::map<std::string, std::string> userInfo;
+            std::string userName, passwd, userInfo;
+            //std::map<std::string, std::string> userInfo;
             if (params.size() != 3)
                 return ERR_INVALID_PARAMS;
             userName = params[0U].asString();
@@ -147,13 +155,13 @@ int requestHandler(std::string &request) {
             Json::Reader reader;
             if (!reader.parse(params[2U].asString(), root))
                 return ERR_INVALID_PARAMS;
-            if (jsonToMap(root, userInfo) == ERROR)
-                return ERR_INVALID_PARAMS;
+            /*if (jsonToMap(root, userInfo) == ERROR)
+              return ERR_INVALID_PARAMS;*/
             addUser(srcID, userName, passwd, userInfo);
         } else if (method == "modify") {
             int userID;
-            std::string newName, newPasswd;
-            std::map <std::string, std::string> newInfo;
+            std::string newName, newPasswd, newInfo;
+            //std::map <std::string, std::string> newInfo;
             if (params.size() != 4)
                 return ERR_INVALID_PARAMS;
             sscanf(params[0U].asString().c_str(), "%d", &userID);
@@ -163,8 +171,8 @@ int requestHandler(std::string &request) {
             Json::Reader reader;
             if (!reader.parse(params[3U].asString(), root))
                 return ERR_INVALID_PARAMS;
-            if (jsonToMap(root, newInfo) == ERROR)
-                return ERR_INVALID_PARAMS;
+            /*if (jsonToMap(root, newInfo) == ERROR)
+              return ERR_INVALID_PARAMS;*/
             modifyUser(srcID, userID, newName, newPasswd, newInfo);
         } else if (method == "del") {
             int userID;

@@ -8,7 +8,7 @@
 #if !defined(__ServerLogic_groupMsg_h)
 #define __ServerLogic_groupMsg_h
 
-#include "../msgRecord.h"
+#include "msgRecord.h"
 
 class groupMsg : public msgRecord
 {
