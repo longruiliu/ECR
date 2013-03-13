@@ -5,10 +5,11 @@
 #include <map>
 #include <vector>
 #include <json/json.h>
+#include <msgRecord.h>
 
-typedef std::string UserInfo;
-typedef std::vector <int> UserList;
 const int ERROR = ~0;
+
+typedef std::map <std::string, std::string> UserInfo;
 
 class Wrapper;
 
@@ -21,7 +22,6 @@ public:
     /* Params must be ordered as protocol defines */
     int addParams(std::string &);
     int addParams(int);
-    int addParams(UserInfo &);
     int addParams(UserList &);
 private:
     Json::Value root;
@@ -34,6 +34,8 @@ public:
     int getUserList(UserList &) const;
     int getGroupName(std::string &) const;
     int getGroupID() const;
+    int getMsg(std::vector <msgRecord> &) const;
+    int getUserInfo(UserInfo &) const;
 private:
     Json::Value root;
 };

@@ -20,7 +20,7 @@ public:
 	msgRecord(int srcID, int targetID,const std::string& msg, int msgType);
 	int srcID;
 	int targetID;
-	std::string msgText;
+o	std::string msgText;
 	time_t postTime;
 	int msgType;
 	bool operator < (const msgRecord&); 
