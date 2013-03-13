@@ -35,8 +35,11 @@ class Database
 
 		void saveUserlist();
 		void saveGrouplist();
-		void saveMsglist();
-		void saveGroupmember();
+		void saveMsgMem();
+
+		void restoreUserlist();
+		void restoreGrouplist();
+		void restoreMsgMem();
 
 
 		void close();

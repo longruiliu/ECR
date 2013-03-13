@@ -153,6 +153,75 @@ void Database::saveMsgMem()
 	delete lock;
 }
 
+//restore data from DB
+
+void restoreUserlist()
+{
+	char *sql = "select * from User";
+	std::vector<std::vector<std::string>> results = query(sql);
+	lockUserlist();
+	for (std::vector<std::vector<std::string>>::iterator it = results.begin();it < results.end();it++ )
+	{
+		user tmp;
+		tmp.userID = atoi(((*it).at(0)).c_str()); //change class string to int
+		tmp.userName = ((*it).at(1)).c_str();
+		tmp.pwd = ((*it).at(2)).c_str();
+		tmp.previlege =  atoi(((*it).at(3)).c_str()); 
+		tmp.info = ((*it).at(4)).c_str();
+		userList.push_back(tmp);
+	}
+	releaseUserlist();
+}
+
+void restoreGrouplist()
+{
+	char *sql = "select * from Group_list";
+	std::vector<std::vector<std::string>> results = query(sql);
+	group *lock = new group()
+	(*lock).lockGroup();
+	for (std::vector<std::vector<std::string>>::iterator it = results.begin();it < results.end();it++ )
+	{
+		group tmp;
+		tmp.groupID = atoi(((*it).at(0)).c_str()); //change class string to int
+		tmp.creatorID = atoi(((*it).at(1)).c_str());
+		tmp.groupName = ((*it).at(2)).c_str();
+		tmp.groupInfo = ((*it).at(3)).c_str();
+		groupList.push_back(tmp);
+	}
+	(*lock).releaseGroup();
+	delete lock;
+}
+
+void restoreMsgMem()
+{
+	char *sql1 = "select * from Message";
+	std::vector<std::vector<std::string>> results1 = query(sql);
+	char *sql2 = "select * from User_Group";
+	std::vector<std::vector<std::string>> results22 = query(sql);
+	(*lock).lockGroup();
+	//restore Message
+	for (std::vector<std::vector<std::string>>::iterator it = results1.begin();it < results1.end();it++ )
+	{
+		std::vector<groupMsg> tmp;
+		tmp.srcID = atoi(((*it).at(2)).c_str()); //change class string to int
+		tmp.targetID = atoi(((*it).at(1)).c_str());
+		tmp.msgText = ((*it).at(5)).c_str();
+		tmp.msgType = ((*it).at(4)).c_str();
+		//need a function to transform string to time_t
+		tmp.postTime = ((*it).at(3)).c_str();
+		msgList.push_back(tmp);
+	}
+	//restore Member
+	for (std::vector<std::vector<std::string>>::iterator it = results2.begin();it < results2.end();it++ )
+	{
+		for (std::vector<group>::iterator p = groupList.begin();p < groupList.end();p++)
+			if ((*p).groupID == atoi((*it).at(2).c_str()))
+				((*p).groupMember).push_back(atoi((*it).at(1).c_str()));
+	}
+	(*lock).releaseGroup();
+	delete lock;
+}
+
 void Database::close()
 {
     sqlite3_close(_database);  
