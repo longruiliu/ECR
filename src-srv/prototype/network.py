@@ -5,7 +5,6 @@ import mutex
 import pickle
 from logic import *
 from session import *
-from requestHandlers import requestHandlers
 import unittest_basicData
 
 SERVER_PORT = 0x1024
@@ -75,7 +74,6 @@ def responseHandler(method, args):
     """
     Call correspond response handler to respond.
     """
-    return apply(responseHandlers[method], args)
 
 def paramsFormalizer(request):
     req_type = request["type"]
@@ -93,6 +91,7 @@ def paramsFormalizer(request):
         params.insert(0, srcID)
     return params
 
+# no general interface, so if/else
 def requestHandler(request):
     """
     Call correspond request handler according to the request.
@@ -108,24 +107,14 @@ def requestHandler(request):
     req_type = request["type"]
     req_method = request["method"]
     req_params = request["params"]
-
-    method = requestHandlers[req_type][req_method]
-    params = paramsFormalizer(request)
-
-    if params == None:
-        return ERR_INVALID_PARAMS
-
-    try:
-        status, result = apply(method, params)
-    except:
-        return ERR_INVALID_PARAMS
-
-    if status != ERR_OK:
-        return status
-    elif result != None:
-        return sendResponse(result)
-    return ERR_OK
-
+    
+    if req_type == 'regular':
+        if req_method == 'login':
+            
+    elif req_type == 'group':
+        pass
+    else:
+        
 def addToSockMap(args):
     sockMap[args[0]] = (args[1], args[2])
 

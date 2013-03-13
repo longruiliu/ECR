@@ -205,3 +205,9 @@ int Response::getGroupID() const {
 }
 */
 
+int Response::getUserInfo(std::string &rawString, UserInfo &ui) const {
+    Json::Value root;
+    if (stringToJson(rawString, root) == ERROR)
+        return ERROR;
+    for (__typeof(
+}
