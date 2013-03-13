@@ -55,7 +55,7 @@ def addGroupMember(srcID, groupID, newMemberID, msg):
         return (ERR_OK, None)
     else:
         ur = user.findUser(gp.creator)
-        ur.sendMsg(msgRecord.MsgRecord(0, gp.creator, "Join Group Req:%d %d" %(srcID, groupID), msgRecord.MSG_JOIN_GROUP_REQ))
+        ur.sendMsg(msgRecord.MsgRecord(0, gp.creator, "Join Group Req:%d %d : %s" %(srcID, groupID, msg), msgRecord.MSG_JOIN_GROUP_REQ))
         return (ERR_OK,None)
 
 def delGroupMember(srcID, groupID, memberID):

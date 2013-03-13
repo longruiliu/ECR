@@ -16,10 +16,11 @@ int delGroupMember(int srcID, int groupID, int memberID);
 
 int fetchMemberList(int srcID, int groupID);
 int fetchGroupMsg(int srcID, int groupID, time_t since);
+int fetchGroupList(int src);
 
 //User Control
 int login(int userID, const std::string& passwd, int IP);
-int logout(int srcID);
+int logout(int sessionID);
 
 
 int getUserInfo(int srcID, int dstID);

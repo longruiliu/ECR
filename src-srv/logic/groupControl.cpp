@@ -1,5 +1,6 @@
-#include "group/group.h"
-#include "group/groupManager.h"
+#include "group.h"
+#include "protocol_const.h"
+#include "groupManager.h"
 
 int addGroupMember(int srcID,int groupID, int newMemberID, std::const string& msg)
 {
@@ -9,7 +10,7 @@ int addGroupMember(int srcID,int groupID, int newMemberID, std::const string& ms
   //Privilege Check
   //User is creator of group or
   // user is root
-  if (srcID == g.creatorID || u.isRoot())
+  if (srcID == g.creatorID)
   {
     g.addUser(newMemberID);
   }
@@ -19,7 +20,6 @@ int addGroupMember(int srcID,int groupID, int newMemberID, std::const string& ms
       return ERR_NO_PRIVILEGE;
     user creator = findUser(g.creator);
     creator.sendMsg(0, std::string("New request from ")+srcID+" to join group " + groupID+"\n"+msg);
-    creator.pushNotify(NOTIFY_JOIN_GROUP_REQUEST, g.groupID);
   }
 
   return ERR_OK;
@@ -41,16 +41,17 @@ int addGroup(int srcID, const std::string& groupName)
 {
   user u = findUser(srcID);
   if (u.canGroupMg())
-    addGroup(groupName, srcID);
+  {
+      int groupID = addGroup(groupName, srcID);
+      retInt(groupID);
+  }
   else
     return ERR_NO_PRIVILEGE;
-
   return ERR_OK
 }
 
-int delGroup(int srcID, const std::string& groupName)
+int delGroup(int srcID, int groupID)
 {
-  user u = findUser(srcID);
   if (u.canGroupMg())
     addGroup(groupName, srcID);
   else
