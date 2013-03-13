@@ -39,7 +39,7 @@ class Database
 
 		void restoreUserlist();
 		void restoreGrouplist();
-		void restoreMsgMem();
+		void restoreMsgMem(time_t delta);
 
 
 		void close();
