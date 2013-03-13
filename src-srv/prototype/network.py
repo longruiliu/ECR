@@ -8,7 +8,7 @@ from session import *
 from requestHandlers import requestHandlers
 import unittest_basicData
 
-SERVER_PORT = 2054
+SERVER_PORT = 0x1024
 BACKLOG = 127
 sockMapMutex = mutex.mutex()
 sockMap = {}
@@ -67,6 +67,9 @@ def sendNotification(addr, notifyType, extra):
     Async notification conducted by server.
     """
     print "New UDP pack to ", addr, notifyType, extra 
+    address = (addr, 0x1024)
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.sendto("%x %x"%(notifyType, extra), address)
     
 def responseHandler(method, args):
     """
@@ -151,7 +154,7 @@ def recvRoutine(sock, addr):
 
 def main():
     sock = socket.socket()
-    sock.bind(('127.0.0.1', SERVER_PORT))
+    sock.bind(('0.0.0.0', SERVER_PORT))
     sock.listen(BACKLOG)
     while (1):
         newsock, addr = sock.accept()
