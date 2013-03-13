@@ -32,7 +32,7 @@ private:
 class Response {
 public:
     RequestBackup reqBak;
-    bool status;
+    bool getStatus() const;
     int getUserInfo(UserInfo &) const;
     int getSessionID() const;
     int getUserList(UserList &) const;

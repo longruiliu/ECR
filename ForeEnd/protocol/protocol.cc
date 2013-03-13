@@ -18,11 +18,17 @@ static int stringToInt(std::string);
 
 class Wrapper {
 public:
-    std::string wrap(Json::Value root) {
+    std::string wrap(Request request) {
         std::string ret;
-        if (jsonToString(root, ret))
+        if (jsonToString(request.root, ret))
             return ret;
         return "";
+    }
+    std::string getMethod(Request request) const {
+        return request.root["method"];
+    }
+    std::string getType(Request request) const{
+        return request.root["type"];
     }
 };
 
@@ -117,7 +123,21 @@ static int stringToJson(std::string &str, Json::Value &root) {
 }
 
 int sendRequest(Request &request, Response &response) {
-    Wrapper Wrapper;
+    Wrapper wrapper;
+    std::string serial, method, type;
+    serial = wrapper.wrap(request);
+    if (serial != "") {
+        response.reqBak["method"] = wrapper.getMethod(request);
+        response.reqBak["type"] = wrapper.getType(request);
+        /* call network layer to send */
+        Json::Value root;
+        if (stringToJson(ret, root) != ERROR) {
+            if (root["status"] != ERR_OK) {
+            }
+        } else {
+        }
+    } else
+        return ERR_INVALID_REQUEST;
     return 0;
 }
 
