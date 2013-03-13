@@ -6,8 +6,7 @@ using namespace std;
 
 int sendGroupMsg(int srcID, int groupID, const string& msg)
 {
-	struct sendMsgAg* v = (struct sendMsgAg*) argv;
-	if (dstID > 0)
+	if (dstID < 0)
 		return ERR_INVAILD;
 	else
 	{

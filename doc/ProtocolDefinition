@@ -53,11 +53,8 @@ groupMsg            <groupMsg> ...
     ERR_INVALID_TYPE
     ERR_OK
     ERR_NOT_IN_GROUP
-<<<<<<< HEAD
     ERR_NO_PRIVILEGE
     ERR_WRONG_PASSWD 
-=======
     
 * Notes
 Protocol layer will inhibit the details of constructing a valid request.
->>>>>>> 297b6cd05dc26d89c2780722446a125912a53c16
