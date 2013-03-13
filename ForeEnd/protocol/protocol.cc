@@ -5,7 +5,8 @@
 #include <json/json.h>
 #include <map>
 #include <string>
-#include <cstdio>
+#include <stdio.h>
+#include <zlib.h>
 #include "protocol.h"
 
 static int jsonToString(Json::Value &, std::string &);
@@ -138,6 +139,7 @@ int Response::getSessionID() const {
 }
 
 /* this method have to be rewrite */
+/*
 int Response::getUserInfo(UserInfo &ui) const {
     if (!root.isMember("userInfo") || !root["userInfo"].isString())
         return ERROR;
@@ -153,6 +155,11 @@ int Response::getUserInfo(UserInfo &ui) const {
     }
     return 0;
 }
+*/
+
+int Response::getUserInfo(UserInfo &) {
+    
+}
 
 int Response::getGroupName(std::string &ret) const {
     if (!root.isMember("groupName") || !root["groupName"].isString())
@@ -162,7 +169,8 @@ int Response::getGroupName(std::string &ret) const {
 }
 
 int Response::getGroupID() const {
-    if (!root.isMember("group") || !root["groupID"].isInt())
+    if (!root.isMember("groupID") || !root["groupID"].isInt())
         return ERROR;
     return root["groupID"].asInt();
 }
+
