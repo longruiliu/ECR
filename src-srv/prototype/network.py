@@ -6,9 +6,9 @@ import pickle
 from logic import *
 from session import *
 from requestHandlers import requestHandlers
+import unittest_basicData
 
-
-SERVER_PORT = 2053
+SERVER_PORT = 2054
 BACKLOG = 127
 sockMapMutex = mutex.mutex()
 sockMap = {}
@@ -154,7 +154,7 @@ def main():
     sock.listen(BACKLOG)
     while (1):
         newsock, addr = sock.accept()
-        thread.start_new_thread(recvRoutine, (newsock, addr))
+        recvRoutine(newsock, addr)
     
 if __name__ == '__main__':
     main()
