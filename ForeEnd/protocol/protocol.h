@@ -11,12 +11,8 @@
 const int ERROR = ~0;
 
 typedef std::map <std::string, std::string> UserInfo;
-typedef std::map <std::string, std::string> RequestBackup;
-
-class Wrapper;
-
+typedef std::vector <int> UserList;
 class Request {
-    friend class Wrapper;
 public:
     int setSessionID(int);
     int setType(std::string &);
@@ -25,25 +21,20 @@ public:
     int addParams(std::string &);
     int addParams(int);
     int addParams(UserList &);
+    int encode(std::string &rawString);
 private:
     Json::Value root;
 };
 
 class Response {
 public:
-    RequestBackup reqBak;
-    bool getStatus() const;
-    int getUserInfo(UserInfo &) const;
-    int getSessionID() const;
-    int getUserList(UserList &) const;
-    int getGroupName(std::string &) const;
-    int getGroupID() const;
-    int getMsg(std::vector <msgRecord> &) const;
-    int getUserInfo(UserInfo &) const;
-private:
-    Json::Value root;
+    int getUserInfo(std::string &rawString, UserInfo &ui) const;
+    int getSessionID(std::string &rawString) const;
+    int getUserList(std::string &rawString, UserList &ul) const;
+    int getGroupName(std::string &rawString, std::string &groupName) const;
+    int getGroupID(std::string &rawString) const;
+    int getMsg(std::string &rawString, std::vector <msgRecord> &) const;
+    int getUserInfo(std::string &rawString, UserInfo &ui) const;
 };
-
-int sendRequest(Request &, Response &);
 
 #endif

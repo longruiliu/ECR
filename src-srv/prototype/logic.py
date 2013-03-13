@@ -30,6 +30,7 @@ def sendRedMsg(srcID, groupID, msg):
     else:
         return (ERR_NOT_IN_GROUP,None)
 
+# mark
 def addGroup(srcID, groupName):
     ur = user.findUser(srcID)
     if ur.canGroupMg():
@@ -68,20 +69,21 @@ def delGroupMember(srcID, groupID, memberID):
         return (ERR_NO_PRIVILEGE, None)
     return (ERR_OK, None)
 
+# mark
 def fetchMemberList(srcID, groupID):
     gp = group.findGroup(groupID)
     if gp.isInGroup(srcID):
         return (ERR_OK, gp.groupMember)
     else:
         return (ERR_NOT_IN_GROUP, None)
-
+# mark
 def fetchGroupMsg(srcID, groupID, since):
     gp = group.findGroup(groupID)
     if (gp.isInGroup(srcID)):
         return (ERR_OK, gp.getMsg(since))
     else:
         return (ERR_NOT_IN_GROUP, None)
-
+# mark
 def fetchGroupList(srcID):
     gpL = []
     for i in group.groupList:
@@ -89,6 +91,7 @@ def fetchGroupList(srcID):
             gpL.append((i.groupID, i.groupName))
     return (ERR_OK, gpL)
 
+# mark
 def login(userID, passwd, IP):
     ur = user.findUser(userID)
     print passwd, ur.passwd, ur.passwd == passwd
@@ -104,7 +107,7 @@ def logout(sessionID):
 def getUserInfo(srcID, dstID):
     ur = user.findUser(dstID)
     return (ERR_OK, {'userName':ur.userName, 'userInfo':ur.userInfo})
-
+# mark
 def addUser(srcID, userName, passwd, userInfo):
     ur = user.findUser(srcID)
     if (ur.canUserMg()):
