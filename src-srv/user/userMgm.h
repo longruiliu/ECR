@@ -4,11 +4,11 @@
 #include<string>
 #include"user.h"
 
-void lockUserlist();
-void releaseUserlist();
+extern void lockUserlist();
+extern void releaseUserlist();
 extern std::vector<user> userList;
 
-user& findUser(int userID);
+extern user& findUser(int userID);
 
 void addUser(const std::string& userName, const std::string& passwd, const std::string& userInfo);
 #endif /* _USERMGM_H_ */
