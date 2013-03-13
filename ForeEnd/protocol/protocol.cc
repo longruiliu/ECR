@@ -11,11 +11,27 @@
 
 static int jsonToString(Json::Value &, std::string &);
 static int stringToJson(std::string &, Json::Value &);
-static std::string serialUserInfo(UserInfo &);
-static std::string serialUserList(UserList &);
+
+//static std::string serialUserInfo(UserInfo &);
+//static std::string serialUserList(UserList &);
+
 static std::string intToString(int);
 static int stringToInt(std::string);
 
+static int jsonToString(Json::Value &root, std::string &ret) {
+    Json::FastWriter writer;
+    ret = writer.write(root);
+    return 0;
+}
+
+static int stringToJson(std::string &str, Json::Value &root) {
+    Json::Reader reader;
+    if (!reader.parse(str, root))
+        return ERROR;
+    return 0;
+}
+
+/*
 class Wrapper {
 public:
     std::string wrap(Request request) {
@@ -31,6 +47,7 @@ public:
         return request.root["type"];
     }
 };
+*/
 
 static int stringToInt(std::string s) {
     int ret;
@@ -87,7 +104,7 @@ int Request::setMethod(std::string &method) {
 }
 
 int Request::addParams(int val) {
-    root["params"].append(t);
+    root["params"].append(val);
     return 0;
 }
 
@@ -97,31 +114,26 @@ int Request::addParams(std::string &s) {
 }
 
 int Request::addParams(UserInfo &ui) {
-    root["params"].append(ui);
+    Json::Value json;
+    for (__typeof(ui.begin()) it = ui.begin(); it != ui.end(); it++)
+        json[it->first] = ui[it->second];
+    root["params"].append(json);
     return 0;
 }
 
 int Request::addParams(UserList &ul) {
-    Json::ArrayValue arr;
+    Json::Value arr;
     for (int i = 0; i != sizeof(ul); i++)
         arr.append(ul[i]);
     root["params"].append(arr);
     return 0;
 }
 
-static int jsonToString(Json::Value &root, std::string &ret) {
-    Json::FastWriter writer;
-    ret = writer.write(root);
-    return 0;
+int Request::encode(std::string &rawString) {
+    return stringToJson(rawString, root);
 }
 
-static int stringToJson(std::string &str, Json::Value &root) {
-    Json::Reader reader;
-    if (!reader.parse(str, root))
-        return ERROR;
-    return 0;
-}
-
+/*
 int sendRequest(Request &request, Response &response) {
     Wrapper wrapper;
     std::string serial, method, type;
@@ -129,7 +141,6 @@ int sendRequest(Request &request, Response &response) {
     if (serial != "") {
         response.reqBak["method"] = wrapper.getMethod(request);
         response.reqBak["type"] = wrapper.getType(request);
-        /* call network layer to send */
         Json::Value root;
         if (stringToJson(ret, root) != ERROR) {
             if (root["status"] != ERR_OK) {
@@ -158,8 +169,7 @@ int Response::getSessionID() const {
     return root["sessionID"].asInt();
 }
 
-/* this method have to be rewrite */
-/*
+
 int Response::getUserInfo(UserInfo &ui) const {
     if (!root.isMember("userInfo") || !root["userInfo"].isString())
         return ERROR;
@@ -175,7 +185,7 @@ int Response::getUserInfo(UserInfo &ui) const {
     }
     return 0;
 }
-*/
+
 
 int Response::getUserInfo(UserInfo &) {
     
@@ -193,4 +203,5 @@ int Response::getGroupID() const {
         return ERROR;
     return root["groupID"].asInt();
 }
+*/
 

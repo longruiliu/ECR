@@ -12,6 +12,7 @@ const int ERROR = ~0;
 
 typedef std::map <std::string, std::string> UserInfo;
 typedef std::vector <int> UserList;
+
 class Request {
 public:
     int setSessionID(int);
@@ -21,6 +22,7 @@ public:
     int addParams(std::string &);
     int addParams(int);
     int addParams(UserList &);
+    int addParams(UserInfo &);
     int encode(std::string &rawString);
 private:
     Json::Value root;
@@ -34,7 +36,6 @@ public:
     int getGroupName(std::string &rawString, std::string &groupName) const;
     int getGroupID(std::string &rawString) const;
     int getMsg(std::string &rawString, std::vector <msgRecord> &) const;
-    int getUserInfo(std::string &rawString, UserInfo &ui) const;
 };
 
 #endif
