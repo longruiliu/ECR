@@ -20,14 +20,14 @@ public:
 	int previlege;
 	std::string info;
 	int IP;
+        std::vector<msgRecord> msgList;
 
   //Privilege query
-  user(int,std::string,std::string,int,std::string,int);
+  user(int,const std::string&,const std::string &,int,const std::string &,int);
   bool canUserMg();
   bool canGroupMg();
   bool isRoot();
 
-  std::vector<msgRecord> msgList;
   
   void pushNotify(int type, int extra);
   void sendMsg(int srcID, const std::string& msg);
