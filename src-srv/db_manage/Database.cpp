@@ -130,9 +130,8 @@ void Database::saveMsgMem()
 		std::vector<groupMsg> tmp = (*it).msgList;
 		for (std::vector<groupMsg>::iterator p = tmp.begin();it < tmp.end();p++)
 		{
-			char *sql = "insert into Message(group_id,user_id,send_time,m_type,content) values(%d,%d,'%s',%d,'%s')";
-			//asctime((gmtime(time_t))) is change time to normal type
-			sprintf(sqlBuf,sql,(*p).targetID,(*p).srcID,asctime(gmtime((*p).postTime)),(*p).msgType,(*p).msgText.c_str());
+			char *sql = "insert into Message(group_id,user_id,send_time,m_type,content) values(%d,%d,%d,%d,'%s')";
+			sprintf(sqlBuf,sql,(*p).targetID,(*p).srcID,(*p).postTime,(*p).msgType,(*p).msgText.c_str());
 			query(sqlBuf);
 		}
 	}
@@ -192,12 +191,15 @@ void restoreGrouplist()
 	delete lock;
 }
 
-void restoreMsgMem()
+void restoreMsgMem(time_t delta)
 {
-	char *sql1 = "select * from Message";
-	std::vector<std::vector<std::string>> results1 = query(sql);
+	char *sql1 = "select * from Message where strftime('/%/s','now') - send_time < %d";
+	char sqlBuf[1024];
+	sprintf(sqlBuf,sql1,delta);
+	std::vector<std::vector<std::string>> results1 = query(sqlBuf);
+
 	char *sql2 = "select * from User_Group";
-	std::vector<std::vector<std::string>> results22 = query(sql);
+	std::vector<std::vector<std::string>> results2 = query(sql2);
 	(*lock).lockGroup();
 	//restore Message
 	for (std::vector<std::vector<std::string>>::iterator it = results1.begin();it < results1.end();it++ )
@@ -207,8 +209,7 @@ void restoreMsgMem()
 		tmp.targetID = atoi(((*it).at(1)).c_str());
 		tmp.msgText = ((*it).at(5)).c_str();
 		tmp.msgType = ((*it).at(4)).c_str();
-		//need a function to transform string to time_t
-		tmp.postTime = ((*it).at(3)).c_str();
+		tmp.postTime = atoi(((*it).at(3)).c_str());
 		msgList.push_back(tmp);
 	}
 	//restore Member
