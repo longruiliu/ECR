@@ -131,6 +131,9 @@ def delUser(srcID, userID):
     ur = user.findUser(srcID)
     if ur.canUserMg():
         user.delUser(userID)
+		return (ERR_OK, None)
+	else:
+		return (ERR_NO_PRIVILEGE, None)
 
 def sendMsg(srcID, dstID, msg):
     dstUr = user.findUser(dstID)
