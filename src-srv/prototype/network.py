@@ -26,7 +26,7 @@ def sendNotification(addr, notifyType, extra):
     s.close()
 
 def fatal(error):
-    print error
+    print "Failed: " + error
     ident = thread.get_ident()
     sock = sockMap[ident][0]
     sock.send(json.dumps({'status': ERR_INVALID_REQUEST, 'result': []}))
@@ -75,7 +75,7 @@ def requestHandler(request):
                     ret["result"].append({"type": "Int", "value": result})
                 sendResponse(ret)
             except:
-                fatal('login failed')
+                fatal('login')
 
         elif req_method == 'logout':
             try:
@@ -83,7 +83,7 @@ def requestHandler(request):
                 ret = initialRet(status)
                 sendResponse(ret)
             except:
-                fatal('logout failed')
+                fatal('logout')
 
         elif req_method == 'add':
             try:
@@ -95,7 +95,7 @@ def requestHandler(request):
                     ret["result"].append({"type": "Int", "value": result})
                 sendResponse(ret)
             except:
-                  fatal('add user failed')
+                  fatal('add user')
 
         elif req_method == 'del':
             try:
@@ -105,7 +105,7 @@ def requestHandler(request):
                 ret = initialRet(status)
                 sendResponse(ret)
             except:
-                fatal('del user failed')
+                fatal('del user')
 
         elif req_method == 'modify':
             try:
@@ -115,7 +115,7 @@ def requestHandler(request):
                 ret = initialRet(status)
                 sendResponse(ret)
             except:
-                pass
+                fatal('modify user info')
         elif req_method == 'sendmsg':
             try:
                 srcID = getUserIDBySession(req_sessionID)
@@ -124,7 +124,8 @@ def requestHandler(request):
                 ret = initialRet(status)
                 sendResponse(ret)
             except:
-                pass
+                fatal('send message')
+
         elif req_method == 'userlist':
             try:
                 srcID = getUserIDBySession(req_sessionID)
@@ -135,7 +136,7 @@ def requestHandler(request):
                     ret['result'].append({'type': 'UserList', 'value': result})
                 sendResponse(ret)
             except:
-                pass
+                fatal('get user list')
         elif req_method == 'userinfo':
             try:
                 srcID = getUserIDBySession(req_sessionID)
@@ -145,7 +146,7 @@ def requestHandler(request):
                     ret['result'].append({'type': 'UserInfo', 'value': result})
                 sendResponse(ret)
             except:
-                pass
+                fatal('get user info')
         elif req_method == 'keepalive':
             try:
                 srcID = getUserIDBySession(req_sessionID)
@@ -154,7 +155,7 @@ def requestHandler(request):
                 ret = initialRet(status)
                 sendResponse(ret)
             except:
-                pass
+                fatal('keepalive')
         elif req_method == 'fetchmsg':
             try:
                 srcID = getUserIDBySession(req_sessionID)
@@ -170,9 +171,9 @@ def requestHandler(request):
                                                                        for item in result]})
                 sendResponse(ret)
             except:
-                pass
+                fatal('fetch messages')
         else:
-            pass
+            fatal('method not defined')
     elif req_type == 'group':
         if req_method == 'add':
             try:
@@ -184,7 +185,7 @@ def requestHandler(request):
                     ret['result'].append({'type': 'Int', 'value': result})
                 sendResponse(ret)
             except:
-                pass
+                fatal('add group member')
         elif req_method == 'del':
             try:
                 srcID = getUserIDBySession(req_sessionID)
@@ -193,7 +194,7 @@ def requestHandler(request):
                 ret = initialRet(status)
                 sendResponse(ret)
             except:
-                pass
+                fatal('delete group member')
         elif req_method == 'sendmsg':
             try:
                 srcID = getUserIDBySession(req_sessionID)
@@ -202,7 +203,7 @@ def requestHandler(request):
                 ret = initialRet(status)
                 sendResponse(ret)
             except:
-                pass
+                fatal('send group message')
         elif req_method == 'joinreq':
             try:
                 srcID = getUserIDBySession(req_sessionID)
@@ -211,7 +212,7 @@ def requestHandler(request):
                 ret = initialRet(status)
                 sendResponse(status)
             except:
-                pass
+                fatal("join in group")
         elif req_method == 'quitreq':
             try:
                 srcID = getUserIDBySession(req_sessionID)
@@ -220,7 +221,7 @@ def requestHandler(request):
                 ret = initialRet(status)
                 sendResponse(ret)
             except:
-                pass
+                fatal("quit group")
         elif req_method == 'userlist':
             try:
                 srcID = getUserIDBySession(req_sessionID)
@@ -231,7 +232,7 @@ def requestHandler(request):
                     ret['result'].append({'type': 'UserList', 'value': [x for x in result]})
                 sendResponse(ret)
             except:
-                pass
+                fatal("get group member list")
         elif req_method == 'redmsg':
             try:
                 srcID = getUserIDBySession(req_sessionID)
@@ -240,7 +241,7 @@ def requestHandler(request):
                 ret = initialRet(status)
                 sendResponse(ret)
             except:
-                pass
+                fatal("send red message")
         elif req_method == 'fetchmsg':
             try:
                 srcID = getUserIDBySession(req_sessionID)
@@ -257,7 +258,7 @@ def requestHandler(request):
                                                                        for item in result]})
                 sendResponse(ret)
             except:
-                pass
+                fatal("fetch group message")
         elif req_method == 'fetchgrp':
             try:
                 srcID = getUserIDBySession(req_sessionID)
@@ -267,11 +268,11 @@ def requestHandler(request):
                     ret['result'].append({'type': 'GroupList', 'value': result})
                 sendResponse(ret)
             except:
-                pass
+                fatal("fetch group list")
         else:
-            pass
+            fatal("method not defined")
     else:
-        pass
+        fatal("request type not defined")
         
 def recvRoutine(sock, addr):
     """
