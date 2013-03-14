@@ -6,9 +6,9 @@
 messageListener::messageListener(QObject *parent) :
     QThread(parent)
 {
-    serv = new QUdpSocket(this);
+    sessionID = -1;
     timeStamp = 0;
-    QObject::connect(serv, SIGNAL(readyRead()), this, SLOT(messageReady()));
+    QObject::connect(&serv, SIGNAL(readyRead()), this, SLOT(messageReady()));
 }
 
 messageListener::messageListener(QString &addr, QString &port, int sessionID){
@@ -23,14 +23,16 @@ void messageListener::messageReady(){
     Request req;
     std::string respStr;
 
-    if(addr.isEmpty() || port.isEmpty())
+    if(addr.isEmpty() || port.isEmpty() || sessionID == -1){
+        qDebug() << "You must assigned sessionID server IP and port for message listener" << endl;
         return;
-    if(!serv->hasPendingDatagrams())
+    }
+    if(!serv.hasPendingDatagrams())
         return;
 
-    msgLen = serv->pendingDatagramSize();
+    msgLen = serv.pendingDatagramSize();
     pushMsg = new char[msgLen];
-    msgLen = serv->readDatagram(pushMsg, msgLen);
+    msgLen = serv.readDatagram(pushMsg, msgLen);
 
     //The bytes after first four bytes will be dropped
     msgType = *(int *)pushMsg;
@@ -66,7 +68,9 @@ void messageListener::messageReady(){
 }
 
 void messageListener::run(){
-    serv->bind(port.toInt());
+    qDebug() << "message Listener ready" << endl;
+    serv.bind(port.toInt());
+    qDebug() << "message Listener quit" << endl;
 }
 
 void messageListener::setRemote(QString &addr, QString &port){

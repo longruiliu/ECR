@@ -14,11 +14,15 @@ int main(int argc, char *argv[])
     QApplication::setStyle("cleanlooks");
     QApplication a(argc, argv);
 
-    /*don't run it cause we don't have IP and port*/
     networkQueue nq;
-    messageListener ml;
+    //messageListener ml;
+    nq.start();
+    //ml.start();
 
     loginDialog ld;
+    ld.nq = &nq;
+    //ld.ml = &ml;
+
     ld.show();
 
     return a.exec();

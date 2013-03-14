@@ -17,7 +17,10 @@ loginDialog::loginDialog(QWidget *parent) :
 
     conf = new LoginConfig(this);
 
-    QObject::connect(nq, SIGNAL(loginBack(Response)), this, SLOT(receiveLoginResponse(Response)));
+
+
+
+
 }
 
 loginDialog::~loginDialog()
@@ -47,23 +50,25 @@ void loginDialog::on_LoginBtn_clicked()
 {
 
     Nevent ev;
-    //Here we have IP and port so we can
-    //start network queue thread.
-    nq->setRemote(conf->serverIP, conf->serverPort);
-    nq->start();
-
-    //Don't start messageListener thread cause we
-    //do not login successfully and we konw nothing
-    //about sessionID. Here we just set server IP and port
-    //for network connections.
-     ml->setRemote(conf->serverIP, conf->serverPort);
-
-     std::string str;
+    std::string str;
     //send login request
+
+    //We must get server IP and port from loginconfig
+    if(conf->serverIP.isEmpty() || conf->serverPort.isEmpty()){
+        qDebug() << "We must configure server IP and port first" << endl;
+        return;
+    }
+    nq->setRemote(conf->serverIP, conf->serverPort);
+
+    //ml also needs sessoinID if you want it works.
+    //ml->setRemote(conf->serverIP, conf->serverPort);
+
     ev.req.setSessionID(0);
     str.insert(0, "regular");
     ev.req.setType(str);
-
+    userName = ui->NamelineEdit->text();
+    userPassword = ui->PswlineEdit->text();
+    qDebug() << userName << userPassword << endl;
     str.clear();
     str.insert(0,"login");
     ev.req.setMethod(str);

@@ -12,8 +12,8 @@
 #define FADEOUT_EXIT_ALL    3
 #define FADEOUT_HIDE        4
 
-const int timerRate=100;
-const double changeValue=0.05;
+const int timerRate=10;
+const double changeValue=0.5;
 
 
 class FadeInOut:public QObject

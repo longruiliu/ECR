@@ -26,7 +26,7 @@ private slots:
     void messageReady();
 
 private:
-    QUdpSocket *serv;
+    QUdpSocket serv;
     QString addr, port;
     int sessionID;
     int timeStamp;

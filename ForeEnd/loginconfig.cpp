@@ -54,12 +54,14 @@ void LoginConfig::on_CloseWinBtn_clicked()
 
 void LoginConfig::getServerInfo()
 {
-    QFile file("config.ini");
+    QString tmp;
+    QFile file("D:\\ECR\\config.ini");
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             qDebug()<<"Can't open the file!"<<endl;
     }
     if(!file.atEnd())
         serverIP=file.readLine();
+    serverIP.truncate(serverIP.size()-1);
     if(!file.atEnd())
         serverPort=file.readLine();
     file.close();
@@ -67,7 +69,7 @@ void LoginConfig::getServerInfo()
 
 void LoginConfig::saveServerInfo()
 {
-    QFile file("config.ini");
+    QFile file("D:\\ECR\\config.ini");
     if(!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
             qDebug()<<"Can't open the file!"<<endl;
     }
