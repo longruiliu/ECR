@@ -22,13 +22,20 @@ def sendNotification(addr, notifyType, extra):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.sendto("%x %x"%(notifyType, extra), address)
     
-# no general interface, so if/else
+
 def sendResponse(result):
     final_result = json.dumps(result)
     ident = thread.get_ident()
     sock = sockMap[ident][0]
     sock.send(final_result)
 
+def initialRet(status):
+    ret = {}
+    ret['status'] = status
+    ret['result'] = []
+    return ret
+
+# coding it the hard way
 def requestHandler(request):
     """
     Call correspond request handler according to the request.
@@ -47,8 +54,7 @@ def requestHandler(request):
                 params = [item["value"] for item in req_params]
                 params.append(ip)
                 status, result = apply(logic.login, params)
-                ret["status"] = status
-                ret["result"] = []
+                ret = initialRet(status)
                 if status == ERR_OK:
                     ret["result"].append({"type": "Int", "value": result})
                 sendResponse(ret)
@@ -57,25 +63,27 @@ def requestHandler(request):
         elif req_method == 'logout':
             try:
                 status, result = apply(logic.logout, req_sessionID)
-                ret["status"] = status
-                ret["result"] = []
+                ret = initialRet(status)
                 sendResponse(ret)
             except:
                 pass
         elif req_method == 'add':
             try:
                 srcID = getUserIDBySession(req_sessionID)
-                params = [item["value"] for item in req_params]
+                params = [item["value"] for item in req_params].insert(0, srcID)
                 status, result = apply(logic.addUser, params)
-                ret["status"] = status
-                ret["result"] = []
+                ret = initialRet(status)
                 if status == ERR_OK:
                     ret["result"].append({"type": "Int", "value": result})
                 sendResponse(ret)
             except:
                 pass
         elif req_method == 'del':
-            
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0,srcID)
+                status, result = apply(logic.delUser, params)
+                ret = initialRet(status)
                 
     elif req_type == 'group':
         pass
