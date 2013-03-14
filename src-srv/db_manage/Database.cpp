@@ -91,8 +91,7 @@ void Database::saveUserlist()
 void Database::saveGrouplist()
 {
 	char sqlBuf[1024];
-	group *lock = new group();
-	(*lock).lockGroup();
+	lockGrouplist();
 	for (std::vector<group>::iterator it = groupList.begin();it < groupList.end();it++)
 	{
 		//judge whether the group exist before
@@ -114,15 +113,13 @@ void Database::saveGrouplist()
 			query(sqlBuf);
 		}
 	}
-	(*lock).releaseGroup();
-	delete lock;
+	releaseGrouplist();
 }
 
 void Database::saveMsgMem()
 {
 	char sqlBuf[1024];
-	group *lock = new group();
-	(*lock).lockGroup();
+	lockGrouplist();
 
 	//save group messages
 	for (std::vector<group>::iterator it = groupList.begin();it < groupList.end();it++)
@@ -148,8 +145,7 @@ void Database::saveMsgMem()
 		}
 	}
 
-	(*lock).releaseGroup();
-	delete lock;
+	releaseGrouplist();
 }
 
 //restore data from DB
@@ -176,8 +172,8 @@ void restoreGrouplist()
 {
 	char *sql = "select * from Group_list";
 	std::vector<std::vector<std::string>> results = query(sql);
-	group *lock = new group()
-	(*lock).lockGroup();
+
+	lockGrouplist();
 	for (std::vector<std::vector<std::string>>::iterator it = results.begin();it < results.end();it++ )
 	{
 		group tmp;
@@ -187,8 +183,7 @@ void restoreGrouplist()
 		tmp.groupInfo = ((*it).at(3)).c_str();
 		groupList.push_back(tmp);
 	}
-	(*lock).releaseGroup();
-	delete lock;
+	releaseGrouplist();
 }
 
 void restoreMsgMem(time_t delta)
@@ -200,7 +195,7 @@ void restoreMsgMem(time_t delta)
 
 	char *sql2 = "select * from User_Group";
 	std::vector<std::vector<std::string>> results2 = query(sql2);
-	(*lock).lockGroup();
+	lockGrouplist();
 	//restore Message
 	for (std::vector<std::vector<std::string>>::iterator it = results1.begin();it < results1.end();it++ )
 	{
@@ -219,8 +214,7 @@ void restoreMsgMem(time_t delta)
 			if ((*p).groupID == atoi((*it).at(2).c_str()))
 				((*p).groupMember).push_back(atoi((*it).at(1).c_str()));
 	}
-	(*lock).releaseGroup();
-	delete lock;
+	releaseGrouplist();
 }
 
 void Database::close()

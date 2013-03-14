@@ -26,6 +26,7 @@ public:
 	void delUser(int UserID);
 
 	group();
+	group(const group &other;)
 	group(const std::string& name, int creator,const std::string& info);
 	//group(* sDB, int gID);
 

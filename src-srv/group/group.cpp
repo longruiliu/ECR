@@ -91,6 +91,18 @@ group::group()
 	groupInfo = "null";
 }
 
+group::group(const group &other)
+{
+	groupID = other.groupID;
+	creatorID = other.creatorID;
+	groupName = other.groupName;
+	groupInfo = other.groupInfo;
+	lastMsgTime = other.lastMsgTime;
+	oldestMemTime = other.oldestMemTime;
+	msgList = other.msgList;
+	groupMember = other.groupMember;
+}
+
 group::group(const std::string& name, int creator,const std::string &info = "null")
 {
 	groupName = name;

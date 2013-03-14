@@ -5,9 +5,10 @@
  * Purpose: Implementation of the class groupManager
  ***********************************************************************/
 
-#include "group.h"
-#include "groupManager.h"
-#include "dbSync.h"
+#include "../include/group.h"
+#include "../include/groupManager.h"
+#include "../include/dbSync.h"
+
 std::vector<group> groupList;
 
 
