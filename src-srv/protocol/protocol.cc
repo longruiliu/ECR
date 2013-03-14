@@ -44,6 +44,13 @@ static int jsonToMap(Json::Value &root, std::map <std::string, std::string> &ret
     return 0;
 }
 
+/*
+int sendResponse(Json::Value &root) {
+    std::string ret;
+    jsonToString(root, ret);
+}
+*/
+
 int requestHandler(std::string &request) {
     Json::Value root;
     if (stringToJson(request, root) == ERROR)
