@@ -11,8 +11,6 @@
 static int jsonToString(Json::Value &, std::string &);
 static int stringToJson(std::string &, Json::Value &);
 
-//static std::string serialUserInfo(UserInfo &);
-//static std::string serialUserList(UserList &);
 
 static std::string intToString(int);
 static int stringToInt(std::string);
@@ -30,23 +28,6 @@ static int stringToJson(std::string &str, Json::Value &root) {
     return 0;
 }
 
-/*
-class Wrapper {
-public:
-    std::string wrap(Request request) {
-        std::string ret;
-        if (jsonToString(request.root, ret))
-            return ret;
-        return "";
-    }
-    std::string getMethod(Request request) const {
-        return request.root["method"];
-    }
-    std::string getType(Request request) const{
-        return request.root["type"];
-    }
-};
-*/
 
 static int stringToInt(std::string s) {
     int ret;
@@ -61,31 +42,6 @@ static std::string intToString(int val) {
     return ret;
 }
 
-/*
-static std::string serialUserList(UserList &ul) {
-    Json::Value root;
-    std::string ret;
-    for (int i = 0; i != ul.size(); i++) {
-        std::string tmp = intToString(ul[i]);
-        root.append(tmp);
-    }
-    if (jsonToString(root, ret))
-        return ret;
-    return "";
-}
-*/
-
-/*
-static std::string serialUserInfo(UserInfo &ui) {
-    Json::Value root;
-    for (__typeof(ui.begin()) it = ui.begin(); it != ui.end(); it++)
-        root[it->first] = it->second;
-    std::string ret;
-    if (jsonToString(root, ret))
-        return ret;
-    return "";
-}
-*/
 
 int Request::setSessionID(int val) {
     root["sessionID"] = val;
@@ -162,85 +118,6 @@ int Request::encode(std::string &rawString) {
     return jsonToString(root, rawString);
 }
 
-/*
-int sendRequest(Request &request, Response &response) {
-    Wrapper wrapper;
-    std::string serial, method, type;
-    serial = wrapper.wrap(request);
-    if (serial != "") {
-        response.reqBak["method"] = wrapper.getMethod(request);
-        response.reqBak["type"] = wrapper.getType(request);
-        Json::Value root;
-        if (stringToJson(ret, root) != ERROR) {
-            if (root["status"] != ERR_OK) {
-            }
-        } else {
-        }
-    } else
-        return ERR_INVALID_REQUEST;
-    return 0;
-}
-
-int Response::getUserList(UserList &ul) const {
-    Json::Value arr;
-    if (root.isMember("userList") && root["userList"].isArray())
-        arr = root["userList"];
-    else
-        return ERROR;
-    for (int i = 0; i != arr.size(); i++)
-        ul.push_back(stringToInt(arr[i].asString()));
-    return 0;
-}
-
-int Response::getSessionID() const {
-    if (!root.isMember("sessionID") || !root["sessionID"].isInt())
-        return ERROR;
-    return root["sessionID"].asInt();
-}
-
-
-int Response::getUserInfo(UserInfo &ui) const {
-    if (!root.isMember("userInfo") || !root["userInfo"].isString())
-        return ERROR;
-    Json::Value json;
-    std::string str = root["userInfo"].asString();
-    if (stringToJson(str, json) == ERROR)
-        return ERROR;
-    for (__typeof(json.begin()) it = json.begin(); it != json.end(); it++) {
-        if (it.key().isString() && (*it).isString())
-            ui[it.key().asString()] = (*it).asString();
-        else
-            return ERROR;
-    }
-    return 0;
-}
-
-
-int Response::getUserInfo(UserInfo &) {
-    
-}
-
-int Response::getGroupName(std::string &ret) const {
-    if (!root.isMember("groupName") || !root["groupName"].isString())
-        return ERROR;
-    ret = root["groupName"].asString();
-    return 0;
-}
-
-int Response::getGroupID() const {
-    if (!root.isMember("groupID") || !root["groupID"].isInt())
-        return ERROR;
-    return root["groupID"].asInt();
-}
-*/
-/*
-int Response::getUserInfo(std::string &rawString, UserInfo &ui) const {
-    Json::Value root;
-    if (stringToJson(rawString, root) == ERROR)
-        return ERROR;
-    for (__typeof(
-}
-*/
 
 Response::Response(std::string &s) {
     stringToJson(s, root);
@@ -450,3 +327,6 @@ int Response::getSessionID() const {
     return ERROR;
 }
 
+Response::Response(const Response &o) {
+    root = o.root;
+}
