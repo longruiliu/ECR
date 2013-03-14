@@ -84,6 +84,7 @@ def requestHandler(request):
                 params = [item['value'] for item in req_params].insert(0, srcID)
                 status, result = apply(logic.delUser, params)
                 ret = initialRet(status)
+                
             except:
                 pass
         elif req_method == 'modify':
@@ -99,12 +100,59 @@ def requestHandler(request):
             try:
                 srcID = getUserIDBySession(req_sessionID)
                 params = [item['value'] for item in req_params].insert(0, srcID)
-                status, result = apply(logic, sendMsg)
+                status, result = apply(logic.sendMsg, params)
                 ret = initialRet(status)
                 sendResponse(ret)
             except:
                 pass
-        elif req_method == '':
+        elif req_method == 'userlist':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.fetchMemberList, params)
+                ret = initialRet(status)
+                if status == ERR_OK:
+                    ret['result'].append({'type': 'UserList', 'value': result})
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'userinfo':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.getUserInfo, params)
+                if status == ERR_OK:
+                    ret['result'].append({'type': 'UserInfo', 'value': result})
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'keepalive':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.keepAlive, params)
+                ret = initialRet(status)
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'fetchmsg':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                status, result = apply(logic.keepAlive, srcID)
+                ret = initialRet(status)
+                if status == ERR_OK:
+                    ret['result'].append({'type': 'MsgList', 'value': [{
+                                    'srcID': item.sendorID,
+                                    'targetID': item.targetID,
+                                    'msgText': item.msgText,
+                                    'postTime': item.timestamp,
+                                    'msgType': item.typeID}
+                                                                       for item in result]})
+                sendResponse(ret)
+            except:
+                pass
+        else:
+            pass
     elif req_type == 'group':
         pass
     else:
