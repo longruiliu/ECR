@@ -15,13 +15,13 @@ GroupChatDialog::GroupChatDialog(QWidget *parent) :
 
     QListWidgetItem *configButton = new QListWidgetItem(ui->FriendListWidget);
     configButton->setIcon(QIcon(":/header/1.png"));
-    configButton->setText(tr("孤舟一叶"));
+    configButton->setText(tr("Nick Name"));
     configButton->setTextAlignment(Qt::AlignLeft);
     configButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     QListWidgetItem *updateButton = new QListWidgetItem(ui->FriendListWidget);
     updateButton->setIcon(QIcon(":/header/2.png"));
-    updateButton->setText(tr("孤舟一叶"));
+    updateButton->setText(tr("Nick Name"));
     updateButton->setTextAlignment(Qt::AlignLeft);
     updateButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
@@ -60,4 +60,9 @@ void GroupChatDialog::startChatWithSelectedFriend()
 void GroupChatDialog::on_SendMessageBtn_clicked()
 {
     sendText=ui->SendMessageText->toPlainText();
+}
+
+void GroupChatDialog::receiveResponse(Response resp)
+{
+
 }

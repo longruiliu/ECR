@@ -4,12 +4,13 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 QT       += webkit
 
 TARGET = USay
 TEMPLATE = app
 
+DEFINES += JSON_IS_AMALGAMATION
 
 SOURCES += main.cpp \
     chatroom.cpp \
@@ -21,7 +22,12 @@ SOURCES += main.cpp \
     groupchatdialog.cpp \
     fadeinout.cpp \
     registerdialog.cpp \
-    shakewindow.cpp
+    shakewindow.cpp \
+    messagelistener.cpp \
+    networkqueue.cpp \
+    network1.cpp \
+    protocol/jsoncpp.cpp \
+    protocol/protocol.cc
 
 HEADERS  += \
     chatroom.h \
@@ -31,9 +37,13 @@ HEADERS  += \
     logindialog.h \
     loginconfig.h \
     groupchatdialog.h \
-    fadeinout.h \
+    fadeinout.h\
     registerdialog.h \
-    shakewindow.h
+    shakewindow.h \
+    messagelistener.h \
+    fadeinout.h \
+    networkqueue.h \
+    network1.h
 
 FORMS    += \
     chatroom.ui \
@@ -48,4 +58,7 @@ FORMS    += \
 RESOURCES += \
     USay.qrc
 
+INCLUDEPATH += ./protocol
+INCLUDEPATH += ../src-srv/include
+INCLUDEPATH += ../include
 RC_FILE = icon.rc

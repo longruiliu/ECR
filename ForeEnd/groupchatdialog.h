@@ -1,4 +1,4 @@
-#ifndef GROUPCHATDIALOG_H
+﻿#ifndef GROUPCHATDIALOG_H
 #define GROUPCHATDIALOG_H
 #include <QMouseEvent>
 
@@ -28,6 +28,8 @@ private slots:
     void startChatWithSelectedFriend() ;
 
     void on_SendMessageBtn_clicked();
+
+    void receiveResponse(Response resp);
 
 private:
     Ui::GroupChatDialog *ui;

@@ -1,4 +1,4 @@
-#ifndef REGISTERDIALOG_H
+ï»¿#ifndef REGISTERDIALOG_H
 #define REGISTERDIALOG_H
 
 #include <QDialog>
@@ -28,7 +28,6 @@ private:
     QPoint dPos;
     QPoint mousePos;
 
-    //ºÍ´°¿Úµ­Èëµ­³öÓÐ¹ØµÄ±äÁ¿
     FadeInOut fadeEffect;
 
     QString userName;
@@ -39,6 +38,8 @@ private:
 private slots:
     void on_OkBtn_clicked();
     void on_CloseWinBtn_clicked();
+
+    void receiveResponse(Response resp);
 };
 
 #endif // REGISTERDIALOG_H

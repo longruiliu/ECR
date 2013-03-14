@@ -1,4 +1,4 @@
-#include "fadeinout.h"
+ï»¿#include "fadeinout.h"
 
 FadeInOut::FadeInOut(QDialog *dia,QObject *parent):QObject(parent)
 {
@@ -14,10 +14,11 @@ FadeInOut::FadeInOut(QDialog *dia,QObject *parent):QObject(parent)
 
 void FadeInOut::startFadeInOut(int effectType)
 {
-    //Èç¹ûÕýÔÚÖ´ÐÐÒ»¸ö½¥±ä²Ù×÷£¬ÔòÍË³ö
+    //if it still execute another operator,exit
     if(isWorking && effectType==this->effectType)
         return;
-    //´°¿ÚÖð½¥µ­Èëµ­³ö
+
+
     this->effectType=effectType;
     opalevel=1.0;
     if(effectType==FADEIN)
