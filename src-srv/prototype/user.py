@@ -3,7 +3,7 @@ import logic
 userList = {}
 #It should be always in mind that all User ID are negative
 
-class User:
+class User(object):
     def __init__(self, userID, userName, passwd, userInfo, privMask = 0):
         self.userID = userID
         self.userName = userName
