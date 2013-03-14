@@ -11,20 +11,43 @@
 
 static int jsonToString(Json::Value &, std::string &);
 static int stringToJson(std::string &, Json::Value &);
-static std::string serialUserInfo(UserInfo &);
-static std::string serialUserList(UserList &);
+
+//static std::string serialUserInfo(UserInfo &);
+//static std::string serialUserList(UserList &);
+
 static std::string intToString(int);
 static int stringToInt(std::string);
 
+static int jsonToString(Json::Value &root, std::string &ret) {
+    Json::FastWriter writer;
+    ret = writer.write(root);
+    return 0;
+}
+
+static int stringToJson(std::string &str, Json::Value &root) {
+    Json::Reader reader;
+    if (!reader.parse(str, root))
+        return ERROR;
+    return 0;
+}
+
+/*
 class Wrapper {
 public:
-    std::string wrap(Json::Value root) {
+    std::string wrap(Request request) {
         std::string ret;
-        if (jsonToString(root, ret))
+        if (jsonToString(request.root, ret))
             return ret;
         return "";
     }
+    std::string getMethod(Request request) const {
+        return request.root["method"];
+    }
+    std::string getType(Request request) const{
+        return request.root["type"];
+    }
 };
+*/
 
 static int stringToInt(std::string s) {
     int ret;
@@ -81,43 +104,80 @@ int Request::setMethod(std::string &method) {
 }
 
 int Request::addParams(int val) {
-    root["params"].append(t);
+    Json::Value param;
+    param["type"] = "Int";
+    param["value"] = val;
+    root["params"].append(param);
     return 0;
 }
 
 int Request::addParams(std::string &s) {
-    root["params"].append(s);
+    Json::Value param;
+    param["type"] = "String";
+    param["value"] = s;
+    root["params"].append(param);
     return 0;
 }
 
 int Request::addParams(UserInfo &ui) {
-    root["params"].append(ui);
+    Json::Value param;
+    param["type"] = "UserInfo";
+    Json::Value json;
+    for (__typeof(ui.begin()) it = ui.begin(); it != ui.end(); it++)
+        json[it->first] = ui[it->second];
+    param["value"] = json;
+    root["params"].append(param);
     return 0;
 }
 
 int Request::addParams(UserList &ul) {
-    Json::ArrayValue arr;
+    Json::param;
+    param["type"] = "UserList";
+    Json::Value arr;
     for (int i = 0; i != sizeof(ul); i++)
         arr.append(ul[i]);
-    root["params"].append(arr);
+    param["value"] = arr;
+    root["params"].append(param);
     return 0;
 }
 
-static int jsonToString(Json::Value &root, std::string &ret) {
-    Json::FastWriter writer;
-    ret = writer.write(root);
-    return 0;
+int Request::addParams(MsgList &ml) {
+    Json::Value param;
+    Json::Value arr;
+    Json::Value msg;
+    param["type"] = "MsgList";
+    for (int i = 0; i != ml.size(); i++) {
+        msg["srcID"] = ml[i].srcID;
+        msg["targetID"] = ml[i].targetID;
+        msg["msgText"] = ml[i].msgText;
+        msg["postTime"] = ml[i].postTime;
+        msg["msgType"] = ml[i].msgType;
+        arr.append(msg);
+    }
+    param["value"] = arr;
+    root["params"].append(param);
 }
 
-static int stringToJson(std::string &str, Json::Value &root) {
-    Json::Reader reader;
-    if (!reader.parse(str, root))
-        return ERROR;
-    return 0;
+int Request::encode(std::string &rawString) {
+    return stringToJson(rawString, root);
 }
 
+/*
 int sendRequest(Request &request, Response &response) {
-    Wrapper Wrapper;
+    Wrapper wrapper;
+    std::string serial, method, type;
+    serial = wrapper.wrap(request);
+    if (serial != "") {
+        response.reqBak["method"] = wrapper.getMethod(request);
+        response.reqBak["type"] = wrapper.getType(request);
+        Json::Value root;
+        if (stringToJson(ret, root) != ERROR) {
+            if (root["status"] != ERR_OK) {
+            }
+        } else {
+        }
+    } else
+        return ERR_INVALID_REQUEST;
     return 0;
 }
 
@@ -138,8 +198,7 @@ int Response::getSessionID() const {
     return root["sessionID"].asInt();
 }
 
-/* this method have to be rewrite */
-/*
+
 int Response::getUserInfo(UserInfo &ui) const {
     if (!root.isMember("userInfo") || !root["userInfo"].isString())
         return ERROR;
@@ -155,7 +214,7 @@ int Response::getUserInfo(UserInfo &ui) const {
     }
     return 0;
 }
-*/
+
 
 int Response::getUserInfo(UserInfo &) {
     
@@ -173,4 +232,12 @@ int Response::getGroupID() const {
         return ERROR;
     return root["groupID"].asInt();
 }
-
+*/
+/*
+int Response::getUserInfo(std::string &rawString, UserInfo &ui) const {
+    Json::Value root;
+    if (stringToJson(rawString, root) == ERROR)
+        return ERROR;
+    for (__typeof(
+}
+*/

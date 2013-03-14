@@ -25,6 +25,7 @@ method              login | logout | sendmsg | userlist | userinfo |\
                     add | modify | del | keepalive | fetch
 params              (login)<User ID> <PASSWD> |
                     (logout)|
+                    (userlist) <Group ID> |
                     (sendmsg)<User ID> <Text> |
                     (userinfo)<User ID> |
                     (add)<User Name> <PASSWD> <User Info> |

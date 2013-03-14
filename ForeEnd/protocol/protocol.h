@@ -10,13 +10,23 @@
 
 const int ERROR = ~0;
 
-typedef std::map <std::string, std::string> UserInfo;
-typedef std::map <std::string, std::string> RequestBackup;
+/*
+  Data types that transport through net:
+  UserID
+  UserName
+  UserInfo
+  UserList
+  GroupID
+  GroupName
+  MsgList
+*/
 
-class Wrapper;
+typedef msgRecord MsgRecord;
+typedef std::map <std::string, std::string> UserInfo;
+typedef std::vector <int> UserList;
+typedef std::vector <MsgRecord> MsgList;
 
 class Request {
-    friend class Wrapper;
 public:
     int setSessionID(int);
     int setType(std::string &);
@@ -25,25 +35,25 @@ public:
     int addParams(std::string &);
     int addParams(int);
     int addParams(UserList &);
+    int addParams(UserInfo &);
+    int addParams(MsgList &);
+    int encode(std::string &rawString);
 private:
     Json::Value root;
 };
 
 class Response {
 public:
-    RequestBackup reqBak;
-    bool status;
-    int getUserInfo(UserInfo &) const;
-    int getSessionID() const;
-    int getUserList(UserList &) const;
-    int getGroupName(std::string &) const;
-    int getGroupID() const;
-    int getMsg(std::vector <msgRecord> &) const;
-    int getUserInfo(UserInfo &) const;
-private:
-    Json::Value root;
+    int getStatus() const;
+    int getUserInfo(std::string &rawString, UserInfo &ui) const;
+    int getUserName(std::string &rawString, std::string &) const;
+    int getUserID(std::string &rawString) const;
+    int getSessionID(std::string &rawString) const;
+    int getUserList(std::string &rawString, UserList &ul) const;
+    int getGroupName(std::string &rawString, std::string &groupName) const;
+    int getGroupID(std::string &rawString) const;
+    int getGroupList(std::string &rawString, std::vector <std:pair <std::int, std::string>) const;
+    int getMsgList(std::string &rawString, std::vector <msgRecord> &) const;
 };
-
-int sendRequest(Request &, Response &);
 
 #endif
