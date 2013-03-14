@@ -40,7 +40,7 @@ def requestHandler(request):
     """
     Call correspond request handler according to the request.
     """
-    req_sessionID = request["sessionID"]
+    req_sessionID = request.get("sessioID", None)
     req_type = request["type"]
     req_method = request["method"]
     req_params = request["params"]
@@ -236,6 +236,8 @@ def requestHandler(request):
                                     'msgType': item.typeID}
                                                                        for item in result]})
                 sendResponse(ret)
+            except:
+                pass
         elif req_method == 'fetchgrp':
             try:
                 srcID = getUserIDBySession(req_sessionID)
