@@ -27,7 +27,7 @@ SOURCES += main.cpp \
     networkqueue.cpp \
     network1.cpp \
     protocol/jsoncpp.cpp \
-    protocol/protocol.cc
+    protocol/protocol.cpp
 
 HEADERS  += \
     chatroom.h \

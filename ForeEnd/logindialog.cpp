@@ -1,6 +1,7 @@
 ﻿#include "logindialog.h"
 #include "ui_logindialog.h"
 #include "protocol/protocol.h"
+#include <string.h>
 
 loginDialog::loginDialog(QWidget *parent) :
     QDialog(parent),
@@ -45,7 +46,7 @@ void loginDialog::on_configBtn_clicked()
 void loginDialog::on_LoginBtn_clicked()
 {
 
-    Request req;
+    Nevent ev;
     //Here we have IP and port so we can
     //start network queue thread.
     nq->setRemote(conf->serverIP, conf->serverPort);
@@ -59,22 +60,26 @@ void loginDialog::on_LoginBtn_clicked()
 
      std::string str;
     //send login request
-    req.setSessionID(0);
+    ev.req.setSessionID(0);
     str.insert(0, "regular");
-    req.setType(str);
+    ev.req.setType(str);
 
     str.clear();
     str.insert(0,"login");
-    req.setMethod(str);
+    ev.req.setMethod(str);
 
     str.clear();
     str.insert(0, userName.toLocal8Bit().data());
-    req.addParams(str);
+    ev.req.addParams(str);
 
     str.clear();
     str.insert(0, userPassword.toLocal8Bit().data());
-    req.addParams(str);
-    nq->pushEvent(req);
+    ev.req.addParams(str);
+
+    ev.callee = (QObject *)this;
+    strcpy(ev.signal, SLOT(receiveLoginResponse(Response)));
+
+    nq->pushEvent(ev);
 
 }
 

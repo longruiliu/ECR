@@ -15,7 +15,7 @@ public:
     messageListener(QString &userID, QString &passwd, int sessionID);
     void setRemote(QString &addr, QString &port);
     void setSessionID(int sessionID);
-    bool sendRequest(Request &req, Response &resp);
+    bool sendRequest(Request &req, std::string &resp);
 signals:
     void youHaveMessage(Response resp);
 

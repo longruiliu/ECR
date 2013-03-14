@@ -11,38 +11,32 @@ void networkQueue::setRemote(QString &addr, QString &port){
     this->port = port;
 }
 
-void networkQueue::pushEvent(Request &req){
+void networkQueue::pushEvent(Nevent &req){
     eventQueue.push_back(req);
     cond.wakeAll();
 }
 
 void networkQueue::run(){
+    std::string respStr;
     while(1){
         lock.lock();
         cond.wait(&lock);
         while(!eventQueue.isEmpty()){
-            Response resp;
-            Request req = eventQueue.front();
-            sendRequest(req, resp);
+
+            Nevent ev = eventQueue.front();
+            sendRequest(ev.req, respStr);
+            Response resp(respStr);
             eventQueue.pop_front();
-            dispatch(req, resp);
+            QObject::connect(this, SIGNAL(youHaveResponse(Response)), ev.callee, ev.signal);
+            emit youHaveResponse(resp);
+            QObject::connect(this, SIGNAL(youHaveResponse(Response)), ev.callee, ev.signal);
         }
         lock.unlock();
     }
 }
 
-void networkQueue::dispatch(Request &req, Response &resp){
-    std::string type, method;
 
-    req.getType(type);
-    req.getMethod(method);
-
-    if(type == std::string("regluar") && method == std::string("login")){
-        emit loginBack(resp);
-    }
-}
-
-void networkQueue::sendRequest(Request &req, Response &resp){
+void networkQueue::sendRequest(Request &req, std::string &resp){
     std::string rawData;
     Network net;
 
@@ -56,7 +50,8 @@ void networkQueue::sendRequest(Request &req, Response &resp){
         return;
     }
     net.readData(rawData);
-    resp.setRawData(rawData);
+
+    resp = rawData;
 }
 
 

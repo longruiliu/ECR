@@ -21,7 +21,7 @@ void messageListener::messageReady(){
     char *pushMsg;
     int msgLen, msgType;
     Request req;
-    Response resp;
+    std::string respStr;
 
     if(addr.isEmpty() || port.isEmpty())
         return;
@@ -60,8 +60,8 @@ void messageListener::messageReady(){
     }
     req.addParams(timeStamp);
 
-    sendRequest(req, resp);
-
+    sendRequest(req, respStr);
+    Response resp(respStr);
     emit youHaveMessage(resp);
 }
 
@@ -78,7 +78,7 @@ void messageListener::setSessionID(int sessionID){
     this->sessionID = sessionID;
 }
 
-bool messageListener::sendRequest(Request &req, Response &resp){
+bool messageListener::sendRequest(Request &req, std::string &resp){
 
     std::string rawData;
     Network net;
@@ -93,6 +93,8 @@ bool messageListener::sendRequest(Request &req, Response &resp){
         return false;
     }
     net.readData(rawData);
-    resp.setRawData(rawData);
+
+    resp = rawData;
+    return true;
 }
 

@@ -6,7 +6,6 @@
 #include <map>
 #include <string>
 #include <stdio.h>
-#include <zlib.h>
 #include "protocol.h"
 
 static int jsonToString(Json::Value &, std::string &);
