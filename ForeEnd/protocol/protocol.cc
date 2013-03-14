@@ -104,29 +104,58 @@ int Request::setMethod(std::string &method) {
 }
 
 int Request::addParams(int val) {
-    root["params"].append(val);
+    Json::Value param;
+    param["type"] = "Int";
+    param["value"] = val;
+    root["params"].append(param);
     return 0;
 }
 
 int Request::addParams(std::string &s) {
-    root["params"].append(s);
+    Json::Value param;
+    param["type"] = "String";
+    param["value"] = s;
+    root["params"].append(param);
     return 0;
 }
 
 int Request::addParams(UserInfo &ui) {
+    Json::Value param;
+    param["type"] = "UserInfo";
     Json::Value json;
     for (__typeof(ui.begin()) it = ui.begin(); it != ui.end(); it++)
         json[it->first] = ui[it->second];
-    root["params"].append(json);
+    param["value"] = json;
+    root["params"].append(param);
     return 0;
 }
 
 int Request::addParams(UserList &ul) {
+    Json::param;
+    param["type"] = "UserList";
     Json::Value arr;
     for (int i = 0; i != sizeof(ul); i++)
         arr.append(ul[i]);
-    root["params"].append(arr);
+    param["value"] = arr;
+    root["params"].append(param);
     return 0;
+}
+
+int Request::addParams(MsgList &ml) {
+    Json::Value param;
+    Json::Value arr;
+    Json::Value msg;
+    param["type"] = "MsgList";
+    for (int i = 0; i != ml.size(); i++) {
+        msg["srcID"] = ml[i].srcID;
+        msg["targetID"] = ml[i].targetID;
+        msg["msgText"] = ml[i].msgText;
+        msg["postTime"] = ml[i].postTime;
+        msg["msgType"] = ml[i].msgType;
+        arr.append(msg);
+    }
+    param["value"] = arr;
+    root["params"].append(param);
 }
 
 int Request::encode(std::string &rawString) {
@@ -204,10 +233,11 @@ int Response::getGroupID() const {
     return root["groupID"].asInt();
 }
 */
-
+/*
 int Response::getUserInfo(std::string &rawString, UserInfo &ui) const {
     Json::Value root;
     if (stringToJson(rawString, root) == ERROR)
         return ERROR;
     for (__typeof(
 }
+*/
