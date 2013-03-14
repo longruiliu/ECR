@@ -1,12 +1,18 @@
 import random
 import time
-KAI = 4 #Keep-alive interval
+import thread
+KAI = 60 #Keep-alive interval
 sessionList_uk = {} 
 sessionList_sk = {}
 
+def sessionGuard():
+    while(1):
+	    thread.sleep(KAI)
+        cleanDeadUser()
+
 def renewUser(userID):
     if sessionList_uk.has_key(userID):
-        sessionList_uk[userID] = sessionList_uk[userID][:-1]+(time.time(),)
+        sessionList_uk[userID] = sessionList_uk[userID][:-1]+(time.time(),)		
 
 def cleanDeadUser():
     deadline = time.time() - KAI

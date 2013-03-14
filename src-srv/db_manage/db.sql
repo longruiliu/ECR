@@ -23,7 +23,7 @@ CREATE TABLE "Message" (
     "id" integer NOT NULL PRIMARY KEY,
     "group_id" integer NOT NULL REFERENCES "Group" ("group_id"),
     "user_id" integer NOT NULL REFERENCES "User" ("user_id"),
-    "send_time" datetime NOT NULL,
+    "send_time" timestamp NOT NULL,
     "m_type" integer NOT NULL,
     "content" varchar(500) NOT NULL
 )

@@ -34,7 +34,7 @@ def delGroup(groupID):
     if groupID in groupList:
         del groupList[groupID]
 
-class Group():
+class Group(object):
     def __init__(self, groupName, creator):
         self.msgList = []
         self.groupMember = {}
@@ -90,6 +90,10 @@ class GroupMsg(msgRecord.MsgRecord):
     def __init__(self, sendorID, targetID, isRed, msgText):
         super(GroupMsg, self).__init__(sendorID, targetID, msgText)
         self.isRed = isRed
+        if isRed:
+            self.typeID = MSG_TYPE_GROUP_RED
+        else:
+            self.typeID = MSG_TYPE_GROUP_MSG
     def __str__(self):
         if self.isRed:
             output = 'This is a red groupMsg\n'
