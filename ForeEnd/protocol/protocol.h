@@ -69,8 +69,8 @@ public:
     int getGroupID(std::string &rawString) const;
     int getGroupID() const;
 
-    int getGroupList(std::string &rawString, std::vector <std:pair <std::int, std::string> &) const;
-    int getGroupList(std::vector <std:pair <int, std::string> &) const;
+    int getGroupList(std::string &rawString, std::vector <std::pair <int, std::string> > &) const;
+    int getGroupList(std::vector <std::pair <int, std::string> > &) const;
 
     int getMsgList(std::string &rawString, std::vector <msgRecord> &) const;
     int getMsgList(std::vector <msgRecord> &) const;

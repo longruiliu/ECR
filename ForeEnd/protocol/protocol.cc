@@ -131,7 +131,7 @@ int Request::addParams(UserInfo &ui) {
 }
 
 int Request::addParams(UserList &ul) {
-    Json::param;
+    Json::Value param;
     param["type"] = "UserList";
     Json::Value arr;
     for (int i = 0; i != sizeof(ul); i++)
@@ -150,16 +150,17 @@ int Request::addParams(MsgList &ml) {
         msg["srcID"] = ml[i].srcID;
         msg["targetID"] = ml[i].targetID;
         msg["msgText"] = ml[i].msgText;
-        msg["postTime"] = ml[i].postTime;
+        msg["postTime"] = (int)ml[i].postTime;
         msg["msgType"] = ml[i].msgType;
         arr.append(msg);
     }
     param["value"] = arr;
     root["params"].append(param);
+    return 0;
 }
 
 int Request::encode(std::string &rawString) {
-    return jsonToString(root, string);
+    return jsonToString(root, rawString);
 }
 
 /*
@@ -242,28 +243,28 @@ int Response::getUserInfo(std::string &rawString, UserInfo &ui) const {
 }
 */
 
-Response::Request(std::string &s) {
+Response::Response(std::string &s) {
     stringToJson(s, root);
 }
 
-int Response::getStatus() {
-    return root["status"];
+int Response::getStatus() const {
+    return root["status"].asInt();
 }
 
-int Response::getUserInfo(UserInfo &ui) {
+int Response::getUserInfo(UserInfo &ui) const {
     try {
-        Json::Value json = root["result"][0]["value"];
+        Json::Value json = root["result"][0U]["value"];
         for (__typeof(json.begin()) it = json.begin(); it != json.end(); it++)
-            ui[it.key().asString()] = (*it).asString;
+            ui[it.key().asString()] = (*it).asString();
     } catch (...)  {
         return ERROR;
     }
     return 0;
 }
 
-int Response::getUserName(std::string &ret) {
+int Response::getUserName(std::string &ret) const {
     try {
-        Json::Value json = root["result"][0]["value"];
+        Json::Value json = root["result"][0U]["value"];
         ret = json.asString();
     } catch (...) {
         return ERROR;
@@ -271,9 +272,9 @@ int Response::getUserName(std::string &ret) {
     return 0;
 }
 
-int Response::getUserID() {
+int Response::getUserID() const {
     try {
-        Json::Value json = root["result"][0]["value"];
+        Json::Value json = root["result"][0U]["value"];
         return json.asInt();
     } catch (...) {
         return ERROR;
@@ -281,11 +282,11 @@ int Response::getUserID() {
     return ERROR;
 }
 
-int Response::getGroupList(std::vector < std::pair <int, std::string> > &gpl) {
+int Response::getGroupList(std::vector < std::pair <int, std::string> > &gpl) const {
     try {
-        Json::Value json = root["result"][0]["value"];
+        Json::Value json = root["result"][0U]["value"];
         for (int i = 0; i != json.size(); i++) {
-            gpl.push_back(make_pair(json[i][0].asInt(), json[i][0].asString()));
+            gpl.push_back(make_pair(json[i][0U].asInt(), json[i][0U].asString()));
         }
     } catch (...) {
         return ERROR;
@@ -293,24 +294,27 @@ int Response::getGroupList(std::vector < std::pair <int, std::string> > &gpl) {
     return 0;
 }
 
-int Response::getMsgList(std:: vector <msgRecord> &vmr) {
+int Response::getMsgList(std:: vector <msgRecord> &vmr) const {
     try {
-        Json::Value json = root["result"][0]["value"];
+        Json::Value json = root["result"][0U]["value"];
         for (int i = 0; i != json.size(); i++) {
             Json::Value temp = json[i];
-            MsgRecord mr;
+            int srcID, targetID, postTime, msgType;
+            std::string msgText;
             for (__typeof(temp.begin()) it = temp.begin(); it != temp.end(); it++) {
-                if (it.key().asString == "srcID")
-                    mr.srcID = (*it).asInt();
-                else if (it.key().asString == "targetID")
-                    mr.targetID = (*it).asInt();
+                if (it.key().asString() == "srcID")
+                    srcID = (*it).asInt();
+                else if (it.key().asString() == "targetID")
+                    targetID = (*it).asInt();
                 else if (it.key().asString() == "msgText")
-                    mr.msgText = (*it).asString();
+                    msgText = (*it).asString();
                 else if (it.key().asString() == "postTime")
-                    mr.postTime = (*it).asInt();
+                    postTime = (*it).asInt();
                 else if (it.key().asString() == "msgType")
-                    mr.msgType = (*it).asInt();
+                    msgType = (*it).asInt();
             }
+            MsgRecord mr(srcID, targetID, msgText, msgType);
+            mr.postTime = postTime;
             vmr.push_back(mr);
         }
     } catch (...) {
@@ -319,30 +323,30 @@ int Response::getMsgList(std:: vector <msgRecord> &vmr) {
     return 0;
 }
 
-int Response::getStatus(std::string &s) {
+int Response::getStatus(std::string &s) const {
     Json::Value root;
     stringToJson(s, root);
-    return root["status"];
+    return root["status"].asInt();
 }
 
-int Response::getUserInfo(std::string &s, UserInfo &ui) {
+int Response::getUserInfo(std::string &s, UserInfo &ui) const {
     Json::Value root;
     stringToJson(s, root);
     try {
-        Json::Value json = root["result"][0]["value"];
+        Json::Value json = root["result"][0U]["value"];
         for (__typeof(json.begin()) it = json.begin(); it != json.end(); it++)
-            ui[it.key().asString()] = (*it).asString;
+            ui[it.key().asString()] = (*it).asString();
     } catch (...)  {
         return ERROR;
     }
     return 0;
 }
 
-int Response::getUserName(std::string &s, std::string &ret) {
+int Response::getUserName(std::string &s, std::string &ret) const {
     Json::Value root;
     stringToJson(s, root);
     try {
-        Json::Value json = root["result"][0]["value"];
+        Json::Value json = root["result"][0U]["value"];
         ret = json.asString();
     } catch (...) {
         return ERROR;
@@ -350,11 +354,11 @@ int Response::getUserName(std::string &s, std::string &ret) {
     return 0;
 }
 
-int Response::getUserID(std::string &s) {
+int Response::getUserID(std::string &s) const {
     Json::Value root;
     stringToJson(s, root);
     try {
-        Json::Value json = root["result"][0]["value"];
+        Json::Value json = root["result"][0U]["value"];
         return json.asInt();
     } catch (...) {
         return ERROR;
@@ -362,13 +366,13 @@ int Response::getUserID(std::string &s) {
     return ERROR;
 }
 
-int Response::getGroupList(std::string &s, std::vector < std::pair <int, std::string> > &gpl) {
+int Response::getGroupList(std::string &s, std::vector < std::pair <int, std::string> > &gpl) const {
     Json::Value root;
     stringToJson(s, root);
     try {
-        Json::Value json = root["result"][0]["value"];
+        Json::Value json = root["result"][0U]["value"];
         for (int i = 0; i != json.size(); i++) {
-            gpl.push_back(make_pair(json[i][0].asInt(), json[i][0].asString()));
+            gpl.push_back(make_pair(json[i][0U].asInt(), json[i][0U].asString()));
         }
     } catch (...) {
         return ERROR;
@@ -376,26 +380,29 @@ int Response::getGroupList(std::string &s, std::vector < std::pair <int, std::st
     return 0;
 }
 
-int Response::getMsgList(std::string &s, std:: vector <msgRecord> &vmr) {
+int Response::getMsgList(std::string &s, std:: vector <msgRecord> &vmr) const {
     Json::Value root;
     stringToJson(s, root);
     try {
-        Json::Value json = root["result"][0]["value"];
+        Json::Value json = root["result"][0U]["value"];
         for (int i = 0; i != json.size(); i++) {
             Json::Value temp = json[i];
-            MsgRecord mr;
+            int srcID, targetID, postTime, msgType;
+            std::string msgText;
             for (__typeof(temp.begin()) it = temp.begin(); it != temp.end(); it++) {
-                if (it.key().asString == "srcID")
-                    mr.srcID = (*it).asInt();
-                else if (it.key().asString == "targetID")
-                    mr.targetID = (*it).asInt();
+                if (it.key().asString() == "srcID")
+                    srcID = (*it).asInt();
+                else if (it.key().asString() == "targetID")
+                    targetID = (*it).asInt();
                 else if (it.key().asString() == "msgText")
-                    mr.msgText = (*it).asString();
+                    msgText = (*it).asString();
                 else if (it.key().asString() == "postTime")
-                    mr.postTime = (*it).asInt();
+                    postTime = (*it).asInt();
                 else if (it.key().asString() == "msgType")
-                    mr.msgType = (*it).asInt();
+                    msgType = (*it).asInt();
             }
+            MsgRecord mr(srcID, targetID, msgText, msgType);
+            mr.postTime = postTime;
             vmr.push_back(mr);
         }
     } catch (...) {
