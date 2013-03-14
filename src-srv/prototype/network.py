@@ -154,7 +154,7 @@ def requestHandler(request):
         else:
             pass
     elif req_type == 'group':
-        pass
+        if req_method == '
     else:
         
 def recvRoutine(sock, addr):
