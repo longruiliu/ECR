@@ -58,7 +58,7 @@ FORMS    += \
 RESOURCES += \
     USay.qrc
 
-INCLUDEPATH += .\\protocol\\
-INCLUDEPATH += ..\\src-srv\\include
-INCLUDEPATH += ..\\include
+INCLUDEPATH += ./protocol
+INCLUDEPATH += ../src-srv/include
+INCLUDEPATH += ../include
 RC_FILE = icon.rc
