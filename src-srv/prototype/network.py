@@ -42,9 +42,9 @@ def requestHandler(request):
     Call correspond request handler according to the request.
     """
     req_sessionID = request.get("sessioID", None)
-    req_type = request["type"]
-    req_method = request["method"]
-    req_params = request["params"]
+    req_type = request.get("type", '')
+    req_method = request.get("method", '')
+    req_params = request.get("params", [])
     
     
     if req_type == 'regular':
