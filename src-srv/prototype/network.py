@@ -161,9 +161,95 @@ def requestHandler(request):
                 status, result = apply(logic.addGroup, params)
                 ret = initialRet(status)
                 if status == ERR_OK:
-                    
-            
+                    ret['result'].append({'type': 'Int', 'value': result})
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'del':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.delGroup, params)
+                ret = initialRet(status)
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'sendmsg':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.sendGroupMsg, params)
+                ret = initialRet(status)
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'joinreq':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.addGroupMember, params)
+                ret = initialRet(status)
+                sendResponse(status)
+            except:
+                pass
+        elif req_method == 'quitreq':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in params].insert(0, srcID)
+                status, result = apply(logic.delGroupMember, params)
+                ret = initialRet(status)
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'userlist':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in params].insert(0, srcID)
+                status, result = apply(logic.fetchMemberList, params)
+                ret = initialRet(status)
+                if status == ERR_OK:
+                    ret['result'].append({'type': 'UserList', 'value': [x for x in result]})
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'redmsg':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.sendRedMsg, params)
+                ret = initialRet(status)
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'fetchmsg':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.fetchGroupMsg, params)
+                ret = initialRet(status)
+                if status == ERR_OK:
+                    ret['result'].append({'type': 'MsgList', 'value': [{
+                                    'srcID': item.sendorID,
+                                    'targetID': item.targetID,
+                                    'msgText': item.msgText,
+                                    'postTime': item.timestamp,
+                                    'msgType': item.typeID}
+                                                                       for item in result]})
+                sendResponse(ret)
+        elif req_method == 'fetchgrp':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                status, result = apply(logic.fetchGroupList, srcID)
+                ret = initialRet(status)
+                if status == ERR_OK:
+                    ret['result'].append({'type': 'GroupList', 'value': result})
+                sendResponse(ret)
+            except:
+                pass
+        else:
+            pass
     else:
+        pass
         
 def recvRoutine(sock, addr):
     """

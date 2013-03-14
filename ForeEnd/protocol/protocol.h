@@ -52,6 +52,7 @@ public:
     int getUserList(std::string &rawString, UserList &ul) const;
     int getGroupName(std::string &rawString, std::string &groupName) const;
     int getGroupID(std::string &rawString) const;
+    int getGroupList(std::string &rawString, std::vector <std:pair <std::int, std::string>) const;
     int getMsgList(std::string &rawString, std::vector <msgRecord> &) const;
 };
 
