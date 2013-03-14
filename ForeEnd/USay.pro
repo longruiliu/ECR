@@ -10,6 +10,7 @@ QT       += webkit
 TARGET = USay
 TEMPLATE = app
 
+DEFINES += JSON_IS_AMALGAMATION
 
 SOURCES += main.cpp \
     chatroom.cpp \
@@ -24,7 +25,8 @@ SOURCES += main.cpp \
     shakewindow.cpp \
     messagelistener.cpp \
     networkqueue.cpp \
-    network1.cpp
+    network1.cpp \
+    protocol/jsoncpp.cpp
 
 HEADERS  += \
     chatroom.h \
@@ -55,8 +57,7 @@ FORMS    += \
 RESOURCES += \
     USay.qrc
 
-LIBS += D:\\ECR\\USay\\ForeEnd\\protocol\\json_vc71_libmt.lib
-INCLUDEPATH += C:\\Users\\guzhouyiye\\Downloads\\jsoncpp-src-0.5.0\\include
-INCLUDEPATH += D:\\tmp\\ECR\\src_srv\\include
-INCLUDEPATH += D:\\tmp\\ECR\\src_srv\\user
+INCLUDEPATH += .\\protocol\\
+INCLUDEPATH += ..\\src-srv\\include
+INCLUDEPATH += ..\\include
 RC_FILE = icon.rc
