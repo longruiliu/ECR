@@ -104,33 +104,63 @@ int Request::setMethod(std::string &method) {
 }
 
 int Request::addParams(int val) {
-    root["params"].append(val);
+    Json::Value param;
+    param["type"] = "Int";
+    param["value"] = val;
+    root["params"].append(param);
     return 0;
 }
 
 int Request::addParams(std::string &s) {
-    root["params"].append(s);
+    Json::Value param;
+    param["type"] = "String";
+    param["value"] = s;
+    root["params"].append(param);
     return 0;
 }
 
 int Request::addParams(UserInfo &ui) {
+    Json::Value param;
+    param["type"] = "UserInfo";
     Json::Value json;
     for (__typeof(ui.begin()) it = ui.begin(); it != ui.end(); it++)
         json[it->first] = ui[it->second];
-    root["params"].append(json);
+    param["value"] = json;
+    root["params"].append(param);
     return 0;
 }
 
 int Request::addParams(UserList &ul) {
+    Json::Value param;
+    param["type"] = "UserList";
     Json::Value arr;
     for (int i = 0; i != sizeof(ul); i++)
         arr.append(ul[i]);
-    root["params"].append(arr);
+    param["value"] = arr;
+    root["params"].append(param);
+    return 0;
+}
+
+int Request::addParams(MsgList &ml) {
+    Json::Value param;
+    Json::Value arr;
+    Json::Value msg;
+    param["type"] = "MsgList";
+    for (int i = 0; i != ml.size(); i++) {
+        msg["srcID"] = ml[i].srcID;
+        msg["targetID"] = ml[i].targetID;
+        msg["msgText"] = ml[i].msgText;
+        msg["postTime"] = (int)ml[i].postTime;
+        msg["msgType"] = ml[i].msgType;
+        arr.append(msg);
+    }
+    param["value"] = arr;
+    root["params"].append(param);
     return 0;
 }
 
 int Request::encode(std::string &rawString) {
-    return stringToJson(rawString, root);
+    return jsonToString(root, rawString);
 }
 
 /*
@@ -204,10 +234,179 @@ int Response::getGroupID() const {
     return root["groupID"].asInt();
 }
 */
-
+/*
 int Response::getUserInfo(std::string &rawString, UserInfo &ui) const {
     Json::Value root;
     if (stringToJson(rawString, root) == ERROR)
         return ERROR;
     for (__typeof(
+}
+*/
+
+Response::Response(std::string &s) {
+    stringToJson(s, root);
+}
+
+int Response::getStatus() const {
+    return root["status"].asInt();
+}
+
+int Response::getUserInfo(UserInfo &ui) const {
+    try {
+        Json::Value json = root["result"][0U]["value"];
+        for (__typeof(json.begin()) it = json.begin(); it != json.end(); it++)
+            ui[it.key().asString()] = (*it).asString();
+    } catch (...)  {
+        return ERROR;
+    }
+    return 0;
+}
+
+int Response::getUserName(std::string &ret) const {
+    try {
+        Json::Value json = root["result"][0U]["value"];
+        ret = json.asString();
+    } catch (...) {
+        return ERROR;
+    }
+    return 0;
+}
+
+int Response::getUserID() const {
+    try {
+        Json::Value json = root["result"][0U]["value"];
+        return json.asInt();
+    } catch (...) {
+        return ERROR;
+    }
+    return ERROR;
+}
+
+int Response::getGroupList(std::vector < std::pair <int, std::string> > &gpl) const {
+    try {
+        Json::Value json = root["result"][0U]["value"];
+        for (int i = 0; i != json.size(); i++) {
+            gpl.push_back(make_pair(json[i][0U].asInt(), json[i][0U].asString()));
+        }
+    } catch (...) {
+        return ERROR;
+    }
+    return 0;
+}
+
+int Response::getMsgList(std:: vector <msgRecord> &vmr) const {
+    try {
+        Json::Value json = root["result"][0U]["value"];
+        for (int i = 0; i != json.size(); i++) {
+            Json::Value temp = json[i];
+            int srcID, targetID, postTime, msgType;
+            std::string msgText;
+            for (__typeof(temp.begin()) it = temp.begin(); it != temp.end(); it++) {
+                if (it.key().asString() == "srcID")
+                    srcID = (*it).asInt();
+                else if (it.key().asString() == "targetID")
+                    targetID = (*it).asInt();
+                else if (it.key().asString() == "msgText")
+                    msgText = (*it).asString();
+                else if (it.key().asString() == "postTime")
+                    postTime = (*it).asInt();
+                else if (it.key().asString() == "msgType")
+                    msgType = (*it).asInt();
+            }
+            MsgRecord mr(srcID, targetID, msgText, msgType);
+            mr.postTime = postTime;
+            vmr.push_back(mr);
+        }
+    } catch (...) {
+        return ERROR;
+    }
+    return 0;
+}
+
+int Response::getStatus(std::string &s) const {
+    Json::Value root;
+    stringToJson(s, root);
+    return root["status"].asInt();
+}
+
+int Response::getUserInfo(std::string &s, UserInfo &ui) const {
+    Json::Value root;
+    stringToJson(s, root);
+    try {
+        Json::Value json = root["result"][0U]["value"];
+        for (__typeof(json.begin()) it = json.begin(); it != json.end(); it++)
+            ui[it.key().asString()] = (*it).asString();
+    } catch (...)  {
+        return ERROR;
+    }
+    return 0;
+}
+
+int Response::getUserName(std::string &s, std::string &ret) const {
+    Json::Value root;
+    stringToJson(s, root);
+    try {
+        Json::Value json = root["result"][0U]["value"];
+        ret = json.asString();
+    } catch (...) {
+        return ERROR;
+    }
+    return 0;
+}
+
+int Response::getUserID(std::string &s) const {
+    Json::Value root;
+    stringToJson(s, root);
+    try {
+        Json::Value json = root["result"][0U]["value"];
+        return json.asInt();
+    } catch (...) {
+        return ERROR;
+    }
+    return ERROR;
+}
+
+int Response::getGroupList(std::string &s, std::vector < std::pair <int, std::string> > &gpl) const {
+    Json::Value root;
+    stringToJson(s, root);
+    try {
+        Json::Value json = root["result"][0U]["value"];
+        for (int i = 0; i != json.size(); i++) {
+            gpl.push_back(make_pair(json[i][0U].asInt(), json[i][0U].asString()));
+        }
+    } catch (...) {
+        return ERROR;
+    }
+    return 0;
+}
+
+int Response::getMsgList(std::string &s, std:: vector <msgRecord> &vmr) const {
+    Json::Value root;
+    stringToJson(s, root);
+    try {
+        Json::Value json = root["result"][0U]["value"];
+        for (int i = 0; i != json.size(); i++) {
+            Json::Value temp = json[i];
+            int srcID, targetID, postTime, msgType;
+            std::string msgText;
+            for (__typeof(temp.begin()) it = temp.begin(); it != temp.end(); it++) {
+                if (it.key().asString() == "srcID")
+                    srcID = (*it).asInt();
+                else if (it.key().asString() == "targetID")
+                    targetID = (*it).asInt();
+                else if (it.key().asString() == "msgText")
+                    msgText = (*it).asString();
+                else if (it.key().asString() == "postTime")
+                    postTime = (*it).asInt();
+                else if (it.key().asString() == "msgType")
+                    msgType = (*it).asInt();
+            }
+            MsgRecord mr(srcID, targetID, msgText, msgType);
+            mr.postTime = postTime;
+            vmr.push_back(mr);
+        }
+    } catch (...) {
+        return ERROR;
+    }
+    return 0;
 }

@@ -1,66 +1,18 @@
 import json
 import socket
 import thread
-import mutex
 import pickle
-from logic import *
-from session import *
+import logic
+from logic import ERR_SESSIONID_EXPECTED, ERR_METHOD_EXPECTED, ERR_TYPE_EXPECTED, ERR_PARAMS_EXPECTED, ERR_INVALID_METHOD, ERR_INVALID_PARAMS, ERR_INVALID_TYPE, ERR_OK, ERR_NOT_IN_GROUP, ERR_NO_PRIVILEGE, ERR_WRONG_PASSWD
+from session import getUserIDBySession
 import unittest_basicData
 
 SERVER_PORT = 0x1024
 BACKLOG = 127
-sockMapMutex = mutex.mutex()
+sockMapMutex = thread.allocate_lock()
 sockMap = {}
+MAX_BUFSZ = 4096
 
-def checkParams(req_type, req_method, req_params):
-    """
-    Deprecated function.
-    """
-    params = requestHandlers[req_type][req_method]["args"]
-    ret = []
-    if len(params) != req_params:
-        return None
-    for i in xrange(len(params)):
-        if type(req_params[i]) is not params[i]:
-            try:
-                req_params[i] = params[i](req_params[i])
-            except:
-                try:
-                    proto = (params[i])()
-                    if (req_params[i].keys() != proto.__dict__.keys()):
-                        return None
-                    else:
-                        for k in req_params[i].keys():
-                            proto.__dict__[k] = req_params[i][k]
-                        req_params[i] = proto
-                except:
-                    return None
-    return req_params
-    
-def sendResponse(result):
-    """
-    When finished serializing the objects, call this function to send result.
-    """
-
-    try:
-        ret = json.dumps(result)
-    except:
-        # for current protocol, it occurs when met with group message list
-        ret = []
-        for i in xrange(len(result)):
-            gmr = result[i]
-            temp = {}
-            for k in gmp.__dict__.keys():
-                temp[k] = gmr.__dict__[k]
-            ret.append(temp)
-        ret = json.dumps(ret)
-        
-    # release thread/socket binding
-    ident = thread.get_ident()
-    sock = sockMap[ident][0]
-    sock.send(ret)
-    return ERR_OK
-    
 def sendNotification(addr, notifyType, extra):
     """
     Async notification conducted by server.
@@ -71,75 +23,257 @@ def sendNotification(addr, notifyType, extra):
     s.sendto("%x %x"%(notifyType, extra), address)
     s.close()
     
-def responseHandler(method, args):
-    """
-    Call correspond response handler to respond.
-    """
 
-def paramsFormalizer(request):
-    req_type = request["type"]
-    req_method = request["method"]
-    params = request["params"][:]
+def sendResponse(result):
+    final_result = json.dumps(result)
+    ident = thread.get_ident()
+    sock = sockMap[ident][0]
+    sock.send(final_result)
 
-    if req_method == 'login':
-        ident = thread.get_ident()
-        ip = sockMap[ident][1]
-        params.append(ip)
-    elif req_method == 'logout':
-        params.append(request["sessionID"])
-    else:
-        srcID = getUserIDBySession(request["sessionID"])
-        params.insert(0, srcID)
-    return params
+def initialRet(status):
+    ret = {}
+    ret['status'] = status
+    ret['result'] = []
+    return ret
 
-# no general interface, so if/else
+# coding it the hard way
 def requestHandler(request):
     """
     Call correspond request handler according to the request.
     """
-    
-    if not request.has_key("type"):
-        return ERR_TYPE_EXPECTED
-    if not request.has_key("method"):
-        return ERR_METHOD_EXPECTED
-    if not request.has_key("params"):
-        return ERR_PARAMS_EXPECTED
-
+    req_sessionID = request.get("sessioID", None)
     req_type = request["type"]
     req_method = request["method"]
     req_params = request["params"]
     
+    
     if req_type == 'regular':
         if req_method == 'login':
-            
+            try:
+                ident = thread.get_ident()
+                ip = sockMap[ident][1]
+                params = [item["value"] for item in req_params]
+                params.append(ip)
+                status, result = apply(logic.login, params)
+                ret = initialRet(status)
+                if status == ERR_OK:
+                    ret["result"].append({"type": "Int", "value": result})
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'logout':
+            try:
+                status, result = apply(logic.logout, req_sessionID)
+                ret = initialRet(status)
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'add':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item["value"] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.addUser, params)
+                ret = initialRet(status)
+                if status == ERR_OK:
+                    ret["result"].append({"type": "Int", "value": result})
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'del':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.delUser, params)
+                ret = initialRet(status)
+                
+            except:
+                pass
+        elif req_method == 'modify':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item["value"] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.modifyUser, params)
+                ret = initialRet(status)
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'sendmsg':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.sendMsg, params)
+                ret = initialRet(status)
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'userlist':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.fetchMemberList, params)
+                ret = initialRet(status)
+                if status == ERR_OK:
+                    ret['result'].append({'type': 'UserList', 'value': result})
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'userinfo':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.getUserInfo, params)
+                if status == ERR_OK:
+                    ret['result'].append({'type': 'UserInfo', 'value': result})
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'keepalive':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.keepAlive, params)
+                ret = initialRet(status)
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'fetchmsg':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                status, result = apply(logic.keepAlive, srcID)
+                ret = initialRet(status)
+                if status == ERR_OK:
+                    ret['result'].append({'type': 'MsgList', 'value': [{
+                                    'srcID': item.sendorID,
+                                    'targetID': item.targetID,
+                                    'msgText': item.msgText,
+                                    'postTime': item.timestamp,
+                                    'msgType': item.typeID}
+                                                                       for item in result]})
+                sendResponse(ret)
+            except:
+                pass
+        else:
+            pass
     elif req_type == 'group':
-        pass
+        if req_method == 'add':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.addGroup, params)
+                ret = initialRet(status)
+                if status == ERR_OK:
+                    ret['result'].append({'type': 'Int', 'value': result})
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'del':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.delGroup, params)
+                ret = initialRet(status)
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'sendmsg':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.sendGroupMsg, params)
+                ret = initialRet(status)
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'joinreq':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.addGroupMember, params)
+                ret = initialRet(status)
+                sendResponse(status)
+            except:
+                pass
+        elif req_method == 'quitreq':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in params].insert(0, srcID)
+                status, result = apply(logic.delGroupMember, params)
+                ret = initialRet(status)
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'userlist':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in params].insert(0, srcID)
+                status, result = apply(logic.fetchMemberList, params)
+                ret = initialRet(status)
+                if status == ERR_OK:
+                    ret['result'].append({'type': 'UserList', 'value': [x for x in result]})
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'redmsg':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.sendRedMsg, params)
+                ret = initialRet(status)
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'fetchmsg':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.fetchGroupMsg, params)
+                ret = initialRet(status)
+                if status == ERR_OK:
+                    ret['result'].append({'type': 'MsgList', 'value': [{
+                                    'srcID': item.sendorID,
+                                    'targetID': item.targetID,
+                                    'msgText': item.msgText,
+                                    'postTime': item.timestamp,
+                                    'msgType': item.typeID}
+                                                                       for item in result]})
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'fetchgrp':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                status, result = apply(logic.fetchGroupList, srcID)
+                ret = initialRet(status)
+                if status == ERR_OK:
+                    ret['result'].append({'type': 'GroupList', 'value': result})
+                sendResponse(ret)
+            except:
+                pass
+        else:
+            pass
     else:
+        pass
         
-def addToSockMap(args):
-    sockMap[args[0]] = (args[1], args[2])
-
-def rmFromSockMap(ident):
-    sockMap.pop(ident)
-
 def recvRoutine(sock, addr):
     """
     When new request arrives, call this routine to respond.
     """
     ident = thread.get_ident()
 
-    sockMapMutex.lock(addToSockMap, (ident, sock, addr))
-    sockMapMutex.unlock()
+    sockMapMutex.acquire()
+    sockMap[ident] = (sock, addr)
+    sockMapMutex.release()
     
     # not very well :(
-    recv = sock.recv(1024)
+    recv = sock.recv(MAX_BUFSZ)
     request = json.loads(recv)
     if type(request) is not dict:
-        return ERR_INVALID_REQUEST
-    requestHandler(request)
+        pass
 
-    sockMapMutex.lock(rmFromSockMap, ident)
-    sockMapMutex.unlock()
+    requestHandler(request)
+    sockMapMutex.acquire()
+    sockMap.pop(ident)
+    sockMapMutex.release()
     sock.close()
 
 def main():
@@ -148,7 +282,7 @@ def main():
     sock.listen(BACKLOG)
     while (1):
         newsock, addr = sock.accept()
-        recvRoutine(newsock, addr)
+        thread.start_new_thread(recvRoutine, (newsock, addr))
     
 if __name__ == '__main__':
     main()
