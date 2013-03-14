@@ -430,4 +430,23 @@ std::string Response::getResType(std::string &s) const {
     return "";
 }
            
+int Response::getSessionID(std::string &s) const {
+    Json::Value root;
+    try{
+        stringToJson(s, root);
+        return root["result"][0U]["value"].asInt();
+    } catch (...) {
+        ;
+     }
+    return ERROR;
+}
+
+int Response::getSessionID() const {
+    try{
+        return root["result"][0U]["value"].asInt();
+    } catch (...) {
+        ;
+     }
+    return ERROR;
+}
 

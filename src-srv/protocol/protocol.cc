@@ -56,31 +56,19 @@ int requestHandler(std::string &request) {
     if (stringToJson(request, root) == ERROR)
         return ERR_INVALID_REQUEST;
     // call logic layer module
-
-    int sessionID;
-    if (root.isMember("sessionID"))
-        sessionID = root["sessionID"].asInt();
-    else
-        return ERR_SESSIONID_EXPECTED;
-
-    if (!root.isMember("type"))
-        return ERR_TYPE_EXPECTED;
-
-    if(!root.isMember("method"))
-        return ERR_METHOD_EXPECTED;
+    
+    int req_sessionID = root.get("sessionID", 0).asInt();
+    std::string req_type = root.get("type", "").asString();
+    std::string req_method = root.get("method", "").asString();
+    Json::Value req_params = root.["params"];
 
     // check sessionID
 
-    int srcID = sessionID;
-    if (!root["params"].isArray())
-        return ERR_INVALID_PARAMS;
-    
-    Json::Value params = root["params"];
-    std::string method = root["method"].asString();
+    int srcID = getUserIDBySession(req_sessionID);
 
     if (root["type"] == "group") {
         if (method == "add") {
-            std::string groupName = params[0U].asString();
+            std::string groupName = params[0U]["value"].asString();
             addGroup(srcID, groupName);
         } else if (method == "del") {
             int groupID;
@@ -187,7 +175,7 @@ int requestHandler(std::string &request) {
                 return ERR_INVALID_PARAMS;
             userID = params[0U].asInt();
             delUser(srcID, userID);
-        } else if (method == "keep-alive") {
+        } else if (method == "keepalive") {
         } else if (method == "fetch") {
             time_t since;
             if (params.size() != 1)

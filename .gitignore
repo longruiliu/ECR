@@ -2,4 +2,5 @@
 *.pyc
 *.bak
 USay-build-*
+*.pro.user*
 *.pro.user
