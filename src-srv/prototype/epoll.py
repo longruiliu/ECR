@@ -26,4 +26,3 @@ def main():
                     connections[newsock.fileno()] = (newsock, addr)
                 elif event & select.EPOLLIN:
                     
-    
