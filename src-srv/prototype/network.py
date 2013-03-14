@@ -81,10 +81,30 @@ def requestHandler(request):
         elif req_method == 'del':
             try:
                 srcID = getUserIDBySession(req_sessionID)
-                params = [item['value'] for item in req_params].insert(0,srcID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
                 status, result = apply(logic.delUser, params)
                 ret = initialRet(status)
-                
+            except:
+                pass
+        elif req_method == 'modify':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item["value"] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.modifyUser, params)
+                ret = initialRet(status)
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == 'sendmsg':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic, sendMsg)
+                ret = initialRet(status)
+                sendResponse(ret)
+            except:
+                pass
+        elif req_method == '':
     elif req_type == 'group':
         pass
     else:
