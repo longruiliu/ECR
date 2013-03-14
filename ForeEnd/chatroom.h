@@ -8,6 +8,8 @@
 #include "fadeinout.h"
 #include "shakewindow.h"
 
+#include "protocol/protocol.h"
+
 namespace Ui {
     class chatRoom;
 }
@@ -21,7 +23,6 @@ public:
     ~chatRoom();
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent (QMouseEvent *);
-
     void AddMessageToList(QString mcontent,QString authorName,bool isSelf);
 
 private slots:
@@ -32,6 +33,9 @@ private slots:
 
     void on_shakeBtn_clicked();
 
+    //接收到回应
+
+    void receiveResponse(Response resp);
 private:
     Ui::chatRoom *ui;
 

@@ -1,4 +1,4 @@
-#include "shakewindow.h"
+﻿#include "shakewindow.h"
 
 shakeWindow::shakeWindow(QDialog *dia,QObject *parent):QObject(parent)
 {

@@ -21,6 +21,8 @@ private:
 
 private slots:
     void startGroupChat() ;
+
+    void receiveResponse(Response resp);
 };
 
 #endif // GROUPLIST_H

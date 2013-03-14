@@ -25,6 +25,8 @@ private slots:
     void onRightClick(QPoint pos);
     void refreshFriendList();
     void viewFriendInfo();
+
+    void receiveResponse(Response resp);
 };
 
 #endif // FRIENDLIST_H

@@ -1,4 +1,4 @@
-#ifndef SHAKEWINDOW_H
+﻿#ifndef SHAKEWINDOW_H
 #define SHAKEWINDOW_H
 
 #include <QtGui>

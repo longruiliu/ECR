@@ -1,4 +1,4 @@
-#ifndef LOGINDIALOG_H
+ï»¿#ifndef LOGINDIALOG_H
 #define LOGINDIALOG_H
 
 #include <QDialog>
@@ -11,11 +11,14 @@
 #include "fadeinout.h"
 #include "registerdialog.h"
 
+#include "messagelistener.h"
+#include "networkqueue.h"
+
 
 namespace Ui {
     class loginDialog;
 }
-
+class LoginConfig;
 class loginDialog : public QDialog
 {
     Q_OBJECT
@@ -26,26 +29,35 @@ public:
 
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent (QMouseEvent *);
+    void setNetwork(messageListener *ml, networkQueue *nq);
 
 private:
+
+    messageListener *ml;
+    networkQueue *nq;
+
     Ui::loginDialog *ui;
 
-    //´°¿ÚÍÏ¶¯Êó±êÒÆ¶¯ÓÐ¹Ø
     QPoint windowPos;
     QPoint dPos;
     QPoint mousePos;
 
-    //ºÍ´°¿ÚµÄµ­Èëµ­³öÓÐ¹Ø
     FadeInOut fadeEffect;
 
     QString userName;
     QString userPassword;
+    int sessionID;
+
+    //loginConfig to get server IP and port
+    LoginConfig *conf;
 
 private slots:
     void on_configBtn_clicked();
     void on_LoginBtn_clicked();
     void on_CloseWinBtn_clicked();
     void on_registerBtn_clicked();
+
+    void receiveLoginResponse(Response resp);
 };
 
 #endif // LOGINDIALOG_H

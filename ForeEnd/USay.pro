@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 QT       += webkit
 
 TARGET = USay
@@ -21,7 +21,10 @@ SOURCES += main.cpp \
     groupchatdialog.cpp \
     fadeinout.cpp \
     registerdialog.cpp \
-    shakewindow.cpp
+    shakewindow.cpp \
+    messagelistener.cpp \
+    networkqueue.cpp \
+    network1.cpp
 
 HEADERS  += \
     chatroom.h \
@@ -31,9 +34,13 @@ HEADERS  += \
     logindialog.h \
     loginconfig.h \
     groupchatdialog.h \
-    fadeinout.h \
+    fadeinout.h\
     registerdialog.h \
-    shakewindow.h
+    shakewindow.h \
+    messagelistener.h \
+    fadeinout.h \
+    networkqueue.h \
+    network1.h
 
 FORMS    += \
     chatroom.ui \
@@ -48,4 +55,8 @@ FORMS    += \
 RESOURCES += \
     USay.qrc
 
+LIBS += D:\\ECR\\USay\\ForeEnd\\protocol\\json_vc71_libmt.lib
+INCLUDEPATH += C:\\Users\\guzhouyiye\\Downloads\\jsoncpp-src-0.5.0\\include
+INCLUDEPATH += D:\\tmp\\ECR\\src_srv\\include
+INCLUDEPATH += D:\\tmp\\ECR\\src_srv\\user
 RC_FILE = icon.rc

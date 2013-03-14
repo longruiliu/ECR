@@ -4,11 +4,6 @@
         <file>header/2.png</file>
         <file>header/3.png</file>
         <file>header/4.png</file>
-        <file>header/bb.png</file>
-        <file>header/hh.png</file>
-        <file>header/jj.png</file>
-        <file>header/nn.png</file>
-        <file>header/yy.png</file>
         <file>header/1p.png</file>
         <file>bg/panelcontent.png</file>
         <file>bg/editTextbg.png</file>
@@ -35,5 +30,6 @@
         <file>btn/shake.png</file>
         <file>btn/chatBlank.png</file>
         <file>bg/registerDialogBg.png</file>
+        <file>chatStyle.html</file>
     </qresource>
 </RCC>

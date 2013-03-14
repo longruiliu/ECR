@@ -1,4 +1,4 @@
-#ifndef FADEINOUT_H
+ï»¿#ifndef FADEINOUT_H
 #define FADEINOUT_H
 
 #include <QtGui>
@@ -16,7 +16,6 @@ const int timerRate=100;
 const double changeValue=0.05;
 
 
-//ÊµÏÖ´°¿Úµ­Èëµ­³öÐ§¹ûµÄÀà
 class FadeInOut:public QObject
 {
     Q_OBJECT
@@ -26,14 +25,14 @@ public:
     void startFadeInOut(int effectType);
 
 private:
-    //´°¿Úµ­Èëµ­³öÓÐ¹Ø
+    //
     QTimer *timerOpacity;
     double opalevel;
     QGraphicsOpacityEffect *opacityEffect;
     int effectType;
     QDialog *dia;
 
-    bool isWorking;//Õý·ñÕýÔÚÖ´ÐÐÒ»¸ö½¥±ä²Ù×÷
+    bool isWorking;//
 
 private slots:
     void changeOpacity();

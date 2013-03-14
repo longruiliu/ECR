@@ -10,13 +10,17 @@ chatRoom::chatRoom(QWidget *parent) :
     setAttribute(Qt::WA_TranslucentBackground);
     fadeEffect.startFadeInOut(FADEIN);
 
-    QFile file("chatStyle.html");
+    QFile file(":/chatStyle.html");
     if(!file.open(QIODevice::ReadOnly))
     {
-        exit(1);
+        //chatStyle.html doesn't exsit
+        messageList="";
     }
-    messageList = file.readAll();
-    ui->messageListWebView->setHtml(messageList);
+    else
+    {
+        messageList = file.readAll();
+        ui->messageListWebView->setHtml(messageList);
+    }
 }
 
 chatRoom::~chatRoom()
@@ -42,12 +46,12 @@ void chatRoom::on_SendButton_clicked()
 
     if(!sendText.isEmpty())
     {
-       //将文本发往服务器
+       //Send Text To Server
 
-        AddMessageToList(sendText,tr("孤舟一叶"),true);
+        AddMessageToList(sendText,tr("Your Nick Name"),true);
 
-        //自动回复
-        AddMessageToList(tr("这是自动回复"),tr("好友昵称"),false);
+        //Auto Replay
+        AddMessageToList(tr("Auto Replay"),tr("Friend's Nick Name"),false);
     }
 
     ui->SendTextEdit->clear();
@@ -55,7 +59,7 @@ void chatRoom::on_SendButton_clicked()
 
 void chatRoom::on_CloseWinBtn_clicked()
 {
-    //窗口淡出
+    //Fade In Fade Out
     fadeEffect.startFadeInOut(FADEOUT_EXIT);
 }
 
@@ -69,11 +73,18 @@ void chatRoom::AddMessageToList(QString mcontent, QString authorName, bool isSel
     messageList+=tr(":]</strong></br>");
     messageList+=mcontent;
     messageList+=tr("</p><div class=\"clear\"></div>");
-    ui->messageListWebView->setHtml(messageList+"</div></body>",QUrl("file:///D:/ECR/USay-build-desktop/" ));
+    ui->messageListWebView->setHtml(messageList+"</div></body>",
+                                    QUrl(QCoreApplication::applicationDirPath()+"//"));
 }
 
 void chatRoom::on_shakeBtn_clicked()
 {
-    //抖动窗口
+    //Shake Dialog
     shakeEffect.startShake();
+}
+
+
+void chatRoom::receiveResponse(Response resp)
+{
+
 }

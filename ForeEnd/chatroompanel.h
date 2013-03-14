@@ -18,6 +18,7 @@ class ChatRoomPanel : public QDialog
 
 public:
     explicit ChatRoomPanel(QWidget *parent = 0);
+    ChatRoomPanel(QString userID, QString passwd, int sessionID);
     ~ChatRoomPanel();
 
 
@@ -26,6 +27,10 @@ public:
 
 private:
     Ui::ChatRoomPanel *ui;
+
+    //Account information
+    QString userID, passwd;
+    unsigned int sessoinID;
 
     //Tab控件切换好友列表群列表
     FriendList friendlistWidget;
@@ -57,6 +62,9 @@ private slots:
 
     void on_CloseWinBtn_clicked();
     void on_headerImage_clicked();
+
+
+    void receiveResponse(Response resp);
 };
 
 #endif // CHATROOMPANEL_H

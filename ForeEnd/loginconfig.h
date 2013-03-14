@@ -5,6 +5,7 @@
 #include <QMouseEvent>
 #include "logindialog.h"
 #include "fadeinout.h"
+#include <QFile>
 
 namespace Ui {
     class LoginConfig;
@@ -21,6 +22,11 @@ public:
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent (QMouseEvent *);
 
+    void getServerInfo();
+    void saveServerInfo();
+    QString serverIP;
+    QString serverPort;
+
 private:
     Ui::LoginConfig *ui;
 
@@ -28,11 +34,8 @@ private:
     QPoint dPos;
     QPoint mousePos;
 
-    //和窗口淡入淡出有关的变量
+    //绐楀彛娣″叆娣″嚭鏁堟灉
     FadeInOut fadeEffect;
-
-    QString serverIP;
-    QString serverPort;
 
 private slots:
     void on_okBtn_clicked();

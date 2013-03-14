@@ -1,4 +1,4 @@
-#include "registerdialog.h"
+﻿#include "registerdialog.h"
 #include "ui_registerdialog.h"
 
 RegisterDialog::RegisterDialog(QWidget *parent) :
@@ -45,5 +45,10 @@ void RegisterDialog::on_OkBtn_clicked()
     fadeEffect.startFadeInOut(FADEOUT_EXIT);
     loginDialog *ld = new loginDialog();
     ld->show();
+}
+
+void RegisterDialog::receiveResponse(Response resp)
+{
+
 }
 
