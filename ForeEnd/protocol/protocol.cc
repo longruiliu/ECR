@@ -410,3 +410,25 @@ int Response::getMsgList(std::string &s, std:: vector <msgRecord> &vmr) const {
     }
     return 0;
 }
+
+std::string Response::getResType() const {
+    try{
+        return root["result"][0U]["type"].asString();
+    } catch (...) {
+        ;
+     }
+    return "";
+}
+
+std::string Response::getResType(std::string &s) const {
+    Json::Value root;
+    try{
+        stringToJson(s, root);
+        return root["result"][0U]["type"].asString();
+    } catch (...) {
+        ;
+     }
+    return "";
+}
+           
+

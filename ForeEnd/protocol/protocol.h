@@ -45,6 +45,9 @@ private:
 class Response {
 public:
     Response(std::string &rawString);
+    std::string getResType() const;
+    std::string getResType(std::string &rawString) const;
+
     int getStatus(std::string &rawString) const;
     int getStatus() const;
 
