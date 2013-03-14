@@ -154,7 +154,15 @@ def requestHandler(request):
         else:
             pass
     elif req_type == 'group':
-        if req_method == '
+        if req_method == 'add':
+            try:
+                srcID = getUserIDBySession(req_sessionID)
+                params = [item['value'] for item in req_params].insert(0, srcID)
+                status, result = apply(logic.addGroup, params)
+                ret = initialRet(status)
+                if status == ERR_OK:
+                    
+            
     else:
         
 def recvRoutine(sock, addr):

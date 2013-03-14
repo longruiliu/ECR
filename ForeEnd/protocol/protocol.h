@@ -44,6 +44,7 @@ private:
 
 class Response {
 public:
+    int getStatus() const;
     int getUserInfo(std::string &rawString, UserInfo &ui) const;
     int getUserName(std::string &rawString, std::string &) const;
     int getUserID(std::string &rawString) const;
