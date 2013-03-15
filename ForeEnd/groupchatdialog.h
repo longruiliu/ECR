@@ -18,10 +18,13 @@ public:
     explicit GroupChatDialog(int groupID,QWidget *parent = 0);
     ~GroupChatDialog();
 
-
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent (QMouseEvent *);
 
+    void raiseChatDialog();
+
+signals:
+    void closeDialog(int);
 
 private slots:
     void on_CloseWinBtn_clicked();

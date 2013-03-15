@@ -24,6 +24,8 @@ public:
     FadeInOut(QDialog *dia,QObject *parent = 0);
     void startFadeInOut(int effectType);
 
+    void raiseDialog();//Show Dialog Without FadeIn FadeOut Effect
+
 private:
     //
     QTimer *timerOpacity;

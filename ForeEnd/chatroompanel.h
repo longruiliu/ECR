@@ -43,9 +43,6 @@ private:
     //groupID list
     QVector<int> groupIDList;
 
-
-
-
     //Account information
     QString userID, passwd;
 

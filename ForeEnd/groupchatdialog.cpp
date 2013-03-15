@@ -34,6 +34,7 @@ GroupChatDialog::GroupChatDialog(int groupID,QWidget *parent) :
 GroupChatDialog::~GroupChatDialog()
 {
     delete ui;
+    emit closeDialog(currentGroupID);
 }
 
 void GroupChatDialog::mousePressEvent(QMouseEvent *event)
@@ -48,9 +49,14 @@ void GroupChatDialog::mouseMoveEvent(QMouseEvent *event)
 }
 
 
+void GroupChatDialog::raiseChatDialog()
+{
+    fadeEffect.raiseDialog();
+}
+
 void GroupChatDialog::on_CloseWinBtn_clicked()
 {
-    fadeEffect.startFadeInOut(FADEOUT_EXIT);
+    fadeEffect.startFadeInOut(FADEOUT);
 }
 
 void GroupChatDialog::startChatWithSelectedFriend()
