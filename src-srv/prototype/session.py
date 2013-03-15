@@ -8,7 +8,7 @@ sessionList_sk = {}
 def sessionGuard():
     while(1):
 	    thread.sleep(KAI)
-        cleanDeadUser()
+            cleanDeadUser()
 
 def renewUser(userID):
     if sessionList_uk.has_key(userID):

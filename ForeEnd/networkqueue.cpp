@@ -1,9 +1,11 @@
 #include "networkqueue.h"
 #include "network1.h"
+#include <QMetaType>
 
 networkQueue::networkQueue(QThread *parent) :
     QThread(parent)
 {
+    qRegisterMetaType<Response>("Response");
 }
 
 void networkQueue::setRemote(QString &addr, QString &port){
@@ -11,52 +13,62 @@ void networkQueue::setRemote(QString &addr, QString &port){
     this->port = port;
 }
 
-void networkQueue::pushEvent(Request &req){
+void networkQueue::pushEvent(Nevent req){
     eventQueue.push_back(req);
     cond.wakeAll();
 }
 
 void networkQueue::run(){
+    qDebug() << "Network Queue Ready" << endl;
+    std::string respStr;
     while(1){
         lock.lock();
         cond.wait(&lock);
+        qDebug() << "I am awake" << endl;
         while(!eventQueue.isEmpty()){
-            Response resp;
-            Request req = eventQueue.front();
-            sendRequest(req, resp);
+            if(addr.isEmpty() || port.isEmpty()){
+                qDebug() << "You must assign server IP and port for network queueu" << endl;
+                break;
+            }
+            Nevent ev = eventQueue.front();
+            sendRequest(ev.req, respStr);
+            qDebug() << respStr.c_str() << endl;
+            Response resp(respStr);
             eventQueue.pop_front();
-            dispatch(req, resp);
+
+            QObject::connect(this, SIGNAL(youHaveResponse(Response)),
+                             ev.callee, ev.signal, Qt::QueuedConnection);
+            emit youHaveResponse(resp);
+            QObject::connect(this, SIGNAL(youHaveResponse(Response)),
+                             ev.callee, ev.signal, Qt::QueuedConnection);
         }
         lock.unlock();
     }
+
+    exec();
 }
 
-void networkQueue::dispatch(Request &req, Response &resp){
-    std::string type, method;
 
-    req.getType(type);
-    req.getMethod(method);
-
-    if(type == std::string("regluar") && method == std::string("login")){
-        emit loginBack(resp);
-    }
-}
-
-void networkQueue::sendRequest(Request &req, Response &resp){
+void networkQueue::sendRequest(Request &req, std::string &resp){
     std::string rawData;
     Network net;
 
     req.encode(rawData);
     net.addData(rawData);
+    qDebug() << rawData.c_str() << endl;
     if(net.connectToRemote(addr, port.toInt()) == false){
+        qDebug() << "Can not connect to remote" << endl;
         return;
     }
 
+    net.send();
     if(net.waitForDataReady() == false){
+        qDebug() << "The server don't response" << endl;
         return;
     }
     net.readData(rawData);
-    resp.setRawData(rawData);
+
+    resp = rawData;
 }
 
 

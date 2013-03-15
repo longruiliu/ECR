@@ -3,8 +3,12 @@
 
 #include <QtGui>
 #include <QDialog>
+#include <QVector>
+#include "protocol/protocol.h"
 #include "friendlist.h"
 #include "grouplist.h"
+#include "networkqueue.h"
+#include "messagelistener.h"
 
 #include "fadeinout.h"
 
@@ -21,16 +25,33 @@ public:
     ChatRoomPanel(QString userID, QString passwd, int sessionID);
     ~ChatRoomPanel();
 
+    void getUserList();
+    void getGroupList();
+    void getSingleUserInfo(int id);
+    void getSingleGroupInfo(int id);
 
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent (QMouseEvent *);
 
+    networkQueue *nq;
+    messageListener *ml;
+
+
+
 private:
     Ui::ChatRoomPanel *ui;
 
+    //UserID list
+    QVector<int> userIDList;
+    //groupID list
+    QVector<int> groupIDList;
+
+
+
+
     //Account information
     QString userID, passwd;
-    unsigned int sessoinID;
+    int sessionID;
 
     //Tab控件切换好友列表群列表
     FriendList friendlistWidget;
@@ -63,6 +84,9 @@ private slots:
     void on_CloseWinBtn_clicked();
     void on_headerImage_clicked();
 
+
+    void getUserListResponse(Response resp);
+    void getGroupListResponse(Response resp);
 
     void receiveResponse(Response resp);
 };

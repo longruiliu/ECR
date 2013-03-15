@@ -36,15 +36,17 @@ int sendMsg(int srcID, int dstID, const std::string& msg);
 int fetchMsg(int srcID, time_t since);
 
 enum {
+    ERR_OK,
     ERR_SESSIONID_EXPECTED,
     ERR_METHOD_EXPECTED,
     ERR_TYPE_EXPECTED,
     ERR_PARAMS_EXPECTED,
+    ERR_INVALID_REQUEST,
     ERR_INVALID_METHOD,
     ERR_INVALID_PARAMS,
     ERR_INVALID_TYPE,
-    ERR_OK,
     ERR_NOT_IN_GROUP,
-    ERR_NO_PRIVILEGE
+    ERR_NO_PRIVILEGE,
+    ERR_WRONG_PASSWD
 };
 #endif /* _LOGIC_H_ */

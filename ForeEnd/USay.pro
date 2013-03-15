@@ -27,7 +27,8 @@ SOURCES += main.cpp \
     networkqueue.cpp \
     network1.cpp \
     protocol/jsoncpp.cpp \
-    protocol/protocol.cc
+    protocol/protocol.cpp \
+    ../src-srv/msgRecord.cpp
 
 HEADERS  += \
     chatroom.h \
@@ -58,7 +59,7 @@ FORMS    += \
 RESOURCES += \
     USay.qrc
 
-INCLUDEPATH += .\\protocol\\
-INCLUDEPATH += ..\\src-srv\\include
-INCLUDEPATH += ..\\include
+INCLUDEPATH += ./protocol
+INCLUDEPATH += ../src-srv/include
+INCLUDEPATH += ../include
 RC_FILE = icon.rc

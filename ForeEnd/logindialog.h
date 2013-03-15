@@ -31,10 +31,11 @@ public:
     void mouseMoveEvent (QMouseEvent *);
     void setNetwork(messageListener *ml, networkQueue *nq);
 
-private:
-
     messageListener *ml;
     networkQueue *nq;
+
+private:
+
 
     Ui::loginDialog *ui;
 

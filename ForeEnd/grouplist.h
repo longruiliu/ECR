@@ -14,14 +14,18 @@ class GroupList : public QWidget
 
 public:
     explicit GroupList(QWidget *parent = 0);
+
+    void addGroupToList(int groupID,QString groupName);
+    void resetGroudList();
     ~GroupList();
 
 private:
     Ui::GroupList *ui;
 
+    QVector<int> groupIDList;
+
 private slots:
     void startGroupChat() ;
-
     void receiveResponse(Response resp);
 };
 

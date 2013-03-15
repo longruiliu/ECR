@@ -1,11 +1,13 @@
 ﻿#include "groupchatdialog.h"
 #include "ui_groupchatdialog.h"
 
-GroupChatDialog::GroupChatDialog(QWidget *parent) :
+GroupChatDialog::GroupChatDialog(int groupID,QWidget *parent) :
     QDialog(parent),
     ui(new Ui::GroupChatDialog),
     fadeEffect(this)
 {
+    currentGroupID=groupID;
+
     ui->setupUi(this);
 
     setWindowFlags(Qt::FramelessWindowHint);

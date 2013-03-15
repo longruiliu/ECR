@@ -3,8 +3,9 @@ import session
 import sys
 import user
 import group
+import msgRecord
 
-ERR_SESSIONID_EXPECTED, ERR_METHOD_EXPECTED, ERR_TYPE_EXPECTED, ERR_PARAMS_EXPECTED, ERR_INVALID_METHOD, ERR_INVALID_PARAMS, ERR_INVALID_TYPE, ERR_OK, ERR_NOT_IN_GROUP, ERR_NO_PRIVILEGE, ERR_WRONG_PASSWD= range(11)
+ERR_OK, ERR_SESSIONID_EXPECTED, ERR_METHOD_EXPECTED, ERR_TYPE_EXPECTED, ERR_PARAMS_EXPECTED, ERR_INVALID_REQUEST, ERR_INVALID_METHOD, ERR_INVALID_PARAMS, ERR_INVALID_TYPE, ERR_NOT_IN_GROUP, ERR_NO_PRIVILEGE, ERR_WRONG_PASSWD = range(12)
 
 PRIVILEGE_MASK_GROUPMG = 0x1
 PRIVILEGE_MASK_USERMG = 0x2
@@ -15,7 +16,7 @@ def sendGroupMsg(srcID, groupID, msg):
     if gp.isInGroup(srcID):
         gp.postMsg(srcID, msg)
         for i in gp.groupMember.keys():
-            IP = getUserID(i) 
+            IP = session.getUserIP(i) 
             if IP != -1:
                 network.sendNotification(IP, msgRecord.NOTIFY_GROUP_MSG, groupID)
     else:
@@ -51,7 +52,8 @@ def addGroupMember(srcID, groupID, newMemberID, msg):
     gp = group.findGroup(groupID)
     if gp.creator == srcID:
         gp.addMember(newMemberID)
-        ur = user.findUser(gp.srcID)
+        ur = user.findUser(srcID)
+        gp.postRedMsg(srcID, "Welcome new member: %s" % (ur.userName,))
         ur.sendMsg(msgRecord.MsgRecord(0, srcID, "Join Group Req Granted:%d" %(groupID,), msgRecord.MSG_GROUP_REQ_GRAND))
         return (ERR_OK, None)
     else:
@@ -85,11 +87,7 @@ def fetchGroupMsg(srcID, groupID, since):
         return (ERR_NOT_IN_GROUP, None)
 # mark
 def fetchGroupList(srcID):
-    gpL = []
-    for i in group.groupList:
-        if i.isInGroup(srcID):
-            gpL.append((i.groupID, i.groupName))
-    return (ERR_OK, gpL)
+    return (ERR_OK, user.findUser(srcID).fetchGroupList())
 
 # mark
 def login(userID, passwd, IP):
@@ -156,3 +154,6 @@ def postFetchMsg(srcID):
 
 def keepAlive(srcID):
     return (ERR_OK, renewUser(srcID))
+
+def fetchUserList(srcID):
+    return (ERR_OK, [i.userID for i in user.userList])
