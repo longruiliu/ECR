@@ -130,20 +130,24 @@ def requestHandler(request):
             try:
                 srcID = getUserIDBySession(req_sessionID)
                 params = [item['value'] for item in req_params].insert(0, srcID)
-                status, result = apply(logic.fetchMemberList, params)
+                status, result = apply(logic.fetchUserList, params)
                 ret = initialRet(status)
                 if status == ERR_OK:
                     ret['result'].append({'type': 'UserList', 'value': result})
                 sendResponse(ret)
-            except:
+            except e:
+                print e
                 fatal('get user list')
+
         elif req_method == 'userinfo':
             try:
                 srcID = getUserIDBySession(req_sessionID)
                 params = [item['value'] for item in req_params].insert(0, srcID)
                 status, result = apply(logic.getUserInfo, params)
+                result = result['userInfo']
+                ret = initialRet(status)
                 if status == ERR_OK:
-                    ret['result'].append({'type': 'UserInfo', 'value': result})
+                    ret['result'].append({'type': 'String', 'value': result})
                 sendResponse(ret)
             except:
                 fatal('get user info')
