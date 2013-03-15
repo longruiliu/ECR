@@ -33,8 +33,8 @@ class User(object):
     def fetchGroupList(self):
         if not self.groupListIsNew:
             self.groupList = []
-            for i in group.groupList:
-                if i.isInGroup(self.UserID):
+            for i in group.groupList.values():
+                if i.isInGroup(self.userID):
                     self.groupList.append((i.groupID, i.groupName))
             self.groupListIsNew = True
         return self.groupList
