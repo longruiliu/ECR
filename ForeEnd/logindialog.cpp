@@ -101,6 +101,11 @@ void loginDialog::receiveLoginResponse(Response resp)
 {
     qDebug() << "received Login response" << endl;
     //fade out when success
+
+    if(resp.networkStatus() == -1){
+        ui->messageLabel->setText("Can not connect server");
+        return;
+    }
     if(resp.getStatus()){
         ui->messageLabel->setText("Login failed");
         return;

@@ -357,3 +357,7 @@ int Response::getUserList(std::string &s, UserList &ul) const {
     }
     return 0;
 }
+
+int Response::networkStatus(){
+    return -1;
+}
