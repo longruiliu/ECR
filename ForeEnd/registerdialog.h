@@ -1,15 +1,20 @@
 ﻿#ifndef REGISTERDIALOG_H
 #define REGISTERDIALOG_H
 
+#include "loginconfig.h"
 #include <QDialog>
 #include <QMouseEvent>
 #include "logindialog.h"
 #include "fadeinout.h"
 
+#include "messagelistener.h"
+#include "networkqueue.h"
+
+
 namespace Ui {
     class RegisterDialog;
 }
-
+class LoginConfig;
 class RegisterDialog : public QDialog
 {
     Q_OBJECT
@@ -20,6 +25,11 @@ public:
 
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent (QMouseEvent *);
+
+    messageListener *ml;
+    networkQueue *nq;
+
+    //
 
 private:
     Ui::RegisterDialog *ui;
@@ -34,6 +44,9 @@ private:
     QString userPassword1;
     QString userPassword2;
     QString userNickName;
+
+    //loginConfig to get server IP and port
+    LoginConfig *conf;
 
 private slots:
     void on_OkBtn_clicked();
