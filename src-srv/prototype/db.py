@@ -11,6 +11,46 @@ def restoreFromDB(dbFileName, timeL):
     every message from now - timeL to now while be restore
     """
     pass
+    conn = sqlite3.connnect(dbFileName)
+    c = conn.cursor()
+    results = c.execute("select * from User")
+    for result in results:
+	tmp = user.User()
+	tmp.userID = result["user_id"]
+	tmp.userName = result["u_name"]
+	tmp.passwd = result["pwd"]
+	tmp.userInfo = result["info"]
+	tmp.privMask = result["previlege"]
+	user.userList[tmp.userId] = tmp
+
+    results = c.execute("select * from Group_list")
+    for result in results:
+        tmp = group.Group()
+	tmp.groupID = result["group_id"]
+	tmp.creator = result["creator_id"]
+	tmp.groupName = result["g_name"]
+	group.groupList[tmp.groupID] = tmp
+
+    results = c.execute("select user_id,group_id from User_Group")
+    for result in results:
+        g = findGroup(result["group_id"])
+	u = findUser(result["user_id"])
+	g.groupMember[u.userID] = u
+
+    results = c.execute("select & from Message where send_time > ?",timeL)
+    for result in results:
+        g = findGroup(result["group_id"])
+	tmp = msgRecord.MsgRecord()
+	tmp.sendorID = result["user_id"]
+	tmp.targetID = result["group_id"]
+	tmp.msgText = result["content"]
+	tmp.timestamp = result["send_time"]
+	tmp.typeID = result["m_type"]
+	g.msgList.append(tmp)
+
+    conn.commit()
+    conn.close()	
+
 
 def saveToDB(dbFileName):
     """
@@ -29,7 +69,7 @@ def saveToDB(dbFileName):
     c.executemany("insert into User(user_id, u_name, pwd, previlege, info) values(?)", (user.userList.values(),))
 
     c.execute("delete  from Group")
-    c.executemany("insert into Group(group_id, creator_id, g_name) values(?)", (group.groupList.values(),))
+    c.executemany("insert into Group_list(group_id, creator_id, g_name) values(?)", (group.groupList.values(),))
 
     c.execute("delete  from User_Group")
     for v in group.groupList.values():

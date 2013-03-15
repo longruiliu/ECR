@@ -21,7 +21,7 @@ const int ERROR = ~0;
 */
 
 typedef msgRecord MsgRecord;
-typedef std::map <std::string, std::string> UserInfo;
+typedef std::string UserInfo;
 typedef std::vector <int> UserList;
 typedef std::vector <MsgRecord> MsgList;
 
@@ -34,7 +34,6 @@ public:
     int addParams(std::string &);
     int addParams(int);
     int addParams(UserList &);
-    int addParams(UserInfo &);
     int addParams(MsgList &);
     int encode(std::string &rawString);
 private:
