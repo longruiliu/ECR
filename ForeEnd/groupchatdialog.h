@@ -23,6 +23,8 @@ public:
 
     void raiseChatDialog();
 
+    void addFriendTolist(int friendid,QString nickname);
+
 signals:
     void closeDialog(int);
 

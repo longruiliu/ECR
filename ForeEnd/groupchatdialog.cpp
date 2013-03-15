@@ -15,18 +15,6 @@ GroupChatDialog::GroupChatDialog(int groupID,QWidget *parent) :
 
     fadeEffect.startFadeInOut(FADEIN);
 
-    QListWidgetItem *configButton = new QListWidgetItem(ui->FriendListWidget);
-    configButton->setIcon(QIcon(":/header/1.png"));
-    configButton->setText(tr("Nick Name"));
-    configButton->setTextAlignment(Qt::AlignLeft);
-    configButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-
-    QListWidgetItem *updateButton = new QListWidgetItem(ui->FriendListWidget);
-    updateButton->setIcon(QIcon(":/header/2.png"));
-    updateButton->setText(tr("Nick Name"));
-    updateButton->setTextAlignment(Qt::AlignLeft);
-    updateButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-
     connect(ui->FriendListWidget,SIGNAL(doubleClicked(QModelIndex)),
             this,SLOT(startChatWithSelectedFriend()));
 }
@@ -57,6 +45,18 @@ void GroupChatDialog::raiseChatDialog()
 void GroupChatDialog::on_CloseWinBtn_clicked()
 {
     fadeEffect.startFadeInOut(FADEOUT);
+}
+
+void GroupChatDialog::addFriendTolist(int friendid, QString nickname)
+{
+    friendIDList.push_back(friendid);
+
+    QListWidgetItem *friend1 = new QListWidgetItem(ui->FriendListWidget);
+    friend1->setIcon(QIcon(":/header/1.png"));
+    friend1->setText(nickname);
+    friend1->setTextAlignment(Qt::AlignLeft);
+    friend1->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
 }
 
 void GroupChatDialog::handleChatRoomClose(int friendID)
