@@ -68,3 +68,14 @@ void GroupList::resetGroudList()
     ui->GroupListWidget->clear();
     groupIDList.clear();
 }
+
+void GroupList::newNotify(int groupID)
+{
+    if (!groupChatDialogMap.contains(groupID))
+        startChatWithSelectGroup(groupID);
+
+    QObject::connect(this,SIGNAL(doFetchGroupMsg()), groupChatDialogMap[groupID],SLOT(getGroupMsg()));
+    emit doFetchGroupMsg();
+    QObject::disconnect(this,SIGNAL(doFetchGroupMsg()), groupChatDialogMap[groupID],SLOT(getGroupMsg()));
+
+}

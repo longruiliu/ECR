@@ -20,15 +20,16 @@ public:
 class networkQueue : public QThread
 {
     Q_OBJECT
+
 public:
     explicit networkQueue(QThread *parent = 0);
     void setRemote(QString &addr, QString &port);
     void pushEvent(Nevent req);
+    int sessionID;
 protected:
     void run();
 private:
     void sendRequest(Request &req,std::string &resp);
-
     QTcpSocket socket;
     QString addr,port;
     QQueue<Nevent> eventQueue;
