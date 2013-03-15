@@ -26,20 +26,23 @@ void GroupList::handleGroupChatDialogClose(int groupid)
     groupChatDialogMap.remove(groupid);
 }
 
-void GroupList::startGroupChat()
+void GroupList::startChatWithSelectGroup(int groupid)
 {
-    int currentGroupID = groupIDList[ui->GroupListWidget->currentRow()];
-
-    if(groupChatDialogMap.contains(currentGroupID))
+    if(0==groupid)
     {
-        groupChatDialogMap[currentGroupID]->raiseChatDialog();
+        groupid = groupIDList[ui->GroupListWidget->currentRow()];
+    }
+
+    if(groupChatDialogMap.contains(groupid))
+    {
+        groupChatDialogMap[groupid]->raiseChatDialog();
     }
     else
     {
-        groupChatDialogMap[currentGroupID]=new GroupChatDialog(currentGroupID);
-        groupChatDialogMap[currentGroupID]->show();
+        groupChatDialogMap[groupid]=new GroupChatDialog(groupid);
+        groupChatDialogMap[groupid]->show();
 
-        connect(groupChatDialogMap[currentGroupID],SIGNAL(closeDialog(int)),
+        connect(groupChatDialogMap[groupid],SIGNAL(closeDialog(int)),
                 this,SLOT(handleGroupChatDialogClose(int)));
     }
 }
