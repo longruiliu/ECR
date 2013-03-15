@@ -11,32 +11,35 @@ def restoreFromDB(dbFileName, timeL):
     timeL specify the how old message you want get out of database
     every message from now - timeL to now while be restore
     """
-    pass
     conn = sqlite3.connect(dbFileName)
     c = conn.cursor()
     results = c.execute("select * from User")
     for result in results:
         tmp = user.User(result[0],result[1],result[2],result[3],result[4])
         user.userList[tmp.userID] = tmp
+        print "New user %d: %s" % (tmp.userID ,tmp.userName)
 
     results = c.execute("select * from Group_list")
     for result in results:
         tmp = group.Group(result[2],result[1])
-	tmp.groupID = result[0]
-	group.groupList[tmp.groupID] = tmp
+        tmp.groupID = result[0]
+        group.groupList[tmp.groupID] = tmp
+        print "New group %d: %s" % (tmp.groupID, tmp.groupName)
 
     results = c.execute("select user_id,group_id from User_Group")
     for result in results:
         g = group.findGroup(result[1])
-	u = user.findUser(result[0])
-	g.groupMember[u.userID] = u
+        u = user.findUser(result[0])
+        g.groupMember[u.userID] = u
 
     results = c.execute("select * from Message where send_time > ?",(timeL,))
+    print "Msg Dump::"
     for result in results:
         g = group.findGroup(result[1])
-	tmp = msgRecord.MsgRecord(result[2],result[1],result[5],result[4])
-	tmp.timestamp = result[3]
-	g.msgList.append(tmp)
+        tmp = msgRecord.MsgRecord(result[2],result[1],result[5],result[4])
+        tmp.timestamp = result[3]
+        g.msgList.append(tmp)
+        print tmp
 
     conn.commit()
     conn.close()	
