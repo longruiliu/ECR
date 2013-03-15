@@ -100,7 +100,7 @@ void loginDialog::receiveLoginResponse(Response resp)
 {
     qDebug() << "received Login response" << endl;
     //fade out when success
-    if(!resp.getStatus()){
+    if(resp.getStatus()){
         ui->messageLabel->setText("Login failed");
         return;
     }
