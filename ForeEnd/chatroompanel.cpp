@@ -1,6 +1,7 @@
 ﻿#include "chatroompanel.h"
 #include "ui_chatroompanel.h"
 #include "protocol/protocol.h"
+#include "networkqueue.h"
 
 extern networkQueue nq;
 extern messageListener ml;
@@ -103,9 +104,29 @@ void ChatRoomPanel::getUserListResponse(Response resp){
     std::vector<int>::iterator iter;
     UserList ul;
     resp.getUserList(ul);
+    std::string str;
 
     for(iter = ul.begin(); iter != ul.end(); iter++){
         userIDList.push_back(*iter);
+        userInfoRequestQueue.push_back(*iter);
+        Nevent ev;
+
+        ev.req.setSessionID(sessionID);
+
+        str.clear();
+        str.insert(0,"regular");
+        ev.req.setType(str);
+
+        str.clear();
+        str.insert(0,"userinfo");
+        ev.req.setMethod(str);
+
+        ev.req.addParams(*iter);
+
+        ev.callee = this;
+        strcpy(ev.signal, SLOT(receiveUserInfoResponse(Response)));
+
+        nq.pushEvent(ev);
     }
 
 }
@@ -117,9 +138,6 @@ void ChatRoomPanel::getGroupListResponse(Response resp){
 
     resp.getGroupList(gl);
 
-    if(gl.empty()){
-        qDebug() << "is empty" << endl;
-    }
     for(iter = gl.begin(); iter != gl.end(); iter++)
     {
         grouplistWidget.addGroupToList(iter->first,QString(iter->second.c_str()));
@@ -208,7 +226,17 @@ void ChatRoomPanel::on_headerImage_clicked()
 }
 
 
-void ChatRoomPanel::receiveResponse(Response resp)
+void ChatRoomPanel::receiveUserInfoResponse(Response resp)
 {
+    int id;
+
+    id = userInfoRequestQueue.front();
+    userInfoRequestQueue.pop_front();
+    UserInfo _ui;
+    std::string name;
+    resp.getUserInfo(_ui);
+    resp.getUserName(name);
+
+    friendlistWidget.addFriendToList(id, QString(name.c_str()), QString(_ui.c_str()));
 
 }
