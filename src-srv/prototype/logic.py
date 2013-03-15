@@ -53,6 +53,7 @@ def addGroupMember(srcID, groupID, newMemberID, msg):
     if gp.creator == srcID:
         gp.addMember(newMemberID)
         ur = user.findUser(srcID)
+        ur.groupListIsNew = False
         gp.postRedMsg(srcID, "Welcome new member: %s" % (ur.userName,))
         ur.sendMsg(msgRecord.MsgRecord(0, srcID, "Join Group Req Granted:%d" %(groupID,), msgRecord.MSG_GROUP_REQ_GRAND))
         return (ERR_OK, None)
