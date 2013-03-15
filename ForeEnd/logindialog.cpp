@@ -107,7 +107,9 @@ void loginDialog::receiveLoginResponse(Response resp)
     sessionID = resp.getSessionID();
     ml->setSessionID(sessionID);
 
-    ChatRoomPanel *crp = new ChatRoomPanel();
+    ChatRoomPanel *crp = new ChatRoomPanel(userName, userPassword, sessionID);
+    crp->nq = nq;
+    crp->ml = ml;
     crp->show();
     fadeEffect.startFadeInOut(FADEOUT_EXIT);
 }

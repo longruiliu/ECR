@@ -9,25 +9,6 @@ GroupList::GroupList(QWidget *parent) :
 
     ui->GroupListWidget->setViewMode(QListView::IconMode);
 
-    QListWidgetItem *configButton = new QListWidgetItem(ui->GroupListWidget);
-    configButton->setIcon(QIcon(":/header/1.png"));
-    configButton->setText(tr("Group Name 1"));
-    configButton->setTextAlignment(Qt::AlignLeft);
-    configButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-
-    QListWidgetItem *updateButton = new QListWidgetItem(ui->GroupListWidget);
-    updateButton->setIcon(QIcon(":/header/2.png"));
-    updateButton->setText(tr("Group Name 2"));
-    updateButton->setTextAlignment(Qt::AlignLeft);
-    updateButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-
-    QListWidgetItem *queryButton = new QListWidgetItem(ui->GroupListWidget);
-    queryButton->setIcon(QIcon(":/header/3.png"));
-    queryButton->setText(tr("Group Name 3"));
-    queryButton->setTextAlignment(Qt::AlignLeft);
-    queryButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-
-
     connect(ui->GroupListWidget,SIGNAL(doubleClicked(QModelIndex)),
             this,SLOT(startGroupChat()));
     setWindowOpacity(0.5);
@@ -42,12 +23,28 @@ GroupList::~GroupList()
 
 void GroupList::startGroupChat()
 {
-    GroupChatDialog *gcd = new GroupChatDialog();
+    int currentGroupID = groupIDList[ui->GroupListWidget->currentRow()];
+    GroupChatDialog *gcd = new GroupChatDialog(currentGroupID);
     gcd->show();
 }
 
 
 void GroupList::receiveResponse(Response resp)
 {
+}
 
+void GroupList::addGroupToList(int groupID, QString groupName)
+{
+    groupIDList.push_back(groupID);
+    QListWidgetItem *group = new QListWidgetItem(ui->GroupListWidget);
+    group->setIcon(QIcon(":/header/3.png"));
+    group->setText(groupName);
+    group->setTextAlignment(Qt::AlignLeft);
+    group->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+}
+
+void GroupList::resetGroudList()
+{
+    ui->GroupListWidget->clear();
+    groupIDList.clear();
 }

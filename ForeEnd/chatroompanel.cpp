@@ -1,5 +1,6 @@
 ﻿#include "chatroompanel.h"
 #include "ui_chatroompanel.h"
+#include "protocol/protocol.h"
 
 ChatRoomPanel::ChatRoomPanel(QString userID, QString passwd, int sessionID):
     ui(new Ui::ChatRoomPanel),fadeEffect(this)
@@ -24,7 +25,11 @@ ChatRoomPanel::ChatRoomPanel(QString userID, QString passwd, int sessionID):
 
     this->userID = userID;
     this->passwd = passwd;
-    this->sessoinID = sessionID;
+    this->sessionID = sessionID;
+
+    //get User list and group list
+    getUserList();
+    getGroupList();
 }
 
 ChatRoomPanel::ChatRoomPanel(QWidget *parent) :
@@ -50,6 +55,68 @@ ChatRoomPanel::ChatRoomPanel(QWidget *parent) :
 
     //fade in fade out
     fadeEffect.startFadeInOut(FADEIN);
+}
+
+
+void ChatRoomPanel::getUserList(){
+    Nevent ev;
+    std::string str;
+
+    str.clear();
+    str.insert(0, "regular");
+    ev.req.setType(str);
+
+    str.clear();
+    str.insert(0, "userlist");
+    ev.req.setMethod(str);
+    ev.req.setSessionID(sessionID);
+    ev.callee = this;
+    strcpy(ev.signal, SLOT(getUserListResponse(Response)));
+
+    nq->pushEvent(ev);
+
+}
+
+void ChatRoomPanel::getGroupList(){
+    Nevent ev;
+    std::string str;
+
+    ev.req.setSessionID(sessionID);
+
+    str.clear();
+    str.insert(0, "group");
+    ev.req.setType(str);
+
+    str.clear();
+    str.insert(0, "fetchgrp");
+    ev.req.setMethod(str);
+    ev.callee = this;
+    strcpy(ev.signal, SLOT(getGroupListResponse(Response)));
+
+    nq->pushEvent(ev);
+}
+
+void ChatRoomPanel::getUserListResponse(Response resp){
+    std::vector<int>::iterator iter;
+    UserList ul;
+    resp.getUserList(ul);
+
+    for(iter = ul.begin(); iter != ul.end(); iter++){
+        userIDList.push_back(*iter);
+    }
+
+}
+
+void ChatRoomPanel::getGroupListResponse(Response resp){
+    std::vector<std::pair<int, std::string> > gl;
+    std::vector<std::pair<int, std::string> >::iterator iter;
+
+    resp.getGroupList(gl);
+
+    for(iter = gl.begin(); iter != gl.end(); iter++)
+    {
+        grouplistWidget.addGroupToList(iter->first,QString(iter->second.c_str()));
+    }
 }
 
 ChatRoomPanel::~ChatRoomPanel()
