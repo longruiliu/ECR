@@ -8,6 +8,7 @@
 #include "../include/group.h"
 #include "../include/groupManager.h"
 #include "../include/dbSync.h"
+#include "protocol_const.h"
 
 std::vector<group> groupList;
 
