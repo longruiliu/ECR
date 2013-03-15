@@ -17,14 +17,14 @@ def restoreFromDB(dbFileName, timeL):
     for result in results:
         tmp = user.User(result[0],result[1],result[2],result[3],result[4])
         user.userList[tmp.userID] = tmp
-        print "New user %d: %s" % (tmp.userName, tmp.userID)
+        print "New user %d: %s" % (tmp.userID ,tmp.userName)
 
     results = c.execute("select * from Group_list")
     for result in results:
         tmp = group.Group(result[2],result[1])
         tmp.groupID = result[0]
         group.groupList[tmp.groupID] = tmp
-        print "New group %d: %s" % (tmp.groupName, tmp.groupID)
+        print "New group %d: %s" % (tmp.groupID, tmp.groupName)
 
     results = c.execute("select user_id,group_id from User_Group")
     for result in results:

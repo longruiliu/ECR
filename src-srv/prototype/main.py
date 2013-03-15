@@ -11,18 +11,18 @@ dbFilename = "ECR.db"
 def dbGuard(dbname):
     db.restoreFromDB(dbname, int(time.time()-dbLoadRange))
     while(1):
-        thread.sleep(dbBackupIntv)
+        time.sleep(dbBackupIntv)
         network.requestMutex.acquire()
         db.saveToDB(dbname)
         network.requestMutex.release()
 
 def bodyCleaner():
     while(1):
-        thread.sleep(session.KAI)
+        time.sleep(session.KAI)
         network.requestMutex.acquire()
         session.cleanDeadUser()
         network.requestMutex.release()
 if __name__=="__main__":
     thread.start_new_thread(dbGuard, (dbFilename,))
-    thread.start_new_thread(bodyCleaner,(None,))
+    thread.start_new_thread(bodyCleaner,())
     network.main()
