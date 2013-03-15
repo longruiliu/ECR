@@ -15,13 +15,13 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     networkQueue nq;
-    //messageListener ml;
+    messageListener ml;
     nq.start();
-    //ml.start();
+    ml.start();
 
     loginDialog ld;
     ld.nq = &nq;
-    //ld.ml = &ml;
+    ld.ml = &ml;
 
     ld.show();
 

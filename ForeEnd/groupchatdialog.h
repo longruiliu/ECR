@@ -15,7 +15,7 @@ class GroupChatDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit GroupChatDialog(QWidget *parent = 0);
+    explicit GroupChatDialog(int groupID,QWidget *parent = 0);
     ~GroupChatDialog();
 
 
@@ -33,6 +33,8 @@ private slots:
 
 private:
     Ui::GroupChatDialog *ui;
+
+    int currentGroupID;
 
 
     QPoint windowPos;

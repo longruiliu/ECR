@@ -333,3 +333,27 @@ int Response::getSessionID() const {
 Response::Response(const Response &o) {
     root = o.root;
 }
+
+int Response::getUserList(UserList &ul) const{
+    try {
+        Json::Value json = root["result"][0U]["value"];
+        for (int i = 0; i < json.size(); i++)
+            ul.push_back(json[i].asInt());
+    } catch (...) {
+        return ERROR;
+    }
+    return 0;
+}
+
+int Response::getUserList(std::string &s, UserList &ul) const {
+    Json::Value root;
+    try {
+        stringToJson(s, root);
+        Json::Value json = root["result"][0U]["value"];
+        for (int i = 0; i < json.size(); i++)
+            ul.push_back(json[i].asInt());
+    } catch (...) {
+        return ERROR;
+    }
+    return 0;
+}

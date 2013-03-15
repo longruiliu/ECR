@@ -13,7 +13,7 @@ void networkQueue::setRemote(QString &addr, QString &port){
     this->port = port;
 }
 
-void networkQueue::pushEvent(Nevent &req){
+void networkQueue::pushEvent(Nevent req){
     eventQueue.push_back(req);
     cond.wakeAll();
 }
@@ -44,6 +44,8 @@ void networkQueue::run(){
         }
         lock.unlock();
     }
+
+    exec();
 }
 
 
