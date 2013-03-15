@@ -91,9 +91,9 @@ class GroupMsg(msgRecord.MsgRecord):
         super(GroupMsg, self).__init__(sendorID, targetID, msgText)
         self.isRed = isRed
         if isRed:
-            self.typeID = MSG_TYPE_GROUP_RED
+            self.typeID = msgRecord.MSG_TYPE_GROUP_RED
         else:
-            self.typeID = MSG_TYPE_GROUP_MSG
+            self.typeID = msgRecord.MSG_TYPE_GROUP_MSG
     def __str__(self):
         if self.isRed:
             output = 'This is a red groupMsg\n'

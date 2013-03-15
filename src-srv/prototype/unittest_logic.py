@@ -1,10 +1,11 @@
 import unittest_basicData
 import logic
 
+print "Unittest Logic"
 rootID = unittest_basicData.uid
 st, lzsID = logic.addUser(rootID, "lzs", "123", "rr")
 st, xhjID = logic.addUser(rootID, "xhj", "123", "rr")
-print logic.modifyUser(rootID, lzsID, "lzs", 0x7, "124", "ff")
+print logic.modifyUser(rootID, lzsID, "lzs","124", 0x7 , "ff")
 print logic.getUserInfo(rootID, lzsID)
 st, groupID = logic.addGroup(lzsID, "ECR")
 print "groupID:" , groupID
@@ -17,4 +18,5 @@ print logic.logout(sessionID)
 
 
 print logic.sendGroupMsg(xhjID, groupID, "aha aha ho")
-print logic.fetchGroupMsg(lzsID, groupID, 0)[1][0]
+for i in logic.fetchGroupMsg(lzsID, groupID, 0)[1]:
+    print i

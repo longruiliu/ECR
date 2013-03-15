@@ -9,6 +9,7 @@ messageListener::messageListener(QObject *parent) :
     sessionID = -1;
     timeStamp = 0;
     QObject::connect(&serv, SIGNAL(readyRead()), this, SLOT(messageReady()));
+    QObject::connect(this,SIGNAL(started()), this, SLOT(bind()));
 }
 
 messageListener::messageListener(QString &addr, QString &port, int sessionID){
@@ -18,6 +19,10 @@ messageListener::messageListener(QString &addr, QString &port, int sessionID){
 }
 
 void messageListener::messageReady(){
+    cond.wakeAll();
+}
+
+void messageListener::handleMessage(){
     char *pushMsg;
     int msgLen, msgType;
     Request req;
@@ -68,9 +73,13 @@ void messageListener::messageReady(){
 }
 
 void messageListener::run(){
-    qDebug() << "message Listener ready" << endl;
-    serv.bind(port.toInt());
-    qDebug() << "message Listener quit" << endl;
+    while(1){
+        lock.lock();
+        cond.wait(&lock);
+        messageReady();
+        lock.unlock();
+    }
+    exec();
 }
 
 void messageListener::setRemote(QString &addr, QString &port){
@@ -102,3 +111,6 @@ bool messageListener::sendRequest(Request &req, std::string &resp){
     return true;
 }
 
+void messageListener::bind(){
+    serv.bind(port.toInt());
+}

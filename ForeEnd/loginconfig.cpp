@@ -11,7 +11,7 @@ LoginConfig::LoginConfig(QWidget *parent) :
     setWindowFlags(Qt::FramelessWindowHint);
     setAttribute(Qt::WA_TranslucentBackground);
 
-    fadeEffect.startFadeInOut(FADEIN);
+ //   fadeEffect.startFadeInOut(FADEIN);
 
     getServerInfo();
     ui->serverIPText->setText(serverIP);
@@ -34,16 +34,22 @@ void LoginConfig::mouseMoveEvent(QMouseEvent *event)
    this->move(event->globalPos() - this->dPos);
 }
 
+void LoginConfig::StartFadeIn()
+{
+    fadeEffect.startFadeInOut(FADEIN);
+}
+
 void LoginConfig::on_okBtn_clicked()
 {
-    fadeEffect.startFadeInOut(FADEOUT_EXIT);
-    loginDialog *ld = new loginDialog();
-    ld->show();
-
     serverIP = ui->serverIPText->text();
     serverPort = ui->serverPortText->text();
 
+    qDebug()<<serverIP<<"\n"<<serverPort<<"\n";
     saveServerInfo();
+
+    fadeEffect.startFadeInOut(FADEOUT_EXIT);
+    loginDialog *ld = new loginDialog();
+    ld->show();
 }
 
 void LoginConfig::on_CloseWinBtn_clicked()
@@ -55,7 +61,7 @@ void LoginConfig::on_CloseWinBtn_clicked()
 void LoginConfig::getServerInfo()
 {
     QString tmp;
-    QFile file("D:\\ECR\\config.ini");
+    QFile file("config.ini");
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             qDebug()<<"Can't open the file!"<<endl;
     }
@@ -69,11 +75,11 @@ void LoginConfig::getServerInfo()
 
 void LoginConfig::saveServerInfo()
 {
-    QFile file("D:\\ECR\\config.ini");
-    if(!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
+    QFile file("config.ini");
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
             qDebug()<<"Can't open the file!"<<endl;
     }
-    QDataStream out(&file);
-    out<<serverIP<<"\n";
-    out<<serverPort<<"\n";
+    file.write(serverIP.toAscii());
+    file.write("\n");
+    file.write(serverPort.toAscii());
 }
