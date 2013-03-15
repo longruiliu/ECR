@@ -20,12 +20,28 @@ GroupList::~GroupList()
     delete ui;
 }
 
+void GroupList::handleGroupChatDialogClose(int groupid)
+{
+    delete groupChatDialogMap[groupid];
+    groupChatDialogMap.remove(groupid);
+}
 
 void GroupList::startGroupChat()
 {
     int currentGroupID = groupIDList[ui->GroupListWidget->currentRow()];
-    GroupChatDialog *gcd = new GroupChatDialog(currentGroupID);
-    gcd->show();
+
+    if(groupChatDialogMap.contains(currentGroupID))
+    {
+        groupChatDialogMap[currentGroupID]->raiseChatDialog();
+    }
+    else
+    {
+        groupChatDialogMap[currentGroupID]=new GroupChatDialog(currentGroupID);
+        groupChatDialogMap[currentGroupID]->show();
+
+        connect(groupChatDialogMap[currentGroupID],SIGNAL(closeDialog(int)),
+                this,SLOT(handleGroupChatDialogClose(int)));
+    }
 }
 
 
