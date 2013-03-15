@@ -35,7 +35,7 @@ def findUser(userID):
 
 def addUser(userName, passwd, userInfo):
     while True:
-        userID = -(random.randint(1,2**13))
+        userID = (random.randint(1,2**13))
         if userID not in userList:
             break
     userList[userID] = User(userID, userName, passwd, userInfo)
