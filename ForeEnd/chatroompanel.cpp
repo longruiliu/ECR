@@ -111,11 +111,15 @@ void ChatRoomPanel::getUserListResponse(Response resp){
 }
 
 void ChatRoomPanel::getGroupListResponse(Response resp){
+    qDebug() << "get Group List response" << endl;
     std::vector<std::pair<int, std::string> > gl;
     std::vector<std::pair<int, std::string> >::iterator iter;
 
     resp.getGroupList(gl);
 
+    if(gl.empty()){
+        qDebug() << "is empty" << endl;
+    }
     for(iter = gl.begin(); iter != gl.end(); iter++)
     {
         grouplistWidget.addGroupToList(iter->first,QString(iter->second.c_str()));

@@ -10,6 +10,8 @@ FriendList::FriendList(QWidget *parent) :
 
     //add friend to list
     ui->FriendListWidget->setViewMode(QListView::ListMode);
+
+#if 0
     QListWidgetItem *friend1 = new QListWidgetItem(ui->FriendListWidget);
     friend1->setIcon(QIcon(":/header/1.png"));
     friend1->setText(tr("Nick Name 1"));
@@ -21,6 +23,7 @@ FriendList::FriendList(QWidget *parent) :
     friend2->setText(tr("Nick Name 2"));
     friend2->setTextAlignment(Qt::AlignLeft);
     friend2->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+#endif
 
     //double click handle
     connect(ui->FriendListWidget,SIGNAL(doubleClicked(QModelIndex)),

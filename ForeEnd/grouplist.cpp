@@ -35,6 +35,7 @@ void GroupList::receiveResponse(Response resp)
 
 void GroupList::addGroupToList(int groupID, QString groupName)
 {
+    qDebug() << "add group to list" << groupName << endl;
     groupIDList.push_back(groupID);
     QListWidgetItem *group = new QListWidgetItem(ui->GroupListWidget);
     group->setIcon(QIcon(":/header/3.png"));
