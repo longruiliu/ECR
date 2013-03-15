@@ -135,8 +135,7 @@ def requestHandler(request):
                 if status == ERR_OK:
                     ret['result'].append({'type': 'UserList', 'value': result})
                 sendResponse(ret)
-            except e:
-                print e
+            except:
                 fatal('get user list')
 
         elif req_method == 'userinfo':

@@ -118,8 +118,8 @@ int Request::encode(std::string &rawString) {
     return jsonToString(root, rawString);
 }
 
-Response::Response(){
-
+Response::Response() {
+    root["status"] = -1;
 }
 
 Response::Response(std::string &s) {
@@ -357,3 +357,5 @@ int Response::getUserList(std::string &s, UserList &ul) const {
     }
     return 0;
 }
+
+
