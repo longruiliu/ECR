@@ -11,20 +11,6 @@ FriendList::FriendList(QWidget *parent) :
     //add friend to list
     ui->FriendListWidget->setViewMode(QListView::ListMode);
 
-#if 0
-    QListWidgetItem *friend1 = new QListWidgetItem(ui->FriendListWidget);
-    friend1->setIcon(QIcon(":/header/1.png"));
-    friend1->setText(tr("Nick Name 1"));
-    friend1->setTextAlignment(Qt::AlignLeft);
-    friend1->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-
-    QListWidgetItem *friend2 = new QListWidgetItem(ui->FriendListWidget);
-    friend2->setIcon(QIcon(":/header/2.png"));
-    friend2->setText(tr("Nick Name 2"));
-    friend2->setTextAlignment(Qt::AlignLeft);
-    friend2->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-#endif
-
     //double click handle
     connect(ui->FriendListWidget,SIGNAL(doubleClicked(QModelIndex)),
             this,SLOT(startChatWithSelectedFriend()));

@@ -5,21 +5,6 @@
         <file>header/3.png</file>
         <file>header/4.png</file>
         <file>header/1p.png</file>
-        <file>bg/panelcontent.png</file>
-        <file>bg/editTextbg.png</file>
-        <file>bg/talk.png</file>
-        <file>bg/closeBtn.png</file>
-        <file>bg/configBtn.png</file>
-        <file>bg/confirmBtnBg.png</file>
-        <file>bg/content.png</file>
-        <file>bg/getpasswordBg.png</file>
-        <file>bg/loginBtnBg.png</file>
-        <file>bg/minBtn.png</file>
-        <file>bg/registerBg.png</file>
-        <file>bg/groupChatDialogBg.png</file>
-        <file>bg/chatpanel.png</file>
-        <file>bg/loginDialogbg.png</file>
-        <file>bg/loginConfigDialogBg.png</file>
         <file>header/logo.png</file>
         <file>btn/chatHistory.png</file>
         <file>btn/cutPhoto.png</file>
@@ -29,7 +14,22 @@
         <file>btn/sendImage.png</file>
         <file>btn/shake.png</file>
         <file>btn/chatBlank.png</file>
-        <file>bg/registerDialogBg.png</file>
         <file>chatStyle.html</file>
+        <file>bg/chatpanel.png</file>
+        <file>bg/closeBtn.png</file>
+        <file>bg/configBtn.png</file>
+        <file>bg/confirmBtnBg.png</file>
+        <file>bg/content.png</file>
+        <file>bg/editTextbg.png</file>
+        <file>bg/getpasswordBg.png</file>
+        <file>bg/groupChatDialogBg.png</file>
+        <file>bg/loginBtnBg.png</file>
+        <file>bg/loginConfigDialogBg.png</file>
+        <file>bg/minBtn.png</file>
+        <file>bg/panelcontent.png</file>
+        <file>bg/registerBg.png</file>
+        <file>bg/talk.png</file>
+        <file>bg/loginDialogbg.png</file>
+        <file>bg/registerDialogBg.png</file>
     </qresource>
 </RCC>
