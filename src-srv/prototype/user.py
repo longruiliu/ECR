@@ -1,5 +1,7 @@
 import random
 import logic
+import group
+import session
 userList = {}
 #It should be always in mind that all User ID are negative
 
@@ -11,6 +13,8 @@ class User(object):
         self.userInfo = userInfo
         self.privMask = privMask
         self.mailbox = []
+        self.groupList = []
+        self.groupListIsNew = False
     def canGroupMg(self):
         return self.checkPriv(logic.PRIVILEGE_MASK_GROUPMG)
     def canUserMg(self):
@@ -26,7 +30,14 @@ class User(object):
             network.sendNotification(IP, msgRecord.NOTIFY_P2P_MSG, msg.typeID)
     def fetchMsg(self):
         return self.mailbox[:]
-        
+    def fetchGroupList(self):
+        if not self.groupListIsNew:
+            self.groupList = []
+            for i in group.groupList:
+                if i.isInGroup(self.UserID):
+                    self.groupList.append((i.groupID, i.groupName))
+            self.groupListIsNew = True
+        return self.groupList
 
 def findUser(userID):
     if userID in userList:
