@@ -118,6 +118,9 @@ int Request::encode(std::string &rawString) {
     return jsonToString(root, rawString);
 }
 
+Response::Response(){
+
+}
 
 Response::Response(std::string &s) {
     stringToJson(s, root);

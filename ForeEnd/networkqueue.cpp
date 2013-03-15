@@ -36,9 +36,11 @@ void networkQueue::run(){
             Response resp(respStr);
             eventQueue.pop_front();
 
-            QObject::connect(this, SIGNAL(youHaveResponse(Response)), ev.callee, ev.signal);
+            QObject::connect(this, SIGNAL(youHaveResponse(Response)),
+                             ev.callee, ev.signal, Qt::QueuedConnection);
             emit youHaveResponse(resp);
-            QObject::connect(this, SIGNAL(youHaveResponse(Response)), ev.callee, ev.signal);
+            QObject::connect(this, SIGNAL(youHaveResponse(Response)),
+                             ev.callee, ev.signal, Qt::QueuedConnection);
         }
         lock.unlock();
     }
