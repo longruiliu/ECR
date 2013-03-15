@@ -15,6 +15,9 @@
 #include "networkqueue.h"
 
 
+extern networkQueue nq;
+extern messageListener ml;
+
 namespace Ui {
     class loginDialog;
 }
@@ -29,10 +32,6 @@ public:
 
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent (QMouseEvent *);
-    void setNetwork(messageListener *ml, networkQueue *nq);
-
-    messageListener *ml;
-    networkQueue *nq;
 
 private:
 

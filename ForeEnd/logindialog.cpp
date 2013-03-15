@@ -30,6 +30,7 @@ void loginDialog::mousePressEvent(QMouseEvent *event)
    this->mousePos = event->globalPos();
    this->dPos = mousePos - windowPos;
 }
+
 void loginDialog::mouseMoveEvent(QMouseEvent *event)
 {
    this->move(event->globalPos() - this->dPos);
@@ -54,9 +55,9 @@ void loginDialog::on_LoginBtn_clicked()
         qDebug() << "We must configure server IP and port first" << endl;
         return;
     }
-    nq->setRemote(conf->serverIP, conf->serverPort);
+    nq.setRemote(conf->serverIP, conf->serverPort);
     //ml also needs sessoinID if you want it works.
-    ml->setRemote(conf->serverIP, conf->serverPort);
+    ml.setRemote(conf->serverIP, conf->serverPort);
 
     ev.req.setSessionID(0);
     str.insert(0, "regular");
@@ -77,7 +78,7 @@ void loginDialog::on_LoginBtn_clicked()
     ev.callee = (QObject *)this;
     strcpy(ev.signal, SLOT(receiveLoginResponse(Response)));
 
-    nq->pushEvent(ev);
+    nq.pushEvent(ev);
 
     conf->close();
 
@@ -100,21 +101,16 @@ void loginDialog::receiveLoginResponse(Response resp)
 {
     qDebug() << "received Login response" << endl;
     //fade out when success
+
     if(resp.getStatus()){
         ui->messageLabel->setText("Login failed");
         return;
     }
     sessionID = resp.getSessionID();
-    ml->setSessionID(sessionID);
+    ml.setSessionID(sessionID);
 
     ChatRoomPanel *crp = new ChatRoomPanel(userName, userPassword, sessionID);
-    crp->nq = nq;
-    crp->ml = ml;
     crp->show();
     fadeEffect.startFadeInOut(FADEOUT_EXIT);
 }
 
-void loginDialog::setNetwork(messageListener *ml, networkQueue *nq){
-    this->ml = ml;
-    this->nq = nq;
-}
