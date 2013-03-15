@@ -23,7 +23,7 @@ class networkQueue : public QThread
 public:
     explicit networkQueue(QThread *parent = 0);
     void setRemote(QString &addr, QString &port);
-    void pushEvent(Nevent &req);
+    void pushEvent(Nevent req);
 protected:
     void run();
 private:
