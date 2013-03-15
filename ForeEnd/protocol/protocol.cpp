@@ -74,16 +74,6 @@ int Request::addParams(std::string &s) {
     return 0;
 }
 
-int Request::addParams(UserInfo &ui) {
-    Json::Value param;
-    param["type"] = "UserInfo";
-    Json::Value json;
-    for (__typeof(ui.begin()) it = ui.begin(); it != ui.end(); it++)
-        json[it->first] = ui[it->second];
-    param["value"] = json;
-    root["params"].append(param);
-    return 0;
-}
 
 int Request::addParams(UserList &ul) {
     Json::Value param;
@@ -118,8 +108,8 @@ int Request::encode(std::string &rawString) {
     return jsonToString(root, rawString);
 }
 
-Response::Response(){
-
+Response::Response() {
+    root["status"] = ERROR;
 }
 
 Response::Response(std::string &s) {
@@ -133,8 +123,7 @@ int Response::getStatus() const {
 int Response::getUserInfo(UserInfo &ui) const {
     try {
         Json::Value json = root["result"][0U]["value"];
-        for (__typeof(json.begin()) it = json.begin(); it != json.end(); it++)
-            ui[it.key().asString()] = (*it).asString();
+        ui = json["userInfo"].asString();
     } catch (...)  {
         return ERROR;
     }
@@ -144,7 +133,7 @@ int Response::getUserInfo(UserInfo &ui) const {
 int Response::getUserName(std::string &ret) const {
     try {
         Json::Value json = root["result"][0U]["value"];
-        ret = json.asString();
+        ret = json["userName"].asString();
     } catch (...) {
         return ERROR;
     }
@@ -208,13 +197,12 @@ int Response::getStatus(std::string &s) const {
     return root["status"].asInt();
 }
 
-int Response::getUserInfo(std::string &s, UserInfo &ui) const {
+int Response::getUserInfo(std::string &s, std::string &userinfo) const {
     Json::Value root;
     stringToJson(s, root);
     try {
         Json::Value json = root["result"][0U]["value"];
-        for (__typeof(json.begin()) it = json.begin(); it != json.end(); it++)
-            ui[it.key().asString()] = (*it).asString();
+        userinfo = json["userInfo"].asString();
     } catch (...)  {
         return ERROR;
     }
@@ -226,7 +214,7 @@ int Response::getUserName(std::string &s, std::string &ret) const {
     stringToJson(s, root);
     try {
         Json::Value json = root["result"][0U]["value"];
-        ret = json.asString();
+        ret = json["userName"].asString();
     } catch (...) {
         return ERROR;
     }
@@ -358,6 +346,3 @@ int Response::getUserList(std::string &s, UserList &ul) const {
     return 0;
 }
 
-int Response::networkStatus(){
-    return -1;
-}
