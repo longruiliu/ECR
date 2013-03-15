@@ -21,6 +21,7 @@ public:
 
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent (QMouseEvent *);
+    void StartFadeIn();
 
     void getServerInfo();
     void saveServerInfo();

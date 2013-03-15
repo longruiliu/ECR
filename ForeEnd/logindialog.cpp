@@ -15,12 +15,7 @@ loginDialog::loginDialog(QWidget *parent) :
 
     fadeEffect.startFadeInOut(FADEIN);
 
-    conf = new LoginConfig(this);
-
-
-
-
-
+    conf = new LoginConfig();
 }
 
 loginDialog::~loginDialog()
@@ -42,6 +37,7 @@ void loginDialog::mouseMoveEvent(QMouseEvent *event)
 
 void loginDialog::on_configBtn_clicked()
 {
+    conf->StartFadeIn();
     conf->show();
     fadeEffect.startFadeInOut(FADEOUT_EXIT);
 }
@@ -86,11 +82,14 @@ void loginDialog::on_LoginBtn_clicked()
 
     nq->pushEvent(ev);
 
+    conf->close();
+
 }
 
 void loginDialog::on_CloseWinBtn_clicked()
 {
     fadeEffect.startFadeInOut(FADEOUT_EXIT);
+    conf->close();
 }
 
 void loginDialog::on_registerBtn_clicked()

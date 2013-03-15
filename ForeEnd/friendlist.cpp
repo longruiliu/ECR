@@ -10,6 +10,8 @@ FriendList::FriendList(QWidget *parent) :
 
     //add friend to list
     ui->FriendListWidget->setViewMode(QListView::ListMode);
+
+
     QListWidgetItem *friend1 = new QListWidgetItem(ui->FriendListWidget);
     friend1->setIcon(QIcon(":/header/1.png"));
     friend1->setText(tr("Nick Name 1"));
