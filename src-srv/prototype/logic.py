@@ -156,4 +156,4 @@ def keepAlive(srcID):
     return (ERR_OK, renewUser(srcID))
 
 def fetchUserList(srcID):
-    return (ERR_OK, [i.userID for i in user.userList])
+    return (ERR_OK, [i.userID for i in user.userList.values()])

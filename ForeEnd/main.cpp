@@ -6,6 +6,10 @@
 #include "messagelistener.h"
 #include "networkqueue.h"
 
+
+networkQueue nq;
+messageListener ml;
+
 int main(int argc, char *argv[])
 {
 
@@ -14,15 +18,10 @@ int main(int argc, char *argv[])
     QApplication::setStyle("cleanlooks");
     QApplication a(argc, argv);
 
-    networkQueue nq;
-    messageListener ml;
+
     nq.start();
     ml.start();
-
     loginDialog ld;
-    ld.nq = &nq;
-    ld.ml = &ml;
-
     ld.show();
 
     return a.exec();

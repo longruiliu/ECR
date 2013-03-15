@@ -33,10 +33,6 @@ public:
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent (QMouseEvent *);
 
-    networkQueue *nq;
-    messageListener *ml;
-
-
 
 private:
     Ui::ChatRoomPanel *ui;
