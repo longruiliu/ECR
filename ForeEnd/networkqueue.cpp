@@ -44,6 +44,8 @@ void networkQueue::run(){
         }
         lock.unlock();
     }
+
+    exec();
 }
 
 
