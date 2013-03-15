@@ -51,7 +51,9 @@ def fatal(error):
     thread.exit()
     
 def sendResponse(result):
+    print "before encap %s" % result
     final_result = json.dumps(result)
+    print "after encap %s" % final_result
     ident = thread.get_ident()
     sock = sockMap[ident][0]
     sock.send(final_result)
@@ -155,10 +157,9 @@ def requestHandler(request):
                 srcID = checkSessionID(req_sessionID)
                 params = [srcID] + [item['value'] for item in req_params]
                 status, result = apply(logic.getUserInfo, params)
-                result = result['userInfo']
                 ret = initialRet(status)
                 if status == ERR_OK:
-                    ret['result'].append({'type': 'String', 'value': result})
+                    ret['result'].append({'type': 'Dict', 'value': result})
                 sendResponse(ret)
             except Exception, e:
                 fatal(e)
