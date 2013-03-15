@@ -26,14 +26,6 @@ public:
 signals:
     void closeDialog(int);
 
-private slots:
-    void on_CloseWinBtn_clicked();
-    void startChatWithSelectedFriend() ;
-
-    void on_SendMessageBtn_clicked();
-
-    void receiveResponse(Response resp);
-
 private:
     Ui::GroupChatDialog *ui;
 
@@ -48,6 +40,16 @@ private:
 
     QString sendText;
     QString receiveText;
+
+    QVector<int> friendIDList;//维护了好友ID的列表
+    QMap<int,chatRoom*> chatRoomMap;//维护了好友聊天对话框的列表
+
+private slots:
+    void startChatWithSelectedFriend(int firendID=0) ;
+    void on_CloseWinBtn_clicked();
+    void on_SendMessageBtn_clicked();
+    void handleChatRoomClose(int friendID);
+    void receiveResponse(Response resp);
 };
 
 #endif // GROUPCHATDIALOG_H

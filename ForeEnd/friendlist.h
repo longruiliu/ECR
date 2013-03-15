@@ -17,14 +17,21 @@ public:
     explicit FriendList(QWidget *parent = 0);
     ~FriendList();
 
+    void addFriendToList(int friendID,QString nickName,QString friendInfo);
+
 private:
     Ui::FriendList *ui;
 
+    QVector<int> friendIDList;//维护了好友ID的列表
+    QVector<QString> friendInfoList;
+    QMap<int,chatRoom*> chatRoomMap;//维护了好友聊天对话框的列表
+
 private slots:
-    void startChatWithSelectedFriend() ;
+    void startChatWithSelectedFriend(int firendID=0) ;
     void onRightClick(QPoint pos);
     void refreshFriendList();
     void viewFriendInfo();
+    void handleChatRoomClose(int friendID);
 
     void receiveResponse(Response resp);
 };

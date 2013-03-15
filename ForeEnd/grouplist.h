@@ -26,7 +26,7 @@ private:
     QMap<int,GroupChatDialog*> groupChatDialogMap;//维护了组聊天对话框的列表
 
 private slots:
-    void startGroupChat() ;
+    void startChatWithSelectGroup(int groupid=0) ;
     void receiveResponse(Response resp);
     void handleGroupChatDialogClose(int);
 };

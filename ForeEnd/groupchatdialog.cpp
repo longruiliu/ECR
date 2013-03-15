@@ -59,10 +59,29 @@ void GroupChatDialog::on_CloseWinBtn_clicked()
     fadeEffect.startFadeInOut(FADEOUT);
 }
 
-void GroupChatDialog::startChatWithSelectedFriend()
+void GroupChatDialog::handleChatRoomClose(int friendID)
 {
-    chatRoom *cr = new chatRoom();
-    cr->show();
+    delete chatRoomMap[friendID];
+    chatRoomMap.remove(friendID);
+}
+
+void GroupChatDialog::startChatWithSelectedFriend(int friendid)
+{
+    if(0==friendid)
+        friendid= friendIDList[ui->FriendListWidget->currentRow()];
+
+    if(chatRoomMap.contains(friendid))
+    {
+        chatRoomMap[friendid]->raiseChatDialog();
+    }
+    else
+    {
+        chatRoomMap[friendid]=new chatRoom(friendid);
+        chatRoomMap[friendid]->show();
+
+        connect(chatRoomMap[friendid],SIGNAL(closeDialog(int)),
+                this,SLOT(handleChatRoomClose(int)));
+    }
 }
 
 void GroupChatDialog::on_SendMessageBtn_clicked()

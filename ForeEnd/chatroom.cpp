@@ -2,9 +2,10 @@
 #include "ui_chatroom.h"
 #include <QFile>
 
-chatRoom::chatRoom(QWidget *parent) :
+chatRoom::chatRoom(int friendid,QWidget *parent) :
     QDialog(parent),ui(new Ui::chatRoom),fadeEffect(this),shakeEffect(this)
 {
+    currentFriendID=friendid;
     ui->setupUi(this);
     setWindowFlags(Qt::FramelessWindowHint);
     setAttribute(Qt::WA_TranslucentBackground);
@@ -25,6 +26,7 @@ chatRoom::chatRoom(QWidget *parent) :
 
 chatRoom::~chatRoom()
 {
+    emit closeDialog(currentFriendID);
     delete ui;
 }
 
@@ -38,6 +40,11 @@ void chatRoom::mousePressEvent(QMouseEvent *event)
 void chatRoom::mouseMoveEvent(QMouseEvent *event)
 {
    this->move(event->globalPos() - this->dPos);
+}
+
+void chatRoom::raiseChatDialog()
+{
+    fadeEffect.raiseDialog();
 }
 
 void chatRoom::on_SendButton_clicked()
