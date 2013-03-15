@@ -33,12 +33,17 @@ void networkQueue::run(){
             Nevent ev = eventQueue.front();
             sendRequest(ev.req, respStr);
             qDebug() << respStr.c_str() << endl;
-            Response resp(respStr);
-            eventQueue.pop_front();
 
+            eventQueue.pop_front();
             QObject::connect(this, SIGNAL(youHaveResponse(Response)),
                              ev.callee, ev.signal, Qt::QueuedConnection);
-            emit youHaveResponse(resp);
+            if(respStr.empty()){
+                Response resp;
+                emit youHaveResponse(resp);
+            }else{
+                Response resp(respStr);
+                emit youHaveResponse(resp);
+            }
             QObject::connect(this, SIGNAL(youHaveResponse(Response)),
                              ev.callee, ev.signal, Qt::QueuedConnection);
         }
@@ -55,6 +60,7 @@ void networkQueue::sendRequest(Request &req, std::string &resp){
 
     req.encode(rawData);
     net.addData(rawData);
+    resp.clear();
     qDebug() << rawData.c_str() << endl;
     if(net.connectToRemote(addr, port.toInt()) == false){
         qDebug() << "Can not connect to remote" << endl;
