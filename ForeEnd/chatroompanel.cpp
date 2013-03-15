@@ -2,6 +2,9 @@
 #include "ui_chatroompanel.h"
 #include "protocol/protocol.h"
 
+extern networkQueue nq;
+extern messageListener ml;
+
 ChatRoomPanel::ChatRoomPanel(QString userID, QString passwd, int sessionID):
     ui(new Ui::ChatRoomPanel),fadeEffect(this)
 {
@@ -73,7 +76,7 @@ void ChatRoomPanel::getUserList(){
     ev.callee = this;
     strcpy(ev.signal, SLOT(getUserListResponse(Response)));
 
-    nq->pushEvent(ev);
+    nq.pushEvent(ev);
 
 }
 
@@ -93,7 +96,7 @@ void ChatRoomPanel::getGroupList(){
     ev.callee = this;
     strcpy(ev.signal, SLOT(getGroupListResponse(Response)));
 
-    nq->pushEvent(ev);
+    nq.pushEvent(ev);
 }
 
 void ChatRoomPanel::getUserListResponse(Response resp){

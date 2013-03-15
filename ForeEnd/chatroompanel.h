@@ -33,10 +33,7 @@ public:
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent (QMouseEvent *);
 
-    networkQueue *nq;
-    messageListener *ml;
-
-
+    int sessionID;
 
 private:
     Ui::ChatRoomPanel *ui;
@@ -48,7 +45,7 @@ private:
 
     //Account information
     QString userID, passwd;
-    int sessionID;
+
 
     //Tab控件切换好友列表群列表
     FriendList friendlistWidget;
