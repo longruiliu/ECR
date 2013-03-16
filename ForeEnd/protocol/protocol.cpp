@@ -109,11 +109,7 @@ int Request::encode(std::string &rawString) {
 }
 
 Response::Response() {
-<<<<<<< HEAD
-    root["status"] = -1;
-=======
     root["status"] = ERROR;
->>>>>>> d1be7891296ebb5e7ba0ee2fee0f721db8c427d7
 }
 
 Response::Response(std::string &s) {
@@ -349,8 +345,3 @@ int Response::getUserList(std::string &s, UserList &ul) const {
     }
     return 0;
 }
-
-<<<<<<< HEAD
-
-=======
->>>>>>> d1be7891296ebb5e7ba0ee2fee0f721db8c427d7
