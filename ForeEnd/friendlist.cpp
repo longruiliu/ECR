@@ -3,6 +3,9 @@
 #include "messagelistener.h"
 extern messageListener ml;
 
+QMap<int, QString> FriendList::nickNameList;
+QMap<int, QString> FriendList::friendInfoList;
+
 FriendList::FriendList(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::FriendList)
@@ -42,10 +45,13 @@ void FriendList::handleChatRoomClose(int friendID)
 void FriendList::addFriendToList(int friendID, QString nickName, QString friendInfo)
 {
     friendIDList.push_back(friendID);
+    nickNameList[friendID] = nickName;
+    friendInfoList[friendID] = friendInfo;
 
     QListWidgetItem *friend1 = new QListWidgetItem(ui->FriendListWidget);
     friend1->setIcon(QIcon(":/header/1.png"));
     friend1->setText(nickName);
+
     friend1->setTextAlignment(Qt::AlignLeft);
     friend1->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 }
@@ -105,4 +111,9 @@ void FriendList::viewFriendInfo()
 void FriendList::receiveResponse(Response resp)
 {
 
+}
+
+QString& FriendList::getNickname(int userID)
+{
+    return nickNameList[userID];
 }

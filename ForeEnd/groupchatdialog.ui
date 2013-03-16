@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>GroupChatDialog</class>
  <widget class="QDialog" name="GroupChatDialog">
@@ -274,7 +274,7 @@ border-image: url(:/btn/scrawl.png);</string>
    <widget class="QWebView" name="messageListWebView">
     <property name="geometry">
      <rect>
-      <x>49</x>
+      <x>44</x>
       <y>89</y>
       <width>471</width>
       <height>271</height>

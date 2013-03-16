@@ -18,12 +18,13 @@ public:
     ~FriendList();
 
     void addFriendToList(int friendID, QString nickName, QString friendInfo);
-
+    static QString& getNickname(int userID);
 private:
     Ui::FriendList *ui;
 
     QVector<int> friendIDList;//维护了好友ID的列表
-    QVector<QString> friendInfoList;
+    static QMap<int, QString> friendInfoList;
+    static QMap<int, QString> nickNameList;
     QMap<int,chatRoom*> chatRoomMap;//维护了好友聊天对话框的列表
 
 private slots:
