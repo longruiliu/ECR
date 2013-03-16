@@ -15,7 +15,7 @@ class MsgRecord(object):
         self.sendorID = sendorID
         self.targetID = targetID
         self.msgText = msgText
-        self.timestamp = time.time()
+        self.timestamp = int(time.time())
         self.typeID = typeID
     def __str__(self):
-        return "Msg Dump from %d to %d @ %f:\n%s" %(self.sendorID, self.targetID,self.timestamp, self.msgText)
+        return "Msg Dump from %d to %d @ %d:\n%s" %(self.sendorID, self.targetID,self.timestamp, self.msgText)

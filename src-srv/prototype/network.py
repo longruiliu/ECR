@@ -54,7 +54,7 @@ def fatal(error):
     
 def sendResponse(result):
     print "before encap %s" % result
-    final_result = json.dumps(result)
+    final_result = json.dumps(result,encoding="utf8")
     print "after encap %s" % final_result
     ident = thread.get_ident()
     sock = sockMap[ident][0]
@@ -177,7 +177,7 @@ def requestHandler(request):
         elif req_method == 'fetchmsg':
             try:
                 srcID = checkSessionID(req_sessionID)
-                status, result = apply(logic.keepAlive, [srcID])
+                status, result = apply(logic.fetchMsg, [srcID])
                 ret = initialRet(status)
                 if status == ERR_OK:
                     ret['result'].append({'type': 'MsgList', 'value': [{
@@ -188,6 +188,7 @@ def requestHandler(request):
                                     'msgType': item.typeID}
                                                                        for item in result]})
                 sendResponse(ret)
+                logic.postFetchMsg(srcID)
             except Exception, e:
                 fatal(e)
         else:
@@ -309,6 +310,7 @@ def recvRoutine(sock, addr):
 
     print recv
     try:
+        recv = recv.decode("utf8")
         request = json.loads(recv)
     except Exception, e: fatal(e)
 

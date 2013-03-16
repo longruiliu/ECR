@@ -25,7 +25,7 @@ public:
 
     void addFriendTolist(int friendid,QString nickname);
 
-    void AddMessageToList(QString mcontent,QString authorName,bool isSelf);
+    void AddMessageToList(QString mcontent, QString authorName,time_t postTime,int senderType);
 
 signals:
     void closeDialog(int);

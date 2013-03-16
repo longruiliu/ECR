@@ -2,6 +2,7 @@ import sqlite3
 import user
 import group
 import msgRecord
+import time
 
 solo_run = 0
 
@@ -37,7 +38,7 @@ def restoreFromDB(dbFileName, timeL):
     for result in results:
         g = group.findGroup(result[1])
         tmp = msgRecord.MsgRecord(result[2],result[1],result[5],result[4])
-        tmp.timestamp = result[3]
+        tmp.timestamp = int(result[3])
         g.msgList.append(tmp)
         print tmp
 

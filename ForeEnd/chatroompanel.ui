@@ -161,7 +161,7 @@ border-image: url(:/bg/minBtn.png);</string>
 border-image: url(:/bg/content.png);</string>
     </property>
     <property name="text">
-     <string>孤舟一叶</string>
+     <string/>
     </property>
     <property name="readOnly">
      <bool>true</bool>

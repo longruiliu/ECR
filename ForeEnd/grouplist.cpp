@@ -1,6 +1,7 @@
 ﻿#include "grouplist.h"
 #include "ui_grouplist.h"
 #include "messagelistener.h"
+#include "networkqueue.h"
 
 GroupList::GroupList(QWidget *parent) :
     QWidget(parent),
@@ -13,7 +14,8 @@ GroupList::GroupList(QWidget *parent) :
     connect(ui->GroupListWidget,SIGNAL(doubleClicked(QModelIndex)),
             this,SLOT(startChatWithSelectGroup()));
     setWindowOpacity(0.5);
-    connect(&ml, SIGNAL(youHaveGroupMessage(int)),this, SLOT(newNotify(int)));
+    getGroupList();
+    connect(&ml, SIGNAL(youHaveGroupMessage(int)),this, SLOT(newNotify(int)), Qt::QueuedConnection);
 }
 
 GroupList::~GroupList()
@@ -79,4 +81,40 @@ void GroupList::newNotify(int groupID)
     emit doFetchGroupMsg();
     QObject::disconnect(this,SIGNAL(doFetchGroupMsg()), groupChatDialogMap[groupID],SLOT(getGroupMsg()));
 
+}
+
+
+void GroupList::getGroupList(){
+    Nevent ev;
+    std::string str;
+
+    ui->GroupListWidget->clear();
+    groupIDList.clear();
+
+    str.clear();
+    str.insert(0, "group");
+    ev.req.setType(str);
+
+    str.clear();
+    str.insert(0, "fetchgrp");
+    ev.req.setMethod(str);
+    ev.callee = this;
+    strcpy(ev.signal, SLOT(getGroupListResponse(Response)));
+
+    nq.pushEvent(ev);
+}
+
+
+
+void GroupList::getGroupListResponse(Response resp){
+    qDebug() << "get Group List response" << endl;
+    std::vector<std::pair<int, std::string> > gl;
+    std::vector<std::pair<int, std::string> >::iterator iter;
+
+    resp.getGroupList(gl);
+
+    for(iter = gl.begin(); iter != gl.end(); iter++)
+    {
+        addGroupToList(iter->first,QString(iter->second.c_str()));
+    }
 }

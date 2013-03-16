@@ -1,6 +1,9 @@
 ﻿#include "chatroom.h"
 #include "ui_chatroom.h"
 #include <QFile>
+#include "networkqueue.h"
+#include "friendlist.h"
+#include "QWebFrame"
 
 chatRoom::chatRoom(int friendid,QWidget *parent) :
     QDialog(parent),ui(new Ui::chatRoom),fadeEffect(this),shakeEffect(this)
@@ -23,6 +26,8 @@ chatRoom::chatRoom(int friendid,QWidget *parent) :
         ui->messageListWebView->setHtml(messageList);
     }
     file.close();
+
+    timeStamp = 0;
 }
 
 chatRoom::~chatRoom()
@@ -55,14 +60,32 @@ void chatRoom::on_SendButton_clicked()
     if(!sendText.isEmpty())
     {
        //Send Text To Server
+        Nevent ev;
+        std::string str;
 
-        AddMessageToList(sendText,tr("Your Nick Name"),true);
+        str.clear();
+        str.insert(0,"regular");
+        ev.req.setType(str);
 
-        //Auto Replay
-        AddMessageToList(tr("Auto Replay"),tr("Friend's Nick Name"),false);
+        str.clear();
+        str.insert(0, "sendmsg");
+        ev.req.setMethod(str);
+
+        ev.req.addParams(this->currentFriendID);
+
+        str.clear();
+        str.insert(0, sendText.toLocal8Bit().data());
+        ev.req.addParams(str);
+
+        ev.callee = this;
+        strcpy(ev.signal, SLOT(receiveMessageResponse(Response)));
+
+        nq.pushEvent(ev);
+
+        AddMessageToList(sendText,FriendList::getNickname(this->currentFriendID),true);
     }
 
-    ui->SendTextEdit->clear();
+
 }
 
 void chatRoom::on_CloseWinBtn_clicked()
@@ -73,6 +96,12 @@ void chatRoom::on_CloseWinBtn_clicked()
 
 void chatRoom::AddMessageToList(QString mcontent, QString authorName, bool isSelf)
 {
+    if(mcontent == QString("/s"))
+    {
+        shakeEffect.startShake();
+        AddMessageToList(tr("对方给你发送了一个抖动"),tr("系统提示"),false);
+        return;
+    }
     if(isSelf)
         messageList+=tr("<p class=\"Me\"></p><p class=\"isaid\"><strong>[");
     else
@@ -81,18 +110,51 @@ void chatRoom::AddMessageToList(QString mcontent, QString authorName, bool isSel
     messageList+=tr(":]</strong></br>");
     messageList+=mcontent;
     messageList+=tr("</p><div class=\"clear\"></div>");
-    ui->messageListWebView->setHtml(messageList+"</div></body>",
+    ui->messageListWebView->setHtml(messageList+"<a id='butt'></a></div></body>",
                                     QUrl(QCoreApplication::applicationDirPath()+"//"));
+
+    QWebFrame* mf = ui->messageListWebView->page()->mainFrame();
+    mf->scrollToAnchor("butt");
 }
 
 void chatRoom::on_shakeBtn_clicked()
 {
     //Shake Dialog
     shakeEffect.startShake();
+    AddMessageToList(tr("您给对方发了抖动"),tr("系统提示"),true);
+
+    sendText="/s";
+    //Send Text To Server
+     Nevent ev;
+     std::string str;
+
+     str.clear();
+     str.insert(0,"regular");
+     ev.req.setType(str);
+
+     str.clear();
+     str.insert(0, "sendmsg");
+     ev.req.setMethod(str);
+
+     ev.req.addParams(this->currentFriendID);
+
+     str.clear();
+     str.insert(0, sendText.toLocal8Bit().data());
+     ev.req.addParams(str);
+
+     ev.callee = this;
+     strcpy(ev.signal, SLOT(receiveMessageResponse(Response)));
+
+     nq.pushEvent(ev);
 }
 
 
-void chatRoom::receiveResponse(Response resp)
+void chatRoom::receiveMessageResponse(Response resp)
 {
-
+    if(resp.getStatus() >0){
+        AddMessageToList(QString("Send message Failed"),
+                         FriendList::getNickname(this->currentFriendID), true);
+    }else{
+        ui->SendTextEdit->clear();
+    }
 }

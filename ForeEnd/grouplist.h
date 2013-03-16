@@ -34,6 +34,8 @@ private slots:
     void startChatWithSelectGroup(int groupid=0) ;
     void receiveResponse(Response resp);
     void handleGroupChatDialogClose(int);
+    void getGroupList();
+    void getGroupListResponse(Response resp);
 };
 
 #endif // GROUPLIST_H

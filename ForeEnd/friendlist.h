@@ -2,6 +2,7 @@
 #define FRIENDLIST_H
 
 #include "chatroom.h"
+#include "chatroompanel.h"
 
 #include <QWidget>
 
@@ -18,14 +19,19 @@ public:
     ~FriendList();
 
     void addFriendToList(int friendID, QString nickName, QString friendInfo);
-
+    static QString& getNickname(int userID);
 private:
     Ui::FriendList *ui;
 
     QVector<int> friendIDList;//维护了好友ID的列表
-    QVector<QString> friendInfoList;
+    static QMap<int, QString> friendInfoList;
+    static QMap<int, QString> nickNameList;
     QMap<int,chatRoom*> chatRoomMap;//维护了好友聊天对话框的列表
+    QQueue<int> userInfoRequestQueue;
+    QVector<int> userIDList;
 
+public slots:
+    void getUserList();
 private slots:
     void startChatWithSelectedFriend(int firendID=0) ;
     void onRightClick(QPoint pos);
@@ -33,9 +39,14 @@ private slots:
     void viewFriendInfo();
     void handleChatRoomClose(int friendID);
 
+    void newMessage();
+    void newMessaveResponse(Response resp);
+
  //   void getMessageArrive();
 
     void receiveResponse(Response resp);
+    void receiveUserInfoResponse(Response resp);
+    void getUserListResponse(Response resp);
 };
 
 #endif // FRIENDLIST_H

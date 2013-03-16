@@ -23,13 +23,14 @@ public:
     ~chatRoom();
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent (QMouseEvent *);
-    void AddMessageToList(QString mcontent,QString authorName,bool isSelf);
 
+    int currentFriendID;
     void raiseChatDialog();
-
+    int timeStamp;
 signals:
     void closeDialog(int);
-
+public slots:
+    void AddMessageToList(QString mcontent,QString authorName,bool isSelf);
 private slots:
 
     void on_SendButton_clicked();
@@ -40,7 +41,7 @@ private slots:
 
     //接收到回应
 
-    void receiveResponse(Response resp);
+    void receiveMessageResponse(Response resp);
 private:
     Ui::chatRoom *ui;
 
@@ -56,7 +57,7 @@ private:
     QString sendText;
     QString receiveText;
 
-    int currentFriendID;
+
 
 };
 

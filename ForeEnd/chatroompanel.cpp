@@ -2,6 +2,8 @@
 #include "ui_chatroompanel.h"
 #include "protocol/protocol.h"
 #include "networkqueue.h"
+#include "friendlist.h"
+
 
 extern networkQueue nq;
 extern messageListener ml;
@@ -32,8 +34,9 @@ ChatRoomPanel::ChatRoomPanel(QString userID, QString passwd, int sessionID):
     this->sessionID = sessionID;
 
     //get User list and group list
-    getUserList();
-    getGroupList();
+
+    ui->nameLineEdit->setText(FriendList::getNickname(myUserID));
+
 }
 
 ChatRoomPanel::ChatRoomPanel(QWidget *parent) :
@@ -62,86 +65,7 @@ ChatRoomPanel::ChatRoomPanel(QWidget *parent) :
 }
 
 
-void ChatRoomPanel::getUserList(){
-    Nevent ev;
-    std::string str;
 
-    str.clear();
-    str.insert(0, "regular");
-    ev.req.setType(str);
-
-    str.clear();
-    str.insert(0, "userlist");
-    ev.req.setMethod(str);
-    ev.req.setSessionID(sessionID);
-    ev.callee = this;
-    strcpy(ev.signal, SLOT(getUserListResponse(Response)));
-
-    nq.pushEvent(ev);
-}
-
-void ChatRoomPanel::getGroupList(){
-    Nevent ev;
-    std::string str;
-
-    ev.req.setSessionID(sessionID);
-
-    str.clear();
-    str.insert(0, "group");
-    ev.req.setType(str);
-
-    str.clear();
-    str.insert(0, "fetchgrp");
-    ev.req.setMethod(str);
-    ev.callee = this;
-    strcpy(ev.signal, SLOT(getGroupListResponse(Response)));
-
-    nq.pushEvent(ev);
-}
-
-void ChatRoomPanel::getUserListResponse(Response resp){
-    std::vector<int>::iterator iter;
-    UserList ul;
-    resp.getUserList(ul);
-    std::string str;
-
-    for(iter = ul.begin(); iter != ul.end(); iter++){
-        userIDList.push_back(*iter);
-        userInfoRequestQueue.push_back(*iter);
-        Nevent ev;
-
-        ev.req.setSessionID(sessionID);
-
-        str.clear();
-        str.insert(0,"regular");
-        ev.req.setType(str);
-
-        str.clear();
-        str.insert(0,"userinfo");
-        ev.req.setMethod(str);
-
-        ev.req.addParams(*iter);
-
-        ev.callee = this;
-        strcpy(ev.signal, SLOT(receiveUserInfoResponse(Response)));
-
-        nq.pushEvent(ev);
-    }
-
-}
-
-void ChatRoomPanel::getGroupListResponse(Response resp){
-    qDebug() << "get Group List response" << endl;
-    std::vector<std::pair<int, std::string> > gl;
-    std::vector<std::pair<int, std::string> >::iterator iter;
-
-    resp.getGroupList(gl);
-
-    for(iter = gl.begin(); iter != gl.end(); iter++)
-    {
-        grouplistWidget.addGroupToList(iter->first,QString(iter->second.c_str()));
-    }
-}
 
 ChatRoomPanel::~ChatRoomPanel()
 {
@@ -225,17 +149,4 @@ void ChatRoomPanel::on_headerImage_clicked()
 }
 
 
-void ChatRoomPanel::receiveUserInfoResponse(Response resp)
-{
-    int id;
 
-    id = userInfoRequestQueue.front();
-    userInfoRequestQueue.pop_front();
-    UserInfo _ui;
-    std::string name;
-    resp.getUserInfo(_ui);
-    resp.getUserName(name);
-
-    friendlistWidget.addFriendToList(id, QString(name.c_str()), QString(_ui.c_str()));
-
-}

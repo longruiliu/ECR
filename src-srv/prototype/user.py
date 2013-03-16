@@ -2,6 +2,8 @@ import random
 import logic
 import group
 import session
+import network
+import msgRecord
 userList = {}
 #It should be always in mind that all User ID are negative
 
@@ -34,7 +36,7 @@ class User(object):
         if not self.groupListIsNew:
             self.groupList = []
             for i in group.groupList.values():
-                if i.isInGroup(self.userID):
+                if i.isInGroup(self.userID) or i.isRoot():
                     self.groupList.append((i.groupID, i.groupName))
             self.groupListIsNew = True
         return self.groupList
