@@ -7,6 +7,7 @@
 #include "protocol_const.h"
 #include <QTimer>
 #include <vector>
+#include <QWebFrame>
 #include "logindialog.h"
 
 GroupChatDialog::GroupChatDialog(int groupID,QWidget *parent) :
@@ -128,6 +129,9 @@ void GroupChatDialog::AddMessageToList(QString mcontent, QString authorName,time
     messageList+=tr("</p><div class=\"clear\"></div>");
     ui->messageListWebView->setHtml(messageList+"</div></body>",
                                     QUrl(QCoreApplication::applicationDirPath()+"//"));
+    QWebFrame* mf = ui->messageListWebView->page()->mainFrame();
+    mf->setScrollBarValue(Qt::Vertical, mf->scrollBarMaximum(Qt::Vertical));
+    qDebug() <<"Frame position"<< mf->scrollBarMaximum(Qt::Vertical);
 }
 
 void GroupChatDialog::on_SendMessageBtn_clicked()
