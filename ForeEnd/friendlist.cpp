@@ -153,6 +153,7 @@ void FriendList::newMessaveResponse(Response resp){
         qDebug() << i->srcID;
         int srcID = i->srcID;
         startChatWithSelectedFriend(srcID);
+
         chatRoomMap[srcID]->AddMessageToList(QString(i->msgText.c_str()),
                                                     getNickname(srcID), false);
         chatRoomMap[srcID]->timeStamp = i->postTime;

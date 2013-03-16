@@ -95,6 +95,12 @@ void chatRoom::on_CloseWinBtn_clicked()
 
 void chatRoom::AddMessageToList(QString mcontent, QString authorName, bool isSelf)
 {
+    if(mcontent == QString("/s"))
+    {
+        shakeEffect.startShake();
+        AddMessageToList(tr("对方给你发送了一个抖动"),tr("系统提示"),false);
+        return;
+    }
     if(isSelf)
         messageList+=tr("<p class=\"Me\"></p><p class=\"isaid\"><strong>[");
     else
@@ -111,6 +117,31 @@ void chatRoom::on_shakeBtn_clicked()
 {
     //Shake Dialog
     shakeEffect.startShake();
+    AddMessageToList(tr("您给对方发了抖动"),tr("系统提示"),true);
+
+    sendText="/s";
+    //Send Text To Server
+     Nevent ev;
+     std::string str;
+
+     str.clear();
+     str.insert(0,"regular");
+     ev.req.setType(str);
+
+     str.clear();
+     str.insert(0, "sendmsg");
+     ev.req.setMethod(str);
+
+     ev.req.addParams(this->currentFriendID);
+
+     str.clear();
+     str.insert(0, sendText.toLocal8Bit().data());
+     ev.req.addParams(str);
+
+     ev.callee = this;
+     strcpy(ev.signal, SLOT(receiveMessageResponse(Response)));
+
+     nq.pushEvent(ev);
 }
 
 
