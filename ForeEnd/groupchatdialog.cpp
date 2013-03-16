@@ -23,6 +23,7 @@ GroupChatDialog::GroupChatDialog(int groupID,QWidget *parent) :
 
     connect(ui->FriendListWidget,SIGNAL(doubleClicked(QModelIndex)),
             this,SLOT(startChatWithSelectedFriend()));
+    getMemberList();
     getGroupMsg();
 }
 
@@ -134,7 +135,10 @@ void GroupChatDialog::receiveGroupMsg(Response resp)
 
 void GroupChatDialog::receiveMemberList(Response resp)
 {
-    resp.getUserList();
+    UserList ul;
+    resp.getUserList(ul);
+    for (UserList::iterator i=ul.begin(); i!=ul.end(); i++)
+        addFriendTolist(*i, QString(*i));
 }
 
 void GroupChatDialog::getGroupMsg()
@@ -158,4 +162,18 @@ void GroupChatDialog::getGroupMsg()
 
 void GroupChatDialog::getMemberList()
 {
+    Nevent ev;
+    std::string str;
+
+    str.clear();
+    str.insert(0, "group");
+    ev.req.setType(str);
+
+    str.clear();
+    str.insert(0, "userlist");
+    ev.req.setMethod(str);
+    ev.callee = this;
+    ev.req.addParams(currentGroupID);
+    strcpy(ev.signal, SLOT(receiveMemberList(Response)));
+    nq.pushEvent(ev);
 }
