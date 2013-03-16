@@ -188,6 +188,7 @@ def requestHandler(request):
                                     'msgType': item.typeID}
                                                                        for item in result]})
                 sendResponse(ret)
+                logic.postFetchMsg(srcID)
             except Exception, e:
                 fatal(e)
         else:
