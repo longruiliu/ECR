@@ -78,7 +78,6 @@ void ChatRoomPanel::getUserList(){
     strcpy(ev.signal, SLOT(getUserListResponse(Response)));
 
     nq.pushEvent(ev);
-
 }
 
 void ChatRoomPanel::getGroupList(){

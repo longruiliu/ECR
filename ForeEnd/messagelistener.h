@@ -41,4 +41,5 @@ private:
     QWaitCondition cond;
 };
 
+extern messageListener ml;
 #endif // MESSAGELISTENER_H

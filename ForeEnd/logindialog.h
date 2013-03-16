@@ -15,8 +15,7 @@
 #include "networkqueue.h"
 
 
-extern networkQueue nq;
-extern messageListener ml;
+
 
 namespace Ui {
     class loginDialog;

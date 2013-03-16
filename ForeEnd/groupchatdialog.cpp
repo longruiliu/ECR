@@ -1,10 +1,16 @@
 ﻿#include "groupchatdialog.h"
 #include "ui_groupchatdialog.h"
+#include "protocol/protocol.h"
+#include "networkqueue.h"
+#include "msgRecord.h"
+#include "protocol_const.h"
+#include <QTimer>
+#include <vector>
 
 GroupChatDialog::GroupChatDialog(int groupID,QWidget *parent) :
     QDialog(parent),
     ui(new Ui::GroupChatDialog),
-    fadeEffect(this)
+    fadeEffect(this),lastMsgTime(0)
 {
     currentGroupID=groupID;
 
@@ -17,6 +23,7 @@ GroupChatDialog::GroupChatDialog(int groupID,QWidget *parent) :
 
     connect(ui->FriendListWidget,SIGNAL(doubleClicked(QModelIndex)),
             this,SLOT(startChatWithSelectedFriend()));
+    getGroupMsg();
 }
 
 GroupChatDialog::~GroupChatDialog()
@@ -89,7 +96,37 @@ void GroupChatDialog::on_SendMessageBtn_clicked()
     sendText=ui->SendMessageText->toPlainText();
 }
 
-void GroupChatDialog::receiveResponse(Response resp)
+void GroupChatDialog::receiveGroupMsg(Response resp)
 {
+    std::vector<msgRecord> mList;
+    std::vector<msgRecord>::iterator i;
+    resp.getMsgList(mList);
+    for (i = mList.begin(); i != mList.end(); i++)
+    {
+        if (i->msgType == MSG_TYPE_GROUP_RED)
+        {
+        }
+        ui->MessageListWidget->addItem(i->msgText.c_str());
+        if (i->postTime > lastMsgTime)
+            lastMsgTime = i->postTime;
+    }
+}
 
+void GroupChatDialog::getGroupMsg()
+{
+    Nevent ev;
+    std::string str;
+
+    str.clear();
+    str.insert(0, "group");
+    ev.req.setType(str);
+
+    str.clear();
+    str.insert(0, "fetchmsg");
+    ev.req.setMethod(str);
+    ev.callee = this;
+    ev.req.addParams(currentGroupID);
+    ev.req.addParams(lastMsgTime);
+    strcpy(ev.signal, SLOT(receiveGroupMsg(Response)));
+    nq.pushEvent(ev);
 }
