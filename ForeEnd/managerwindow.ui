@@ -25,7 +25,7 @@
    <property name="title">
     <string>Group Manage</string>
    </property>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="groupName">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -61,7 +61,7 @@
      <string>Delete</string>
     </property>
    </widget>
-   <widget class="QListWidget" name="listWidget">
+   <widget class="QListWidget" name="groupList">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -71,7 +71,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QListWidget" name="listWidget_3">
+   <widget class="QListWidget" name="groupMemberList">
     <property name="geometry">
      <rect>
       <x>240</x>
@@ -113,7 +113,7 @@
       <x>10</x>
       <y>20</y>
       <width>241</width>
-      <height>241</height>
+      <height>261</height>
      </rect>
     </property>
    </widget>
@@ -267,7 +267,7 @@
   <widget class="QPushButton" name="addGroupMember">
    <property name="geometry">
     <rect>
-     <x>180</x>
+     <x>190</x>
      <y>320</y>
      <width>101</width>
      <height>23</height>

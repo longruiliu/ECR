@@ -22,7 +22,8 @@ private:
     std::map<int, std::string> userList;
     std::map<int, std::string> groupList;
 private slots:
-    /*void actionFinish(Response);
+   /* void actionFinish(Response);
+
     void getUserInfoFinish(Response);
     void getMemberListFinish(Response);
     void getUserListFinish(Response);

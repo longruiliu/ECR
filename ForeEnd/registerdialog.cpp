@@ -50,7 +50,7 @@ void RegisterDialog::on_OkBtn_clicked()
         qDebug() << "We must configure server IP and port first" << endl;
         return;
     }
-    nq->setRemote(conf->serverIP, conf->serverPort);
+    nq.setRemote(conf->serverIP, conf->serverPort);
 
     ev.req.setSessionID(0);
     str.insert(0, "regular");
@@ -80,7 +80,7 @@ void RegisterDialog::on_OkBtn_clicked()
         ev.callee = (QObject *)this;
         strcpy(ev.signal, SLOT(receiveResponse(Response)));
 
-        nq->pushEvent(ev);
+        nq.pushEvent(ev);
 
         conf->close();
 

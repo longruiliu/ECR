@@ -26,9 +26,6 @@ public:
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent (QMouseEvent *);
 
-    messageListener *ml;
-    networkQueue *nq;
-
     //
 
 private:
