@@ -150,10 +150,7 @@ void FriendList::newMessaveResponse(Response resp){
 
     resp.getMsgList(rec);
     for(i = 0; i < rec.size(); i++){
-        if(chatRoomMap.find(rec[i].srcID) == chatRoomMap.end()){
-            //not found
-            chatRoomMap[rec[i].srcID] = new chatRoom(rec[i].srcID, this);
-        }
+        startChatWithSelectedFriend(rec[i].srcID);
         chatRoomMap[rec[i].srcID]->AddMessageToList(QString(rec[i].msgText.c_str()),
                                                     getNickname(rec[i].srcID), true);
         chatRoomMap[rec[i].srcID]->timeStamp = rec[i].postTime;

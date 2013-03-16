@@ -2,6 +2,7 @@
 #define MANAGERWINDOW_H
 
 #include <QDialog>
+#include "protocol.h"
 
 namespace Ui {
     class managerWindow;
@@ -17,6 +18,15 @@ public:
 
 private:
     Ui::managerWindow *ui;
+    void refreshData();
+    std::map<int, std::string> userList;
+    std::map<int, std::string> groupList;
+private slots:
+    /*void actionFinish(Response);
+    void getUserInfoFinish(Response);
+    void getMemberListFinish(Response);
+    void getUserListFinish(Response);
+    void getGroupListFinish(Response);*/
 };
 
 #endif // MANAGERWINDOW_H

@@ -76,7 +76,8 @@ def delGroupMember(srcID, groupID, memberID):
 # mark
 def fetchMemberList(srcID, groupID):
     gp = group.findGroup(groupID)
-    if gp.isInGroup(srcID):
+    ur = user.findUser(srcID)
+    if gp.isInGroup(srcID) or ur.isRoot():
         return (ERR_OK, gp.groupMember.keys())
     else:
         return (ERR_NOT_IN_GROUP, None)
@@ -155,7 +156,7 @@ def postFetchMsg(srcID):
     user.findUser(srcID).mailbox = []
 
 def keepAlive(srcID):
-    return (ERR_OK, renewUser(srcID))
+    return (ERR_OK, session.renewUser(srcID))
 
 def fetchUserList(srcID):
     return (ERR_OK, [i.userID for i in user.userList.values()])

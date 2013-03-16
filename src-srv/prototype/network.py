@@ -177,7 +177,7 @@ def requestHandler(request):
         elif req_method == 'fetchmsg':
             try:
                 srcID = checkSessionID(req_sessionID)
-                status, result = apply(logic.keepAlive, [srcID])
+                status, result = apply(logic.fetchMsg, [srcID])
                 ret = initialRet(status)
                 if status == ERR_OK:
                     ret['result'].append({'type': 'MsgList', 'value': [{

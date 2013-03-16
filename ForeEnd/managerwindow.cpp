@@ -12,3 +12,8 @@ managerWindow::~managerWindow()
 {
     delete ui;
 }
+
+void managerWindow::refreshData()
+{
+
+}
