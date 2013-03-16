@@ -4,7 +4,8 @@
 GroupChatDialog::GroupChatDialog(int groupID,QWidget *parent) :
     QDialog(parent),
     ui(new Ui::GroupChatDialog),
-    fadeEffect(this)
+    fadeEffect(this),
+    shakeEffect(this)
 {
     currentGroupID=groupID;
 
@@ -17,6 +18,19 @@ GroupChatDialog::GroupChatDialog(int groupID,QWidget *parent) :
 
     connect(ui->FriendListWidget,SIGNAL(doubleClicked(QModelIndex)),
             this,SLOT(startChatWithSelectedFriend()));
+
+    QFile file(":/chatStyle.html");
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        //chatStyle.html doesn't exsit
+        messageList="";
+    }
+    else
+    {
+        messageList = file.readAll();
+        ui->messageListWebView->setHtml(messageList);
+    }
+    file.close();
 }
 
 GroupChatDialog::~GroupChatDialog()
@@ -84,12 +98,43 @@ void GroupChatDialog::startChatWithSelectedFriend(int friendid)
     }
 }
 
+void GroupChatDialog::AddMessageToList(QString mcontent, QString authorName, bool isSelf)
+{
+    if(isSelf)
+        messageList+=tr("<p class=\"Me\"></p><p class=\"isaid\"><strong>[");
+    else
+        messageList+=tr("<p class=\"U\"></p><p class=\"usaid\">[<strong>");
+    messageList+=authorName;
+    messageList+=tr(":]</strong></br>");
+    messageList+=mcontent;
+    messageList+=tr("</p><div class=\"clear\"></div>");
+    ui->messageListWebView->setHtml(messageList+"</div></body>",
+                                    QUrl(QCoreApplication::applicationDirPath()+"//"));
+}
+
 void GroupChatDialog::on_SendMessageBtn_clicked()
 {
     sendText=ui->SendMessageText->toPlainText();
+
+    if(!sendText.isEmpty())
+    {
+       //Send Text To Server
+
+        AddMessageToList(sendText,tr("Your Nick Name"),true);
+
+        //Auto Replay
+        AddMessageToList(tr("Auto Replay"),tr("Friend's Nick Name"),false);
+    }
+
+    ui->SendMessageText->clear();
 }
 
 void GroupChatDialog::receiveResponse(Response resp)
 {
 
+}
+
+void GroupChatDialog::on_shakeBtn_clicked()
+{
+    shakeEffect.startShake();
 }

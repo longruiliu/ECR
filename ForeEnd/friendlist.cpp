@@ -1,5 +1,7 @@
 ﻿#include "friendlist.h"
 #include "ui_friendlist.h"
+#include "messagelistener.h"
+extern messageListener ml;
 
 FriendList::FriendList(QWidget *parent) :
     QWidget(parent),
@@ -19,6 +21,9 @@ FriendList::FriendList(QWidget *parent) :
     ui->FriendListWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->FriendListWidget,SIGNAL(customContextMenuRequested(QPoint)),
             this,SLOT(onRightClick(QPoint)));
+
+    //reveive Message signal
+ //   connect(&ml,SIGNAL())
 
 }
 
