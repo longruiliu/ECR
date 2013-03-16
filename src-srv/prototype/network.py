@@ -4,6 +4,7 @@ import socket
 import thread
 import pickle
 import logic
+import sys
 
 from logic import ERR_SESSIONID_EXPECTED, ERR_METHOD_EXPECTED, ERR_TYPE_EXPECTED, ERR_PARAMS_EXPECTED, ERR_INVALID_METHOD, ERR_INVALID_PARAMS, ERR_INVALID_TYPE, ERR_OK, ERR_NOT_IN_GROUP, ERR_NO_PRIVILEGE, ERR_WRONG_PASSWD, ERR_INVALID_REQUEST
 
@@ -332,9 +333,10 @@ def main():
             newsock, addr = sock.accept()
             print "some one connect"
             thread.start_new_thread(recvRoutine, (newsock, addr))
-    except KeyboardInterrupt:
+    except Exception, e:
+        print e
         sock.close()
-        exit()
+        sys.exit()
     
 if __name__ == '__main__':
     main()
