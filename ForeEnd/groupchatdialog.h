@@ -55,7 +55,12 @@ private slots:
     void on_SendMessageBtn_clicked();
     void handleChatRoomClose(int friendID);
     void receiveGroupMsg(Response resp);
+<<<<<<< HEAD
+
+    void sendGroupMessageResponse(Response resp);
+=======
     void receiveMemberList(Response resp);
+>>>>>>> 455bc676caac36a5d13e9010c876bb4a91ed3b27
 };
 
 #endif // GROUPCHATDIALOG_H
