@@ -8,17 +8,15 @@ messageListener::messageListener(QObject *parent) :
     QThread(parent)
 {
 
-    QObject::connect(&serv, SIGNAL(readyRead()), this, SLOT(handleMessage()));
-    serv.bind(QHostAddress::Any, 0x1024);
 }
 
 void messageListener::handleMessage(){
     char *pushMsg;
     int msgLen, msgType1, msgType2;
     qDebug() << "New UDP pack arrive" <<msgLen;
-    msgLen = serv.pendingDatagramSize();
+    msgLen = serv->pendingDatagramSize();
     pushMsg = new char[msgLen];
-    msgLen = serv.readDatagram(pushMsg, msgLen);
+    msgLen = serv->readDatagram(pushMsg, msgLen);
     if(msgLen < 8)
         return;
 
@@ -34,5 +32,11 @@ void messageListener::handleMessage(){
 }
 
 void messageListener::run(){
+    serv = new QUdpSocket();
+    serv->moveToThread(this);
+    QObject::connect(serv, SIGNAL(readyRead()), this, SLOT(handleMessage()),Qt::QueuedConnection);
+    if(!serv->bind(QHostAddress::Any, 0x1024)){
+        qDebug() << "Bind Error"<< endl;
+    }
     exec();
 }

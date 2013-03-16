@@ -27,7 +27,7 @@ public slots:
 private slots:
     void handleMessage();
 private:
-    QUdpSocket serv;
+    QUdpSocket *serv;
 
     QMutex lock;
     QWaitCondition cond;
