@@ -13,7 +13,7 @@ GroupList::GroupList(QWidget *parent) :
     connect(ui->GroupListWidget,SIGNAL(doubleClicked(QModelIndex)),
             this,SLOT(startChatWithSelectGroup()));
     setWindowOpacity(0.5);
-    connect(&ml, SIGNAL(youHaveGroupMessage(int)),this, SLOT(newNotify(int)));
+    connect(&ml, SIGNAL(youHaveGroupMessage(int)),this, SLOT(newNotify(int)), Qt::QueuedConnection);
 }
 
 GroupList::~GroupList()

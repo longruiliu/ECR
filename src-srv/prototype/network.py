@@ -54,7 +54,7 @@ def fatal(error):
     
 def sendResponse(result):
     print "before encap %s" % result
-    final_result = json.dumps(result)
+    final_result = json.dumps(result,encoding="utf8")
     print "after encap %s" % final_result
     ident = thread.get_ident()
     sock = sockMap[ident][0]
@@ -309,6 +309,7 @@ def recvRoutine(sock, addr):
 
     print recv
     try:
+        recv = recv.decode("utf8")
         request = json.loads(recv)
     except Exception, e: fatal(e)
 
