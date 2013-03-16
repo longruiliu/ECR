@@ -76,7 +76,7 @@ def delGroupMember(srcID, groupID, memberID):
 def fetchMemberList(srcID, groupID):
     gp = group.findGroup(groupID)
     if gp.isInGroup(srcID):
-        return (ERR_OK, gp.groupMember)
+        return (ERR_OK, gp.groupMember.keys())
     else:
         return (ERR_NOT_IN_GROUP, None)
 # mark

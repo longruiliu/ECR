@@ -137,6 +137,11 @@ void GroupChatDialog::receiveGroupMsg(Response resp)
     }
 }
 
+void GroupChatDialog::receiveMemberList(Response resp)
+{
+    resp.getUserList();
+}
+
 void GroupChatDialog::getGroupMsg()
 {
     Nevent ev;
@@ -154,4 +159,8 @@ void GroupChatDialog::getGroupMsg()
     ev.req.addParams(lastMsgTime);
     strcpy(ev.signal, SLOT(receiveGroupMsg(Response)));
     nq.pushEvent(ev);
+}
+
+void GroupChatDialog::getMemberList()
+{
 }

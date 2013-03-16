@@ -46,6 +46,7 @@ private:
 
     QVector<int> friendIDList;//维护了好友ID的列表
     QMap<int,chatRoom*> chatRoomMap;//维护了好友聊天对话框的列表
+    void getMemberList();
 public slots:
     void getGroupMsg();
 private slots:
@@ -54,8 +55,12 @@ private slots:
     void on_SendMessageBtn_clicked();
     void handleChatRoomClose(int friendID);
     void receiveGroupMsg(Response resp);
+<<<<<<< HEAD
 
     void sendGroupMessageResponse(Response resp);
+=======
+    void receiveMemberList(Response resp);
+>>>>>>> 455bc676caac36a5d13e9010c876bb4a91ed3b27
 };
 
 #endif // GROUPCHATDIALOG_H
