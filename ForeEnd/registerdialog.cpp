@@ -51,8 +51,6 @@ void RegisterDialog::on_OkBtn_clicked()
         return;
     }
     nq->setRemote(conf->serverIP, conf->serverPort);
-    //ml also needs sessoinID if you want it works.
-    ml->setRemote(conf->serverIP, conf->serverPort);
 
     ev.req.setSessionID(0);
     str.insert(0, "regular");

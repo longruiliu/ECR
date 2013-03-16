@@ -56,8 +56,6 @@ void loginDialog::on_LoginBtn_clicked()
         return;
     }
     nq.setRemote(conf->serverIP, conf->serverPort);
-    //ml also needs sessoinID if you want it works.
-    ml.setRemote(conf->serverIP, conf->serverPort);
 
     ev.req.setSessionID(0);
     str.insert(0, "regular");
@@ -108,7 +106,6 @@ void loginDialog::receiveLoginResponse(Response resp)
     }
     sessionID = resp.getSessionID();
     nq.sessionID = sessionID;
-    ml.setSessionID(sessionID);
 
     ChatRoomPanel *crp = new ChatRoomPanel(userName, userPassword, sessionID);
     crp->sessionID = sessionID;
