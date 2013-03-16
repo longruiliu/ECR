@@ -25,6 +25,8 @@ chatRoom::chatRoom(int friendid,QWidget *parent) :
         ui->messageListWebView->setHtml(messageList);
     }
     file.close();
+
+    timeStamp = 0;
 }
 
 chatRoom::~chatRoom()
@@ -114,8 +116,8 @@ void chatRoom::on_shakeBtn_clicked()
 
 void chatRoom::receiveMessageResponse(Response resp)
 {
-    if(resp.getStatus() == 0){
-        AddMessageToList(QString("发送消息失败"),
+    if(resp.getStatus() >0){
+        AddMessageToList(QString("Send message Failed"),
                          FriendList::getNickname(this->currentFriendID), true);
     }else{
         ui->SendTextEdit->clear();

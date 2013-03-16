@@ -26,7 +26,7 @@ public:
     void AddMessageToList(QString mcontent,QString authorName,bool isSelf);
 
     void raiseChatDialog();
-
+    int timeStamp;
 signals:
     void closeDialog(int);
 
@@ -57,6 +57,7 @@ private:
     QString receiveText;
 
     int currentFriendID;
+
 
 };
 

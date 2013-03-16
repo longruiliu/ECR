@@ -34,6 +34,9 @@ private slots:
     void viewFriendInfo();
     void handleChatRoomClose(int friendID);
 
+    void newMessage();
+    void newMessaveResponse(Response resp);
+
  //   void getMessageArrive();
 
     void receiveResponse(Response resp);

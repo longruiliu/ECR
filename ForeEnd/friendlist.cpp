@@ -1,6 +1,9 @@
 ﻿#include "friendlist.h"
 #include "ui_friendlist.h"
 #include "messagelistener.h"
+#include "networkqueue.h"
+#include "msgRecord.h"
+
 extern messageListener ml;
 
 QMap<int, QString> FriendList::nickNameList;
@@ -27,6 +30,8 @@ FriendList::FriendList(QWidget *parent) :
 
     //reveive Message signal
  //   connect(&ml,SIGNAL())
+
+    connect(&ml, SIGNAL(youHaveMessage()), this, SLOT(newMessage()));
 
 }
 
@@ -118,4 +123,39 @@ void FriendList::receiveResponse(Response resp)
 QString& FriendList::getNickname(int userID)
 {
     return nickNameList[userID];
+}
+
+void FriendList::newMessage(){
+    Nevent ev;
+    std::string str;
+
+    str.clear();
+    str.insert(0,"regular");
+    ev.req.setType(str);
+
+    str.clear();
+    str.insert(0,"fetchmsg");
+    ev.req.setMethod(str);
+
+    ev.callee = this;
+    strcpy(ev.signal, SLOT(newMessaveResponse(Response)));
+
+    nq.pushEvent(ev);
+
+}
+
+void FriendList::newMessaveResponse(Response resp){
+    int i;
+    std::vector<msgRecord> rec;
+
+    resp.getMsgList(rec);
+    for(i = 0; i < rec.size(); i++){
+        if(chatRoomMap.find(rec[i].srcID) == chatRoomMap.end()){
+            //not found
+            chatRoomMap[rec[i].srcID] = new chatRoom(rec[i].srcID, this);
+        }
+        chatRoomMap[rec[i].srcID]->AddMessageToList(QString(rec[i].msgText.c_str()),
+                                                    getNickname(rec[i].srcID), true);
+        chatRoomMap[rec[i].srcID]->timeStamp = rec[i].postTime;
+    }
 }
