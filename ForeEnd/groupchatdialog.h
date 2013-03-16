@@ -25,6 +25,8 @@ public:
 
     void addFriendTolist(int friendid,QString nickname);
 
+    void AddMessageToList(QString mcontent,QString authorName,bool isSelf);
+
 signals:
     void closeDialog(int);
 
@@ -40,13 +42,18 @@ private:
     QPoint mousePos;
 
     FadeInOut fadeEffect;
+    shakeWindow shakeEffect;
 
+    QString messageList;
     QString sendText;
     QString receiveText;
 
     QVector<int> friendIDList;//维护了好友ID的列表
     QMap<int,chatRoom*> chatRoomMap;//维护了好友聊天对话框的列表
+
+
     void getMemberList();
+
 public slots:
     void getGroupMsg();
 private slots:
@@ -54,8 +61,14 @@ private slots:
     void on_CloseWinBtn_clicked();
     void on_SendMessageBtn_clicked();
     void handleChatRoomClose(int friendID);
+
+    void on_shakeBtn_clicked();
+
     void receiveGroupMsg(Response resp);
+
+    void sendGroupMessageResponse(Response resp);
     void receiveMemberList(Response resp);
+
 };
 
 #endif // GROUPCHATDIALOG_H

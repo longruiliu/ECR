@@ -10,7 +10,9 @@
 GroupChatDialog::GroupChatDialog(int groupID,QWidget *parent) :
     QDialog(parent),
     ui(new Ui::GroupChatDialog),
-    fadeEffect(this),lastMsgTime(0)
+    fadeEffect(this),
+    shakeEffect(this),
+    lastMsgTime(0)
 {
     currentGroupID=groupID;
 
@@ -23,6 +25,21 @@ GroupChatDialog::GroupChatDialog(int groupID,QWidget *parent) :
 
     connect(ui->FriendListWidget,SIGNAL(doubleClicked(QModelIndex)),
             this,SLOT(startChatWithSelectedFriend()));
+
+    QFile file(":/chatStyle.html");
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        //chatStyle.html doesn't exsit
+        messageList="";
+    }
+    else
+    {
+        messageList = file.readAll();
+        ui->messageListWebView->setHtml(messageList);
+    }
+    file.close();
+
+    getMemberList();
     getGroupMsg();
 }
 
@@ -91,12 +108,38 @@ void GroupChatDialog::startChatWithSelectedFriend(int friendid)
     }
 }
 
+void GroupChatDialog::AddMessageToList(QString mcontent, QString authorName, bool isSelf)
+{
+    if(isSelf)
+        messageList+=tr("<p class=\"Me\"></p><p class=\"isaid\"><strong>[");
+    else
+        messageList+=tr("<p class=\"U\"></p><p class=\"usaid\">[<strong>");
+    messageList+=authorName;
+    messageList+=tr(":]</strong></br>");
+    messageList+=mcontent;
+    messageList+=tr("</p><div class=\"clear\"></div>");
+    ui->messageListWebView->setHtml(messageList+"</div></body>",
+                                    QUrl(QCoreApplication::applicationDirPath()+"//"));
+}
+
 void GroupChatDialog::on_SendMessageBtn_clicked()
 {
     std::string str;
     Nevent ev;
 
     sendText=ui->SendMessageText->toPlainText();
+
+    if(!sendText.isEmpty())
+    {
+       //Send Text To Server
+
+        AddMessageToList(sendText,tr("Your Nick Name"),true);
+
+        //Auto Replay
+   //     AddMessageToList(tr("Auto Replay"),tr("Friend's Nick Name"),false);
+    }
+
+    ui->SendMessageText->clear();
 
     str.clear();
     str.insert(0,"group");
@@ -111,8 +154,13 @@ void GroupChatDialog::on_SendMessageBtn_clicked()
     str.clear();
     str.insert(0, sendText.toLocal8Bit().data());
     ev.req.addParams(str);
+    ev.callee = this;
+    strcpy(ev.signal, SLOT(sendGroupMessageResponse(Response)));
 
     nq.pushEvent(ev);
+
+}
+void GroupChatDialog::sendGroupMessageResponse(Response resp){
 
 }
 
@@ -126,7 +174,8 @@ void GroupChatDialog::receiveGroupMsg(Response resp)
         if (i->msgType == MSG_TYPE_GROUP_RED)
         {
         }
-        ui->MessageListWidget->addItem(i->msgText.c_str());
+        AddMessageToList(i->msgText.c_str(),"NickName",false);
+    //    ui->MessageListWidget->addItem(i->msgText.c_str());
         if (i->postTime > lastMsgTime)
             lastMsgTime = i->postTime;
     }
@@ -134,7 +183,10 @@ void GroupChatDialog::receiveGroupMsg(Response resp)
 
 void GroupChatDialog::receiveMemberList(Response resp)
 {
-    resp.getUserList();
+    UserList ul;
+    resp.getUserList(ul);
+    for (UserList::iterator i=ul.begin(); i!=ul.end(); i++)
+        addFriendTolist(*i, QString(*i));
 }
 
 void GroupChatDialog::getGroupMsg()
@@ -158,4 +210,23 @@ void GroupChatDialog::getGroupMsg()
 
 void GroupChatDialog::getMemberList()
 {
+    Nevent ev;
+    std::string str;
+
+    str.clear();
+    str.insert(0, "group");
+    ev.req.setType(str);
+
+    str.clear();
+    str.insert(0, "userlist");
+    ev.req.setMethod(str);
+    ev.callee = this;
+    ev.req.addParams(currentGroupID);
+    strcpy(ev.signal, SLOT(receiveMemberList(Response)));
+    nq.pushEvent(ev);
+}
+
+void GroupChatDialog::on_shakeBtn_clicked()
+{
+    shakeEffect.startShake();
 }

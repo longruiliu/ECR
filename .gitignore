@@ -4,3 +4,4 @@
 USay-build-*
 *.pro.user*
 *.pro.user
+ui_*.h

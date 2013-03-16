@@ -22,6 +22,7 @@ chatRoom::chatRoom(int friendid,QWidget *parent) :
         messageList = file.readAll();
         ui->messageListWebView->setHtml(messageList);
     }
+    file.close();
 }
 
 chatRoom::~chatRoom()
@@ -49,7 +50,7 @@ void chatRoom::raiseChatDialog()
 
 void chatRoom::on_SendButton_clicked()
 {
-    QString sendText = ui->SendTextEdit->toPlainText();
+    sendText = ui->SendTextEdit->toPlainText();
 
     if(!sendText.isEmpty())
     {
