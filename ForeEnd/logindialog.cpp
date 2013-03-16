@@ -3,6 +3,8 @@
 #include "protocol/protocol.h"
 #include <string.h>
 
+int myUserID;
+
 loginDialog::loginDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::loginDialog),
@@ -68,7 +70,7 @@ void loginDialog::on_LoginBtn_clicked()
     ev.req.setMethod(str);
 
     ev.req.addParams(userName.toInt());
-
+    myUserID =userName.toInt();
     str.clear();
     str.insert(0, userPassword.toLocal8Bit().data());
     ev.req.addParams(str);

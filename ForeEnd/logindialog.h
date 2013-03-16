@@ -15,7 +15,7 @@
 #include "networkqueue.h"
 
 
-
+extern int myUserID;
 
 namespace Ui {
     class loginDialog;

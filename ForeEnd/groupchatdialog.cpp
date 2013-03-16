@@ -7,6 +7,7 @@
 #include "protocol_const.h"
 #include <QTimer>
 #include <vector>
+#include "logindialog.h"
 
 GroupChatDialog::GroupChatDialog(int groupID,QWidget *parent) :
     QDialog(parent),
@@ -109,14 +110,20 @@ void GroupChatDialog::startChatWithSelectedFriend(int friendid)
     }
 }
 
-void GroupChatDialog::AddMessageToList(QString mcontent, QString authorName, bool isSelf)
+void GroupChatDialog::AddMessageToList(QString mcontent, QString authorName,time_t postTime,int senderType)
 {
-    if(isSelf)
+    if(senderType < 0)
         messageList+=tr("<p class=\"Me\"></p><p class=\"isaid\"><strong>[");
-    else
+    else if(senderType > 0)
         messageList+=tr("<p class=\"U\"></p><p class=\"usaid\">[<strong>");
+    else
+        messageList+=tr("<p class=\"root\"></p><p class=\"rootsaid\">[<strong>");
     messageList+=authorName;
-    messageList+=tr(":]</strong></br>");
+    messageList+=tr(":");
+    QDateTime ti;
+    ti.setTime_t(postTime);
+    messageList+=ti.toString("hh:mm:ss dd-MM-yyyy");
+    messageList+="]</strong></br>";
     messageList+=mcontent;
     messageList+=tr("</p><div class=\"clear\"></div>");
     ui->messageListWebView->setHtml(messageList+"</div></body>",
@@ -130,15 +137,8 @@ void GroupChatDialog::on_SendMessageBtn_clicked()
 
     sendText=ui->SendMessageText->toPlainText();
 
-    if(!sendText.isEmpty())
-    {
-       //Send Text To Server
-
-        AddMessageToList(sendText,tr("Your Nick Name"),true);
-
-        //Auto Replay
-   //     AddMessageToList(tr("Auto Replay"),tr("Friend's Nick Name"),false);
-    }
+    if(sendText.isEmpty())
+        return;
 
     ui->SendMessageText->clear();
 
@@ -173,9 +173,11 @@ void GroupChatDialog::receiveGroupMsg(Response resp)
     for (i = mList.begin(); i != mList.end(); i++)
     {
         if (i->msgType == MSG_TYPE_GROUP_RED)
-        {
-        }
-        AddMessageToList(i->msgText.c_str(),FriendList::getNickname(i->srcID),false);
+            AddMessageToList(i->msgText.c_str(),FriendList::getNickname(i->srcID),i->postTime, 0);
+        else if (i->srcID == myUserID)
+            AddMessageToList(i->msgText.c_str(),FriendList::getNickname(i->srcID),i->postTime, -1);
+        else
+            AddMessageToList(i->msgText.c_str(),FriendList::getNickname(i->srcID),i->postTime, 1);
     //    ui->MessageListWidget->addItem(i->msgText.c_str());
         if (i->postTime > lastMsgTime)
             lastMsgTime = i->postTime;
