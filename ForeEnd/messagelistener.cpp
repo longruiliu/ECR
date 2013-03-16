@@ -42,7 +42,7 @@ void messageListener::handleMessage(){
 
     //The bytes after first four bytes will be dropped
     msgType1 = *(int *)pushMsg;
-    mstType2 = *(int *)(pushMsg+4);
+    msgType2 = *(int *)(pushMsg+4);
 
     if(msgType1 == 1){
         emit youHaveGroupMessage(msgType2);

@@ -1,4 +1,5 @@
 import json
+import struct
 import socket
 import thread
 import pickle
@@ -33,7 +34,7 @@ def sendNotification(addr, notifyType, extra):
     print "New UDP pack to ", addr, notifyType, extra 
     address = (addr, 0x1024)
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.sendto("%x %x"%(notifyType, extra), address)
+    s.sendto(struct.pack("ii", notifyType, extra), address)
     s.close()
 
 def fatal(error):

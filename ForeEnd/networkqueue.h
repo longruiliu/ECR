@@ -10,6 +10,8 @@
 #include <QWaitCondition>
 #include "protocol/protocol.h"
 
+
+
 class Nevent{
 public:
     QObject *callee;
@@ -41,4 +43,5 @@ public slots:
 
 };
 
+extern networkQueue nq;
 #endif // NETWORKQUEUE_H

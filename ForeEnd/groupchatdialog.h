@@ -53,7 +53,7 @@ private slots:
     void on_CloseWinBtn_clicked();
     void on_SendMessageBtn_clicked();
     void handleChatRoomClose(int friendID);
-    void receiveResponse(Response resp);
+    void receiveGroupMsg(Response resp);
 };
 
 #endif // GROUPCHATDIALOG_H

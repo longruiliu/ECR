@@ -23,6 +23,7 @@ GroupChatDialog::GroupChatDialog(int groupID,QWidget *parent) :
 
     connect(ui->FriendListWidget,SIGNAL(doubleClicked(QModelIndex)),
             this,SLOT(startChatWithSelectedFriend()));
+    getGroupMsg();
 }
 
 GroupChatDialog::~GroupChatDialog()
@@ -95,7 +96,7 @@ void GroupChatDialog::on_SendMessageBtn_clicked()
     sendText=ui->SendMessageText->toPlainText();
 }
 
-void GroupChatDialog::receiveResponse(Response resp)
+void GroupChatDialog::receiveGroupMsg(Response resp)
 {
     std::vector<msgRecord> mList;
     std::vector<msgRecord>::iterator i;
@@ -104,8 +105,10 @@ void GroupChatDialog::receiveResponse(Response resp)
     {
         if (i->msgType == MSG_TYPE_GROUP_RED)
         {
-
         }
+        ui->MessageListWidget->addItem(i->msgText.c_str());
+        if (i->postTime > lastMsgTime)
+            lastMsgTime = i->postTime;
     }
 }
 
@@ -124,6 +127,6 @@ void GroupChatDialog::getGroupMsg()
     ev.callee = this;
     ev.req.addParams(currentGroupID);
     ev.req.addParams(lastMsgTime);
-    strcpy(ev.signal, SLOT(receiveResponse(Response)));
+    strcpy(ev.signal, SLOT(receiveGroupMsg(Response)));
     nq.pushEvent(ev);
 }
