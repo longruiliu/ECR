@@ -127,11 +127,10 @@ void GroupChatDialog::AddMessageToList(QString mcontent, QString authorName,time
     messageList+="]</strong></br>";
     messageList+=mcontent;
     messageList+=tr("</p><div class=\"clear\"></div>");
-    ui->messageListWebView->setHtml(messageList+"</div></body>",
+    ui->messageListWebView->setHtml(messageList+"<a id='butt'></a></div></body>",
                                     QUrl(QCoreApplication::applicationDirPath()+"//"));
     QWebFrame* mf = ui->messageListWebView->page()->mainFrame();
-    mf->setScrollBarValue(Qt::Vertical, mf->scrollBarMaximum(Qt::Vertical));
-    qDebug() <<"Frame position"<< mf->scrollBarMaximum(Qt::Vertical);
+    mf->scrollToAnchor("butt");
 }
 
 void GroupChatDialog::on_SendMessageBtn_clicked()
