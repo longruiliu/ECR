@@ -10,7 +10,7 @@ GroupList::GroupList(QWidget *parent) :
     ui->GroupListWidget->setViewMode(QListView::IconMode);
 
     connect(ui->GroupListWidget,SIGNAL(doubleClicked(QModelIndex)),
-            this,SLOT(startGroupChat()));
+            this,SLOT(startChatWithSelectGroup()));
     setWindowOpacity(0.5);
 
 }

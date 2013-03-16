@@ -17,17 +17,18 @@ public:
     messageListener(QString &userID, QString &passwd, int sessionID);
     void setRemote(QString &addr, QString &port);
     void setSessionID(int sessionID);
-    bool sendRequest(Request &req, std::string &resp);
     void handleMessage();
 
+    void messageReady();
+
 signals:
-    void youHaveMessage(Response resp);
+    void youHaveGroupMessage(int groupID);
+    void youHaveMessage();
 
 protected:
     void run();
 public slots:
 private slots:
-    void messageReady();
     void bind();
 
 private:

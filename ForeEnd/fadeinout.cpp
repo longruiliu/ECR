@@ -15,6 +15,7 @@ FadeInOut::FadeInOut(QDialog *dia,QObject *parent):QObject(parent)
 void FadeInOut::raiseDialog()
 {
     opacityEffect->setOpacity(1.0);
+    this->dia->showNormal();
     this->dia->raise();
 }
 
