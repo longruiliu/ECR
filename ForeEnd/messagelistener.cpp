@@ -34,19 +34,18 @@ void messageListener::handleMessage(){
         return;
 
     msgLen = serv.pendingDatagramSize();
-    if(msgLen < 8)
-        return;
-
     pushMsg = new char[msgLen];
     msgLen = serv.readDatagram(pushMsg, msgLen);
 
     //The bytes after first four bytes will be dropped
     msgType1 = *(int *)pushMsg;
-    mstType2 = *(int *)(pushMsg+4);
 
-    if(msgType1 == 1){
+    if(msgType1 == NOTIFY_GROUP_MSG){
+        if(msgLen < 8)
+            return;
+        msgType2 = *(int *)(pushMsg+4);
         emit youHaveGroupMessage(msgType2);
-    }else if(msgType1 == 0){
+    }else if(msgType1 == NOTIFY_P2P_MSG){
         emit youHaveMessage();
     }
 }

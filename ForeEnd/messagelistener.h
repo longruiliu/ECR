@@ -8,6 +8,7 @@
 #include <QMutex>
 #include <QWaitCondition>
 #include "protocol/protocol.h"
+#include "protocol_const.h"
 
 class messageListener : public QThread
 {
@@ -19,8 +20,6 @@ public:
     void setSessionID(int sessionID);
     void handleMessage();
 
-    void messageReady();
-
 signals:
     void youHaveGroupMessage(int groupID);
     void youHaveMessage();
@@ -30,6 +29,7 @@ protected:
 public slots:
 private slots:
     void bind();
+    void messageReady();
 
 private:
     QUdpSocket serv;
