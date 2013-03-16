@@ -3,6 +3,7 @@
 #include "protocol/protocol.h"
 #include "networkqueue.h"
 #include "msgRecord.h"
+#include "friendlist.h"
 #include "protocol_const.h"
 #include <QTimer>
 #include <vector>
@@ -174,7 +175,7 @@ void GroupChatDialog::receiveGroupMsg(Response resp)
         if (i->msgType == MSG_TYPE_GROUP_RED)
         {
         }
-        AddMessageToList(i->msgText.c_str(),"NickName",false);
+        AddMessageToList(i->msgText.c_str(),FriendList::getNickname(i->srcID),false);
     //    ui->MessageListWidget->addItem(i->msgText.c_str());
         if (i->postTime > lastMsgTime)
             lastMsgTime = i->postTime;
@@ -186,7 +187,7 @@ void GroupChatDialog::receiveMemberList(Response resp)
     UserList ul;
     resp.getUserList(ul);
     for (UserList::iterator i=ul.begin(); i!=ul.end(); i++)
-        addFriendTolist(*i, QString(*i));
+        addFriendTolist(*i,FriendList::getNickname(*i));
 }
 
 void GroupChatDialog::getGroupMsg()
