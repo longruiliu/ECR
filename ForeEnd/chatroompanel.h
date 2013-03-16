@@ -11,6 +11,7 @@
 #include "messagelistener.h"
 
 #include "fadeinout.h"
+#include <QQueue>
 
 namespace Ui {
     class ChatRoomPanel;
@@ -33,6 +34,7 @@ public:
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent (QMouseEvent *);
 
+    int sessionID;
 
 private:
     Ui::ChatRoomPanel *ui;
@@ -42,12 +44,9 @@ private:
     //groupID list
     QVector<int> groupIDList;
 
-
-
-
     //Account information
     QString userID, passwd;
-    int sessionID;
+
 
     //Tab控件切换好友列表群列表
     FriendList friendlistWidget;
@@ -68,7 +67,7 @@ private:
 
     //窗口淡入淡出有关
     FadeInOut fadeEffect;
-
+    QQueue<int> userInfoRequestQueue;
 
 private slots:
     //系统托盘
@@ -84,7 +83,9 @@ private slots:
     void getUserListResponse(Response resp);
     void getGroupListResponse(Response resp);
 
-    void receiveResponse(Response resp);
+    void receiveUserInfoResponse(Response resp);
+
+
 };
 
 #endif // CHATROOMPANEL_H

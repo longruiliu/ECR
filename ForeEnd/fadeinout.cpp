@@ -12,6 +12,13 @@ FadeInOut::FadeInOut(QDialog *dia,QObject *parent):QObject(parent)
     isWorking=false;
 }
 
+void FadeInOut::raiseDialog()
+{
+    opacityEffect->setOpacity(1.0);
+    this->dia->showNormal();
+    this->dia->raise();
+}
+
 void FadeInOut::startFadeInOut(int effectType)
 {
     //if it still execute another operator,exit

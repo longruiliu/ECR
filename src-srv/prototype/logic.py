@@ -53,6 +53,7 @@ def addGroupMember(srcID, groupID, newMemberID, msg):
     if gp.creator == srcID:
         gp.addMember(newMemberID)
         ur = user.findUser(srcID)
+        ur.groupListIsNew = False
         gp.postRedMsg(srcID, "Welcome new member: %s" % (ur.userName,))
         ur.sendMsg(msgRecord.MsgRecord(0, srcID, "Join Group Req Granted:%d" %(groupID,), msgRecord.MSG_GROUP_REQ_GRAND))
         return (ERR_OK, None)
@@ -75,7 +76,7 @@ def delGroupMember(srcID, groupID, memberID):
 def fetchMemberList(srcID, groupID):
     gp = group.findGroup(groupID)
     if gp.isInGroup(srcID):
-        return (ERR_OK, gp.groupMember)
+        return (ERR_OK, gp.groupMember.keys())
     else:
         return (ERR_NOT_IN_GROUP, None)
 # mark

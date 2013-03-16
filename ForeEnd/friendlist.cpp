@@ -10,22 +10,10 @@ FriendList::FriendList(QWidget *parent) :
 
     //add friend to list
     ui->FriendListWidget->setViewMode(QListView::ListMode);
-    QListWidgetItem *friend1 = new QListWidgetItem(ui->FriendListWidget);
-    friend1->setIcon(QIcon(":/header/1.png"));
-    friend1->setText(tr("Nick Name 1"));
-    friend1->setTextAlignment(Qt::AlignLeft);
-    friend1->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-
-    QListWidgetItem *friend2 = new QListWidgetItem(ui->FriendListWidget);
-    friend2->setIcon(QIcon(":/header/2.png"));
-    friend2->setText(tr("Nick Name 2"));
-    friend2->setTextAlignment(Qt::AlignLeft);
-    friend2->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     //double click handle
     connect(ui->FriendListWidget,SIGNAL(doubleClicked(QModelIndex)),
             this,SLOT(startChatWithSelectedFriend()));
-
 
     //Right click handle
     ui->FriendListWidget->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -39,10 +27,41 @@ FriendList::~FriendList()
     delete ui;
 }
 
-void FriendList::startChatWithSelectedFriend()
+void FriendList::handleChatRoomClose(int friendID)
 {
-    chatRoom *cr = new chatRoom();
-    cr->show();
+    delete chatRoomMap[friendID];
+    chatRoomMap.remove(friendID);
+}
+
+
+void FriendList::addFriendToList(int friendID, QString nickName, QString friendInfo)
+{
+    friendIDList.push_back(friendID);
+
+    QListWidgetItem *friend1 = new QListWidgetItem(ui->FriendListWidget);
+    friend1->setIcon(QIcon(":/header/1.png"));
+    friend1->setText(nickName);
+    friend1->setTextAlignment(Qt::AlignLeft);
+    friend1->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+}
+
+void FriendList::startChatWithSelectedFriend(int currentFriendID)
+{
+    if(0==currentFriendID)
+        currentFriendID= friendIDList[ui->FriendListWidget->currentRow()];
+
+    if(chatRoomMap.contains(currentFriendID))
+    {
+        chatRoomMap[currentFriendID]->raiseChatDialog();
+    }
+    else
+    {
+        chatRoomMap[currentFriendID]=new chatRoom(currentFriendID);
+        chatRoomMap[currentFriendID]->show();
+
+        connect(chatRoomMap[currentFriendID],SIGNAL(closeDialog(int)),
+                this,SLOT(handleChatRoomClose(int)));
+    }
 }
 
 void FriendList::onRightClick(QPoint pos)

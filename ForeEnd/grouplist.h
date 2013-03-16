@@ -22,11 +22,18 @@ public:
 private:
     Ui::GroupList *ui;
 
-    QVector<int> groupIDList;
+    QVector<int> groupIDList;//维护了组ID的列表
+    QMap<int,GroupChatDialog*> groupChatDialogMap;//维护了组聊天对话框的列表
 
+signals:
+    void doFetchGroupMsg();
+
+public slots:
+    void newNotify(int groupID);
 private slots:
-    void startGroupChat() ;
+    void startChatWithSelectGroup(int groupid=0) ;
     void receiveResponse(Response resp);
+    void handleGroupChatDialogClose(int);
 };
 
 #endif // GROUPLIST_H

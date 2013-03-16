@@ -158,7 +158,7 @@ int Response::getGroupList(std::vector < std::pair <int, std::string> > &gpl) co
     try {
         Json::Value json = root["result"][0U]["value"];
         for (int i = 0; i != json.size(); i++) {
-            gpl.push_back(make_pair(json[i][0U].asInt(), json[i][0U].asString()));
+            gpl.push_back(make_pair(json[i][0U].asInt(), json[i][1U].asString()));
         }
     } catch (...) {
         return ERROR;
@@ -243,7 +243,7 @@ int Response::getGroupList(std::string &s, std::vector < std::pair <int, std::st
     try {
         Json::Value json = root["result"][0U]["value"];
         for (int i = 0; i != json.size(); i++) {
-            gpl.push_back(make_pair(json[i][0U].asInt(), json[i][0U].asString()));
+            gpl.push_back(make_pair(json[i][0U].asInt(), json[i][1U].asString()));
         }
     } catch (...) {
         return ERROR;

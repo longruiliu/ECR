@@ -19,11 +19,16 @@ class chatRoom : public QDialog
     Q_OBJECT
 
 public:
-    explicit chatRoom(QWidget *parent = 0);
+    explicit chatRoom(int friendid,QWidget *parent = 0);
     ~chatRoom();
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent (QMouseEvent *);
     void AddMessageToList(QString mcontent,QString authorName,bool isSelf);
+
+    void raiseChatDialog();
+
+signals:
+    void closeDialog(int);
 
 private slots:
 
@@ -50,6 +55,8 @@ private:
 
     QString sendText;
     QString receiveText;
+
+    int currentFriendID;
 
 };
 

@@ -8,6 +8,7 @@
 #include <QMutex>
 #include <QWaitCondition>
 #include "protocol/protocol.h"
+#include "protocol_const.h"
 
 class messageListener : public QThread
 {
@@ -17,18 +18,18 @@ public:
     messageListener(QString &userID, QString &passwd, int sessionID);
     void setRemote(QString &addr, QString &port);
     void setSessionID(int sessionID);
-    bool sendRequest(Request &req, std::string &resp);
     void handleMessage();
 
 signals:
-    void youHaveMessage(Response resp);
+    void youHaveGroupMessage(int groupID);
+    void youHaveMessage();
 
 protected:
     void run();
 public slots:
 private slots:
-    void messageReady();
     void bind();
+    void messageReady();
 
 private:
     QUdpSocket serv;
@@ -40,4 +41,5 @@ private:
     QWaitCondition cond;
 };
 
+extern messageListener ml;
 #endif // MESSAGELISTENER_H

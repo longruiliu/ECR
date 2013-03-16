@@ -18,24 +18,22 @@ public:
     explicit GroupChatDialog(int groupID,QWidget *parent = 0);
     ~GroupChatDialog();
 
-
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent (QMouseEvent *);
 
+    void raiseChatDialog();
 
-private slots:
-    void on_CloseWinBtn_clicked();
-    void startChatWithSelectedFriend() ;
+    void addFriendTolist(int friendid,QString nickname);
 
-    void on_SendMessageBtn_clicked();
-
-    void receiveResponse(Response resp);
+signals:
+    void closeDialog(int);
 
 private:
     Ui::GroupChatDialog *ui;
 
     int currentGroupID;
 
+    time_t lastMsgTime;
 
     QPoint windowPos;
     QPoint dPos;
@@ -45,6 +43,19 @@ private:
 
     QString sendText;
     QString receiveText;
+
+    QVector<int> friendIDList;//维护了好友ID的列表
+    QMap<int,chatRoom*> chatRoomMap;//维护了好友聊天对话框的列表
+    void getMemberList();
+public slots:
+    void getGroupMsg();
+private slots:
+    void startChatWithSelectedFriend(int firendID=0) ;
+    void on_CloseWinBtn_clicked();
+    void on_SendMessageBtn_clicked();
+    void handleChatRoomClose(int friendID);
+    void receiveGroupMsg(Response resp);
+    void receiveMemberList(Response resp);
 };
 
 #endif // GROUPCHATDIALOG_H
