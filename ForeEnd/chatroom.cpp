@@ -3,6 +3,7 @@
 #include <QFile>
 #include "networkqueue.h"
 #include "friendlist.h"
+#include "QWebFrame"
 
 chatRoom::chatRoom(int friendid,QWidget *parent) :
     QDialog(parent),ui(new Ui::chatRoom),fadeEffect(this),shakeEffect(this)
@@ -109,8 +110,10 @@ void chatRoom::AddMessageToList(QString mcontent, QString authorName, bool isSel
     messageList+=tr(":]</strong></br>");
     messageList+=mcontent;
     messageList+=tr("</p><div class=\"clear\"></div>");
-    ui->messageListWebView->setHtml(messageList+"</div></body>",
+    ui->messageListWebView->setHtml(messageList+"<a id='butt'></a></div></body>",
                                     QUrl(QCoreApplication::applicationDirPath()+"//"));
+    QWebFrame* mf = ui->messageListWebView->page()->mainFrame();
+    mf->scrollToAnchor("butt");
 }
 
 void chatRoom::on_shakeBtn_clicked()

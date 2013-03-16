@@ -12,7 +12,7 @@ messageListener ml;
 
 int main(int argc, char *argv[])
 {
-
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
 
     QApplication::setStyle("cleanlooks");
