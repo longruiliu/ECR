@@ -24,9 +24,7 @@ void messageListener::messageReady(){
 
 void messageListener::handleMessage(){
     char *pushMsg;
-    int msgLen, msgType;
-    Request req;
-    std::string respStr;
+    int msgLen, msgType1, msgType2;
 
     if(addr.isEmpty() || port.isEmpty() || sessionID == -1){
         qDebug() << "You must assigned sessionID server IP and port for message listener" << endl;
@@ -39,44 +37,25 @@ void messageListener::handleMessage(){
     pushMsg = new char[msgLen];
     msgLen = serv.readDatagram(pushMsg, msgLen);
 
+    if(msgLen < 8)
+        return;
+
     //The bytes after first four bytes will be dropped
-    msgType = *(int *)pushMsg;
+    msgType1 = *(int *)pushMsg;
+    msgType2 = *(int *)(pushMsg+4);
 
-    std::string str;
-    req.setSessionID(sessionID);
-    switch(msgType){
-    case 0:
-        str.clear();
-        str.insert(0,"regular");
-        req.setMethod(str);
-
-        str.clear();
-        str.insert(0,"fetchmsg");
-        req.setMethod(str);
-        break;
-    default:
-        str.clear();
-        str.insert(0, "group");
-        req.setMethod(str);
-
-        str.clear();
-        str.insert(0, "fetchmsg");
-        req.setMethod(str);
-        req.addParams(msgType);
-        break;
+    if(msgType1 == NOTIFY_GROUP_MSG){
+        emit youHaveGroupMessage(msgType2);
+    }else if(msgType1 == NOTIFY_P2P_MSG){
+        emit youHaveMessage();
     }
-    req.addParams(timeStamp);
-
-    sendRequest(req, respStr);
-    Response resp(respStr);
-    emit youHaveMessage(resp);
 }
 
 void messageListener::run(){
     while(1){
         lock.lock();
         cond.wait(&lock);
-        messageReady();
+        handleMessage();
         lock.unlock();
     }
     exec();
@@ -91,25 +70,6 @@ void messageListener::setSessionID(int sessionID){
     this->sessionID = sessionID;
 }
 
-bool messageListener::sendRequest(Request &req, std::string &resp){
-
-    std::string rawData;
-    Network net;
-    req.encode(rawData);
-
-    net.addData(rawData);
-    if(net.connectToRemote(addr, port.toInt()) == false){
-        return false;
-    }
-
-    if(net.waitForDataReady() == false){
-        return false;
-    }
-    net.readData(rawData);
-
-    resp = rawData;
-    return true;
-}
 
 void messageListener::bind(){
     serv.bind(port.toInt());

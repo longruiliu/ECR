@@ -44,7 +44,8 @@ HEADERS  += \
     messagelistener.h \
     fadeinout.h \
     networkqueue.h \
-    network1.h
+    network1.h \
+    ../include/protocol_const.h
 
 FORMS    += \
     chatroom.ui \

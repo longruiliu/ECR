@@ -35,6 +35,7 @@ private:
 
     int currentGroupID;
 
+    time_t lastMsgTime;
 
     QPoint windowPos;
     QPoint dPos;
@@ -51,15 +52,23 @@ private:
     QMap<int,chatRoom*> chatRoomMap;//维护了好友聊天对话框的列表
 
 
+    void getMemberList();
 
-
+public slots:
+    void getGroupMsg();
 private slots:
     void startChatWithSelectedFriend(int firendID=0) ;
     void on_CloseWinBtn_clicked();
     void on_SendMessageBtn_clicked();
     void handleChatRoomClose(int friendID);
-    void receiveResponse(Response resp);
+
     void on_shakeBtn_clicked();
+
+    void receiveGroupMsg(Response resp);
+
+    void sendGroupMessageResponse(Response resp);
+    void receiveMemberList(Response resp);
+
 };
 
 #endif // GROUPCHATDIALOG_H

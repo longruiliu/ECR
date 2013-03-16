@@ -68,7 +68,7 @@ void chatRoom::on_SendButton_clicked()
 void chatRoom::on_CloseWinBtn_clicked()
 {
     //Fade In Fade Out
-    fadeEffect.startFadeInOut(FADEOUT_EXIT);
+    fadeEffect.startFadeInOut(FADEOUT_HIDE);
 }
 
 void chatRoom::AddMessageToList(QString mcontent, QString authorName, bool isSelf)

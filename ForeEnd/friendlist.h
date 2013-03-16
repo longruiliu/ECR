@@ -17,7 +17,7 @@ public:
     explicit FriendList(QWidget *parent = 0);
     ~FriendList();
 
-    void addFriendToList(int friendID,QString nickName,QString friendInfo);
+    void addFriendToList(int friendID, QString nickName, QString friendInfo);
 
 private:
     Ui::FriendList *ui;

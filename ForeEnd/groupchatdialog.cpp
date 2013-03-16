@@ -1,11 +1,18 @@
 ﻿#include "groupchatdialog.h"
 #include "ui_groupchatdialog.h"
+#include "protocol/protocol.h"
+#include "networkqueue.h"
+#include "msgRecord.h"
+#include "protocol_const.h"
+#include <QTimer>
+#include <vector>
 
 GroupChatDialog::GroupChatDialog(int groupID,QWidget *parent) :
     QDialog(parent),
     ui(new Ui::GroupChatDialog),
     fadeEffect(this),
-    shakeEffect(this)
+    shakeEffect(this),
+    lastMsgTime(0)
 {
     currentGroupID=groupID;
 
@@ -31,6 +38,9 @@ GroupChatDialog::GroupChatDialog(int groupID,QWidget *parent) :
         ui->messageListWebView->setHtml(messageList);
     }
     file.close();
+
+    getMemberList();
+    getGroupMsg();
 }
 
 GroupChatDialog::~GroupChatDialog()
@@ -114,6 +124,9 @@ void GroupChatDialog::AddMessageToList(QString mcontent, QString authorName, boo
 
 void GroupChatDialog::on_SendMessageBtn_clicked()
 {
+    std::string str;
+    Nevent ev;
+
     sendText=ui->SendMessageText->toPlainText();
 
     if(!sendText.isEmpty())
@@ -123,15 +136,94 @@ void GroupChatDialog::on_SendMessageBtn_clicked()
         AddMessageToList(sendText,tr("Your Nick Name"),true);
 
         //Auto Replay
-        AddMessageToList(tr("Auto Replay"),tr("Friend's Nick Name"),false);
+   //     AddMessageToList(tr("Auto Replay"),tr("Friend's Nick Name"),false);
     }
 
     ui->SendMessageText->clear();
+
+    str.clear();
+    str.insert(0,"group");
+    ev.req.setType(str);
+
+    str.clear();
+    str.insert(0,"sendmsg");
+    ev.req.setMethod(str);
+
+    ev.req.addParams(currentGroupID);
+
+    str.clear();
+    str.insert(0, sendText.toLocal8Bit().data());
+    ev.req.addParams(str);
+    ev.callee = this;
+    strcpy(ev.signal, SLOT(sendGroupMessageResponse(Response)));
+
+    nq.pushEvent(ev);
+
+}
+void GroupChatDialog::sendGroupMessageResponse(Response resp){
+
 }
 
-void GroupChatDialog::receiveResponse(Response resp)
+void GroupChatDialog::receiveGroupMsg(Response resp)
 {
+    std::vector<msgRecord> mList;
+    std::vector<msgRecord>::iterator i;
+    resp.getMsgList(mList);
+    for (i = mList.begin(); i != mList.end(); i++)
+    {
+        if (i->msgType == MSG_TYPE_GROUP_RED)
+        {
+        }
+        AddMessageToList(i->msgText.c_str(),"NickName",false);
+    //    ui->MessageListWidget->addItem(i->msgText.c_str());
+        if (i->postTime > lastMsgTime)
+            lastMsgTime = i->postTime;
+    }
+}
 
+void GroupChatDialog::receiveMemberList(Response resp)
+{
+    UserList ul;
+    resp.getUserList(ul);
+    for (UserList::iterator i=ul.begin(); i!=ul.end(); i++)
+        addFriendTolist(*i, QString(*i));
+}
+
+void GroupChatDialog::getGroupMsg()
+{
+    Nevent ev;
+    std::string str;
+
+    str.clear();
+    str.insert(0, "group");
+    ev.req.setType(str);
+
+    str.clear();
+    str.insert(0, "fetchmsg");
+    ev.req.setMethod(str);
+    ev.callee = this;
+    ev.req.addParams(currentGroupID);
+    ev.req.addParams(lastMsgTime);
+    strcpy(ev.signal, SLOT(receiveGroupMsg(Response)));
+    nq.pushEvent(ev);
+}
+
+void GroupChatDialog::getMemberList()
+{
+    Nevent ev;
+    std::string str;
+
+    str.clear();
+    str.insert(0, "group");
+    ev.req.setType(str);
+
+    str.clear();
+    str.insert(0, "userlist");
+    ev.req.setMethod(str);
+    ev.callee = this;
+    ev.req.addParams(currentGroupID);
+    strcpy(ev.signal, SLOT(receiveMemberList(Response)));
+    nq.pushEvent(ev);
 }
 
 void GroupChatDialog::on_shakeBtn_clicked()

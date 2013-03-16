@@ -6,6 +6,7 @@ networkQueue::networkQueue(QThread *parent) :
     QThread(parent)
 {
     qRegisterMetaType<Response>("Response");
+    sessionID = 0;
 }
 
 void networkQueue::setRemote(QString &addr, QString &port){
@@ -31,6 +32,7 @@ void networkQueue::run(){
                 break;
             }
             Nevent ev = eventQueue.front();
+            ev.req.setSessionID(sessionID);
             QObject::connect(this, SIGNAL(youHaveResponse(Response)),
                              ev.callee, ev.signal, Qt::QueuedConnection);
 

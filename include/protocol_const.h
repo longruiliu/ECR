@@ -15,10 +15,11 @@ enum{
 };
 
 #define MSG_TYPE_GROUP_REQ  0
-#define MSG_TYPE_P2P_MSG  1
-#define MSG_TYPE_UNKNOWN 2
-#define MSG_JOIN_GROUP_REQ  3
-#define MSG_GROUP_REQ_GRANT  4
+#define MSG_TYPE_GROUP_RED  1
+#define MSG_TYPE_P2P_MSG  2
+#define MSG_TYPE_UNKNOWN 3
+#define MSG_JOIN_GROUP_REQ  4
+#define MSG_GROUP_REQ_GRAND  5
 
 #define NOTIFY_GROUP_MSG  0
 #define NOTIFY_P2P_MSG  1

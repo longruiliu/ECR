@@ -1,4 +1,5 @@
 import json
+import struct
 import socket
 import thread
 import pickle
@@ -33,7 +34,7 @@ def sendNotification(addr, notifyType, extra):
     print "New UDP pack to ", addr, notifyType, extra 
     address = (addr, 0x1024)
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.sendto("%x %x"%(notifyType, extra), address)
+    s.sendto(struct.pack("ii", notifyType, extra), address)
     s.close()
 
 def fatal(error):
@@ -51,7 +52,9 @@ def fatal(error):
     thread.exit()
     
 def sendResponse(result):
+    print "before encap %s" % result
     final_result = json.dumps(result)
+    print "after encap %s" % final_result
     ident = thread.get_ident()
     sock = sockMap[ident][0]
     sock.send(final_result)
@@ -155,10 +158,9 @@ def requestHandler(request):
                 srcID = checkSessionID(req_sessionID)
                 params = [srcID] + [item['value'] for item in req_params]
                 status, result = apply(logic.getUserInfo, params)
-                result = result['userInfo']
                 ret = initialRet(status)
                 if status == ERR_OK:
-                    ret['result'].append({'type': 'String', 'value': result})
+                    ret['result'].append({'type': 'Dict', 'value': result})
                 sendResponse(ret)
             except Exception, e:
                 fatal(e)
