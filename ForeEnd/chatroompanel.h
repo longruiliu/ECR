@@ -46,6 +46,9 @@ private:
     //Account information
     QString userID, passwd;
 
+    //Personal Infoimation
+    QString userNickName,userInfo;
+
 
     //Tab控件切换好友列表群列表
     FriendList friendlistWidget;
@@ -78,7 +81,8 @@ private slots:
     void on_CloseWinBtn_clicked();
     void on_headerImage_clicked();
 
-
+    //接受FirendList发过来的自己信息
+    void UpdateMyInfo(QString myNickName,QString myInfo);
 };
 
 #endif // CHATROOMPANEL_H
