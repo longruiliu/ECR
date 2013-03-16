@@ -111,8 +111,13 @@ void GroupChatDialog::on_SendMessageBtn_clicked()
     str.clear();
     str.insert(0, sendText.toLocal8Bit().data());
     ev.req.addParams(str);
+    ev.callee = this;
+    strcpy(ev.signal, SLOT(sendGroupMessageResponse(Response)));
 
     nq.pushEvent(ev);
+
+}
+void GroupChatDialog::sendGroupMessageResponse(Response resp){
 
 }
 
