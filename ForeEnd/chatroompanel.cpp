@@ -2,6 +2,7 @@
 #include "ui_chatroompanel.h"
 #include "protocol/protocol.h"
 #include "networkqueue.h"
+#include "friendlist.h"
 
 extern networkQueue nq;
 extern messageListener ml;
@@ -34,6 +35,8 @@ ChatRoomPanel::ChatRoomPanel(QString userID, QString passwd, int sessionID):
     //get User list and group list
     getUserList();
     getGroupList();
+
+    ui->nameLineEdit->setText(FriendList::getNickname(myUserID));
 }
 
 ChatRoomPanel::ChatRoomPanel(QWidget *parent) :

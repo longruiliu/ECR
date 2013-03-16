@@ -9,6 +9,7 @@
 #include "grouplist.h"
 #include "networkqueue.h"
 #include "messagelistener.h"
+#include "logindialog.h"
 
 #include "fadeinout.h"
 #include <QQueue>
