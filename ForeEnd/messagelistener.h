@@ -15,7 +15,7 @@ class messageListener : public QThread
     Q_OBJECT
 public:
     explicit messageListener(QObject *parent = 0);
-    void handleMessage();
+
 
 signals:
     void youHaveGroupMessage(int groupID);
@@ -25,8 +25,7 @@ protected:
     void run();
 public slots:
 private slots:
-    void messageReady();
-
+    void handleMessage();
 private:
     QUdpSocket serv;
 

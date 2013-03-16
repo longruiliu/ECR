@@ -2,26 +2,19 @@
 #include "protocol/protocol.h"
 #include <string>
 #include "network1.h"
+#include "messagelistener.h"
 
 messageListener::messageListener(QObject *parent) :
     QThread(parent)
 {
 
-    QObject::connect(&serv, SIGNAL(readyRead()), this, SLOT(messageReady()));
+    QObject::connect(&serv, SIGNAL(readyRead()), this, SLOT(handleMessage()));
     serv.bind(0x1024);
-}
-
-
-void messageListener::messageReady(){
-    cond.wakeAll();
 }
 
 void messageListener::handleMessage(){
     char *pushMsg;
     int msgLen, msgType1, msgType2;
-
-    if(!serv.hasPendingDatagrams())
-        return;
 
     msgLen = serv.pendingDatagramSize();
     pushMsg = new char[msgLen];
@@ -42,11 +35,5 @@ void messageListener::handleMessage(){
 }
 
 void messageListener::run(){
-    while(1){
-        lock.lock();
-        cond.wait(&lock);
-        handleMessage();
-        lock.unlock();
-    }
     exec();
 }
