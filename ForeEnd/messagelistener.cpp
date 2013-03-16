@@ -8,11 +8,14 @@ messageListener::messageListener(QObject *parent) :
 {
 
     QObject::connect(&serv, SIGNAL(readyRead()), this, SLOT(messageReady()));
-    serv.bind(0x1024);
+    if(!serv.bind(QHostAddress::Any, 0x1024)){
+        qDebug() << "Bind Error"<< endl;
+    }
 }
 
 
 void messageListener::messageReady(){
+    qDebug() << "message ready" << endl;
     cond.wakeAll();
 }
 
