@@ -40,7 +40,7 @@ private slots:
 
     //接收到回应
 
-    void receiveResponse(Response resp);
+    void receiveMessageResponse(Response resp);
 private:
     Ui::chatRoom *ui;
 
