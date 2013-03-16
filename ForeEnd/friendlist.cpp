@@ -73,6 +73,8 @@ void FriendList::startChatWithSelectedFriend(int currentFriendID)
         connect(chatRoomMap[currentFriendID],SIGNAL(closeDialog(int)),
                 this,SLOT(handleChatRoomClose(int)));
     }
+
+    //Chat
 }
 
 void FriendList::onRightClick(QPoint pos)

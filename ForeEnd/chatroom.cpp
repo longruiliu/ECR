@@ -1,6 +1,8 @@
 ﻿#include "chatroom.h"
 #include "ui_chatroom.h"
 #include <QFile>
+#include "networkqueue.h"
+#include "friendlist.h"
 
 chatRoom::chatRoom(int friendid,QWidget *parent) :
     QDialog(parent),ui(new Ui::chatRoom),fadeEffect(this),shakeEffect(this)
@@ -55,14 +57,32 @@ void chatRoom::on_SendButton_clicked()
     if(!sendText.isEmpty())
     {
        //Send Text To Server
+        Nevent ev;
+        std::string str;
 
-        AddMessageToList(sendText,tr("Your Nick Name"),true);
+        str.clear();
+        str.insert(0,"regular");
+        ev.req.setType(str);
 
-        //Auto Replay
-        AddMessageToList(tr("Auto Replay"),tr("Friend's Nick Name"),false);
+        str.clear();
+        str.insert(0, "sendmsg");
+        ev.req.setMethod(str);
+
+        ev.req.addParams(this->currentFriendID);
+
+        str.clear();
+        str.insert(0, sendText.toLocal8Bit().data());
+        ev.req.addParams(str);
+
+        ev.callee = this;
+        strcpy(ev.signal, SLOT(receiveMessageResponse(Response)));
+
+        nq.pushEvent(ev);
+
+        AddMessageToList(sendText,FriendList::getNickname(this->currentFriendID),true);
     }
 
-    ui->SendTextEdit->clear();
+
 }
 
 void chatRoom::on_CloseWinBtn_clicked()
@@ -92,7 +112,12 @@ void chatRoom::on_shakeBtn_clicked()
 }
 
 
-void chatRoom::receiveResponse(Response resp)
+void chatRoom::receiveMessageResponse(Response resp)
 {
-
+    if(resp.getStatus() == 0){
+        AddMessageToList(QString("发送消息失败"),
+                         FriendList::getNickname(this->currentFriendID), true);
+    }else{
+        ui->SendTextEdit->clear();
+    }
 }
