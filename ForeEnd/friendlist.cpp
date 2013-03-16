@@ -78,7 +78,7 @@ void FriendList::startChatWithSelectedFriend(int currentFriendID)
         connect(chatRoomMap[currentFriendID],SIGNAL(closeDialog(int)),
                 this,SLOT(handleChatRoomClose(int)));
     }
-
+    qDebug()<<chatRoomMap[currentFriendID]->currentFriendID;
     //Chat
 }
 
@@ -145,14 +145,16 @@ void FriendList::newMessage(){
 }
 
 void FriendList::newMessaveResponse(Response resp){
-    int i;
     std::vector<msgRecord> rec;
+    std::vector<msgRecord>::iterator i;
 
     resp.getMsgList(rec);
-    for(i = 0; i < rec.size(); i++){
-        startChatWithSelectedFriend(rec[i].srcID);
-        chatRoomMap[rec[i].srcID]->AddMessageToList(QString(rec[i].msgText.c_str()),
-                                                    getNickname(rec[i].srcID), true);
-        chatRoomMap[rec[i].srcID]->timeStamp = rec[i].postTime;
+    for(i = rec.begin(); i != rec.end(); i++){
+        qDebug() << i->srcID;
+        int srcID = i->srcID;
+        startChatWithSelectedFriend(srcID);
+        chatRoomMap[srcID]->AddMessageToList(QString(i->msgText.c_str()),
+                                                    getNickname(srcID), false);
+        chatRoomMap[srcID]->timeStamp = i->postTime;
     }
 }

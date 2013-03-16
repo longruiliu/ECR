@@ -23,13 +23,14 @@ public:
     ~chatRoom();
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent (QMouseEvent *);
-    void AddMessageToList(QString mcontent,QString authorName,bool isSelf);
 
+    int currentFriendID;
     void raiseChatDialog();
     int timeStamp;
 signals:
     void closeDialog(int);
-
+public slots:
+    void AddMessageToList(QString mcontent,QString authorName,bool isSelf);
 private slots:
 
     void on_SendButton_clicked();
@@ -56,7 +57,6 @@ private:
     QString sendText;
     QString receiveText;
 
-    int currentFriendID;
 
 
 };
