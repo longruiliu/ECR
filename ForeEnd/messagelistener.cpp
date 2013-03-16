@@ -36,7 +36,7 @@ void messageListener::handleMessage(){
     msgLen = serv.pendingDatagramSize();
     pushMsg = new char[msgLen];
     msgLen = serv.readDatagram(pushMsg, msgLen);
-
+    qDebug() << msgLen << endl;
     if(msgLen < 8)
         return;
 
