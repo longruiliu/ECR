@@ -2,6 +2,7 @@
 #define FRIENDLIST_H
 
 #include "chatroom.h"
+#include "chatroompanel.h"
 
 #include <QWidget>
 
@@ -28,6 +29,7 @@ private:
     QMap<int,chatRoom*> chatRoomMap;//维护了好友聊天对话框的列表
     QQueue<int> userInfoRequestQueue;
     QVector<int> userIDList;
+
 public slots:
     void getUserList();
 private slots:

@@ -13,6 +13,7 @@ FriendList::FriendList(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::FriendList)
 {
+
     ui->setupUi(this);
 
 
@@ -48,6 +49,11 @@ void FriendList::handleChatRoomClose(int friendID)
 
 void FriendList::addFriendToList(int friendID, QString nickName, QString friendInfo)
 {
+    if(friendID==myUserID)
+    {
+        ChatRoomPanel* crp = (ChatRoomPanel*) parentWidget();
+        crp->ui->nameLineEdit->setText(nickName);
+    }
     friendIDList.push_back(friendID);
     nickNameList[friendID] = nickName;
     friendInfoList[friendID] = friendInfo;

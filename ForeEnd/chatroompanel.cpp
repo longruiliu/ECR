@@ -4,6 +4,7 @@
 #include "networkqueue.h"
 #include "friendlist.h"
 
+
 extern networkQueue nq;
 extern messageListener ml;
 
@@ -35,6 +36,7 @@ ChatRoomPanel::ChatRoomPanel(QString userID, QString passwd, int sessionID):
     //get User list and group list
 
     ui->nameLineEdit->setText(FriendList::getNickname(myUserID));
+
 }
 
 ChatRoomPanel::ChatRoomPanel(QWidget *parent) :

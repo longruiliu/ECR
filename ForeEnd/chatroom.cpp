@@ -112,6 +112,7 @@ void chatRoom::AddMessageToList(QString mcontent, QString authorName, bool isSel
     messageList+=tr("</p><div class=\"clear\"></div>");
     ui->messageListWebView->setHtml(messageList+"<a id='butt'></a></div></body>",
                                     QUrl(QCoreApplication::applicationDirPath()+"//"));
+
     QWebFrame* mf = ui->messageListWebView->page()->mainFrame();
     mf->scrollToAnchor("butt");
 }
