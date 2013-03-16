@@ -93,7 +93,27 @@ void GroupChatDialog::startChatWithSelectedFriend(int friendid)
 
 void GroupChatDialog::on_SendMessageBtn_clicked()
 {
+    std::string str;
+    Nevent ev;
+
     sendText=ui->SendMessageText->toPlainText();
+
+    str.clear();
+    str.insert(0,"group");
+    ev.req.setType(str);
+
+    str.clear();
+    str.insert(0,"sendmsg");
+    ev.req.setMethod(str);
+
+    ev.req.addParams(currentGroupID);
+
+    str.clear();
+    str.insert(0, sendText.toLocal8Bit().data());
+    ev.req.addParams(str);
+
+    nq.pushEvent(ev);
+
 }
 
 void GroupChatDialog::receiveGroupMsg(Response resp)
