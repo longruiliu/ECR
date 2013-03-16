@@ -9,17 +9,16 @@ messageListener::messageListener(QObject *parent) :
 {
 
     QObject::connect(&serv, SIGNAL(readyRead()), this, SLOT(handleMessage()));
-    serv.bind(0x1024);
+    serv.bind(QHostAddress::Any, 0x1024);
 }
 
 void messageListener::handleMessage(){
     char *pushMsg;
     int msgLen, msgType1, msgType2;
-
+    qDebug() << "New UDP pack arrive" <<msgLen;
     msgLen = serv.pendingDatagramSize();
     pushMsg = new char[msgLen];
     msgLen = serv.readDatagram(pushMsg, msgLen);
-    qDebug() << msgLen << endl;
     if(msgLen < 8)
         return;
 
