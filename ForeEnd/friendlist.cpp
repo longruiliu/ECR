@@ -30,9 +30,8 @@ FriendList::FriendList(QWidget *parent) :
 
     //reveive Message signal
  //   connect(&ml,SIGNAL())
-
+    getUserList();
     connect(&ml, SIGNAL(youHaveMessage()), this, SLOT(newMessage()));
-
 }
 
 FriendList::~FriendList()
@@ -106,7 +105,7 @@ void FriendList::onRightClick(QPoint pos)
 
 void FriendList::refreshFriendList()
 {
-    //Refresh Friend List
+    getUserList();
 }
 
 void FriendList::viewFriendInfo()
@@ -158,4 +157,73 @@ void FriendList::newMessaveResponse(Response resp){
                                                     getNickname(srcID), false);
         chatRoomMap[srcID]->timeStamp = i->postTime;
     }
+}
+
+
+void FriendList::getUserList(){
+    Nevent ev;
+    std::string str;
+
+    ui->FriendListWidget->clear();
+    userInfoRequestQueue.clear();
+    userIDList.clear();
+    nickNameList.clear();
+    friendIDList.clear();
+    friendInfoList.clear();
+    //chatRoomMap.clear();
+
+    str.clear();
+    str.insert(0, "regular");
+    ev.req.setType(str);
+
+    str.clear();
+    str.insert(0, "userlist");
+    ev.req.setMethod(str);
+    ev.callee = this;
+    strcpy(ev.signal, SLOT(getUserListResponse(Response)));
+
+    nq.pushEvent(ev);
+}
+
+void FriendList::getUserListResponse(Response resp){
+    std::vector<int>::iterator iter;
+    UserList ul;
+    resp.getUserList(ul);
+    std::string str;
+
+    for(iter = ul.begin(); iter != ul.end(); iter++){
+        userIDList.push_back(*iter);
+        userInfoRequestQueue.push_back(*iter);
+        Nevent ev;
+
+        str.clear();
+        str.insert(0,"regular");
+        ev.req.setType(str);
+
+        str.clear();
+        str.insert(0,"userinfo");
+        ev.req.setMethod(str);
+
+        ev.req.addParams(*iter);
+
+        ev.callee = this;
+        strcpy(ev.signal, SLOT(receiveUserInfoResponse(Response)));
+
+        nq.pushEvent(ev);
+    }
+}
+
+void FriendList::receiveUserInfoResponse(Response resp)
+{
+    int id;
+
+    id = userInfoRequestQueue.front();
+    userInfoRequestQueue.pop_front();
+    UserInfo _ui;
+    std::string name;
+    resp.getUserInfo(_ui);
+    resp.getUserName(name);
+
+    addFriendToList(id, QString(name.c_str()), QString(_ui.c_str()));
+
 }

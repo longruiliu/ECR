@@ -26,7 +26,10 @@ private:
     static QMap<int, QString> friendInfoList;
     static QMap<int, QString> nickNameList;
     QMap<int,chatRoom*> chatRoomMap;//维护了好友聊天对话框的列表
-
+    QQueue<int> userInfoRequestQueue;
+    QVector<int> userIDList;
+public slots:
+    void getUserList();
 private slots:
     void startChatWithSelectedFriend(int firendID=0) ;
     void onRightClick(QPoint pos);
@@ -40,6 +43,8 @@ private slots:
  //   void getMessageArrive();
 
     void receiveResponse(Response resp);
+    void receiveUserInfoResponse(Response resp);
+    void getUserListResponse(Response resp);
 };
 
 #endif // FRIENDLIST_H

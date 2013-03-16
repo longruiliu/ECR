@@ -39,9 +39,6 @@ public:
 
 private:
     Ui::ChatRoomPanel *ui;
-
-    //UserID list
-    QVector<int> userIDList;
     //groupID list
     QVector<int> groupIDList;
 
@@ -68,7 +65,7 @@ private:
 
     //窗口淡入淡出有关
     FadeInOut fadeEffect;
-    QQueue<int> userInfoRequestQueue;
+
 
 private slots:
     //系统托盘
@@ -79,12 +76,6 @@ private slots:
 
     void on_CloseWinBtn_clicked();
     void on_headerImage_clicked();
-
-
-    void getUserListResponse(Response resp);
-    void getGroupListResponse(Response resp);
-
-    void receiveUserInfoResponse(Response resp);
 
 
 };
