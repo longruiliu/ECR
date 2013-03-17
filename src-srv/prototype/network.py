@@ -95,7 +95,7 @@ def requestHandler(request):
 
         elif req_method == 'logout':
             try:
-                status, result = apply(logic.logout, req_sessionID)
+                status, result = apply(logic.logout, [req_sessionID])
                 ret = initialRet(status)
                 sendResponse(ret)
             except Exception, e:

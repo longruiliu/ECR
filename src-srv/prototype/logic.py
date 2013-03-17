@@ -107,7 +107,12 @@ def logout(sessionID):
 
 def getUserInfo(srcID, dstID):
     ur = user.findUser(dstID)
-    return (ERR_OK, {'userName':ur.userName, 'userInfo':ur.userInfo})
+    return (ERR_OK, {'userName':decorateUserName(dstID, ur.userName), 'userInfo':ur.userInfo})
+def decorateUserName(userID, userName):
+    if session.getUserIP(userID) == -1:
+        return "_"+userName
+    else:
+        return userName
 # mark
 def addUser(srcID, userName, passwd, userInfo):
     ur = user.findUser(srcID)

@@ -16,7 +16,7 @@ def restoreFromDB(dbFileName, timeL):
     c = conn.cursor()
     results = c.execute("select * from User")
     for result in results:
-        tmp = user.User(result[0],result[1],result[2],result[3],result[4])
+        tmp = user.User(result[0],result[1],result[2],result[4],result[3])
         user.userList[tmp.userID] = tmp
         print "New user %d: %s" % (tmp.userID ,tmp.userName)
 
