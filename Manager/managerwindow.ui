@@ -199,6 +199,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="deleteUser">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>360</x>
@@ -212,6 +215,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="modifyUser">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>270</x>
@@ -245,7 +251,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="addGroupMember">
    <property name="geometry">
     <rect>
-     <x>190</x>
+     <x>170</x>
      <y>320</y>
      <width>101</width>
      <height>23</height>
@@ -269,6 +275,26 @@ p, li { white-space: pre-wrap; }
    </property>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>usernameBox</tabstop>
+  <tabstop>passwdBox</tabstop>
+  <tabstop>userInfoBox</tabstop>
+  <tabstop>cbCanGroupMG</tabstop>
+  <tabstop>cbCanUserMg</tabstop>
+  <tabstop>cbIsRoot</tabstop>
+  <tabstop>addUser</tabstop>
+  <tabstop>modifyUser</tabstop>
+  <tabstop>deleteUser</tabstop>
+  <tabstop>addGroupMember</tabstop>
+  <tabstop>groupNameBox</tabstop>
+  <tabstop>addGroup</tabstop>
+  <tabstop>delGroup</tabstop>
+  <tabstop>deleteMember</tabstop>
+  <tabstop>groupMemberList</tabstop>
+  <tabstop>groupListWidget</tabstop>
+  <tabstop>userListWidget</tabstop>
+  <tabstop>pushButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

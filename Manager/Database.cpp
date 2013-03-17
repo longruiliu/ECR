@@ -1,5 +1,5 @@
 #include"Database.h"
-
+#include<QDebug>
 std::vector<user> userList;
 std::vector<group> groupList;
 Database::Database(const std::string& filename)
@@ -98,23 +98,30 @@ void Database::saveGrouplist()
 		if (!query(sqlBuf).size())
 		{
 			//insert the group to DB
-			char *sql2 = "insert into Group_list(creator_id,g_name,g_info) values(%d,'%s','%s')";
-			sprintf(sqlBuf,sql2,(*it).creatorID,(*it).groupName.c_str(),(*it).groupInfo.c_str());
+                        char *sql2 = "insert into Group_list(group_id, creator_id,g_name) values(%d, %d,'%s')";
+                        sprintf(sqlBuf,sql2,it->groupID, (*it).creatorID,(*it).groupName.c_str());
+                        qDebug()<< sqlBuf;
 			query(sqlBuf);
 		}
 		else
 		{
 			//update the information of this group
 			//but just group name and information can be updated
-			char *sql2 = "update Group_list set g_name='%s',g_info='%s' where group_id=%d";
-			sprintf(sqlBuf,sql2,(*it).groupName.c_str(),(*it).groupInfo.c_str(),(*it).groupID);
+                        char *sql2 = "update Group_list set g_name='%s' where group_id=%d";
+                        sprintf(sqlBuf,sql2,(*it).groupName.c_str(),(*it).groupID);
 			query(sqlBuf);
 		}
         }
 }
 
 
-//restore data from DB
+void Database::clearDatabase()
+{
+    query("delete from User_Group");
+    query("delete from user");
+    query("delete from Group_list");
+}
+
 
 void Database::restoreUserlist()
 {

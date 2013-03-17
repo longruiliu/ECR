@@ -25,6 +25,8 @@ struct user
         bool canGroupMg();
         bool isRoot();
 
+        static std::string getUserName(int);
+        static bool hasUser(int);
         void setUserMg(bool);
         void setGroupMg(bool);
         void setRoot(bool);

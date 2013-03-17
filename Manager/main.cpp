@@ -1,6 +1,8 @@
 #include <QtGui/QApplication>
 #include "managerwindow.h"
 #include <QTextCodec>
+#include <cstdlib>
+#include <ctime>
 int main(int argc, char *argv[])
 {
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
@@ -10,5 +12,6 @@ int main(int argc, char *argv[])
     managerWindow w;
     w.show();
 
+    srand(time(NULL));
     return a.exec();
 }

@@ -6,6 +6,7 @@
  ***********************************************************************/
 #include <iostream>
 #include "group.h"
+#include "Database.h"
 
 group::group()
 {
@@ -23,9 +24,20 @@ group::group(const group &other)
 	groupMember = other.groupMember;
 }
 
-group::group(const std::string& name, int creator,const std::string &info = "null")
+group::group(const std::string& name, int creator)
 {
-	groupName = name;
-	creatorID = creator;
-	groupInfo = info;
+    int gid = rand()%10000;
+    while(hasGroup(gid))
+            gid = rand()%10000;
+    groupID = gid;
+    groupName = name;
+    creatorID = creator;
+}
+
+bool group::hasGroup(int gid)
+{
+    for (glit i = groupList.begin();i !=groupList.end();i++)
+        if (i->groupID == gid)
+            return true;
+    return false;
 }

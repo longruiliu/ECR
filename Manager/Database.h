@@ -43,6 +43,8 @@ class Database
                 void restoreGrouplist();
                 void restoreGroupMember();
 
+                void clearDatabase();
+
 		void close();
 		~Database();
 };

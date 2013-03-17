@@ -18,7 +18,7 @@ class group
 public:
 	group();
 	group(const group &other);
-	group(const std::string& name, int creator,const std::string& info);
+        group(const std::string& name, int creator);
 
 	int groupID;
  	int creatorID;
@@ -26,6 +26,7 @@ public:
         std::string groupInfo;
 
 	std::vector<int> groupMember;
+        bool hasGroup(int);
 protected:
 private:
 };
