@@ -23,6 +23,10 @@ public:
     void addFriendToList(int friendID, QString nickName, QString friendInfo);
     static QString& getNickname(int userID);
     static QString& getFriendInfo(int userID);
+
+    void pullMessageFromServer();
+    void sendKeepAliveToServer();
+
 private:
     Ui::FriendList *ui;
 
@@ -56,9 +60,11 @@ private slots:
     void receiveResponse(Response resp);
     void receiveUserInfoResponse(Response resp);
     void getUserListResponse(Response resp);
+    void KeepAliveResponse(Response resp);
 
     //向服务器拉取消息
     void RefreshFromServer();
+
 };
 
 #endif // FRIENDLIST_H

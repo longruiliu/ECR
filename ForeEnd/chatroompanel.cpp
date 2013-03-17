@@ -142,6 +142,25 @@ void ChatRoomPanel::trayiconActivated(QSystemTrayIcon::ActivationReason reason)
 }
 
 
+void ChatRoomPanel::sendLogOutToServer()
+{
+    Nevent ev;
+    std::string str;
+
+    str.clear();
+    str.insert(0,"regular");
+    ev.req.setType(str);
+
+    str.clear();
+    str.insert(0,"logout");
+    ev.req.setMethod(str);
+
+    ev.callee = this;
+    strcpy(ev.signal, SLOT(NULL));
+
+    nq.pushEvent(ev);
+}
+
 void ChatRoomPanel::on_MiniButton_clicked()
 {
    fadeEffect.startFadeInOut(FADEOUT_HIDE);
@@ -150,6 +169,7 @@ void ChatRoomPanel::on_MiniButton_clicked()
 void ChatRoomPanel::on_CloseWinBtn_clicked()
 {
     fadeEffect.startFadeInOut(FADEOUT_EXIT_ALL);
+    sendLogOutToServer();
 }
 
 void ChatRoomPanel::on_headerImage_clicked()

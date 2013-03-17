@@ -37,6 +37,7 @@ FriendList::FriendList(QWidget *parent) :
     //向服务器拉取消息
     timerRefresh = new QTimer(this);
     connect(timerRefresh,SIGNAL(timeout()),this,SLOT(RefreshFromServer()));
+    timerRefresh->start(FreshRate);
 }
 
 FriendList::~FriendList()
@@ -250,10 +251,47 @@ void FriendList::receiveUserInfoResponse(Response resp)
     addFriendToList(id, QString(name.c_str()), QString(_ui.c_str()));
 }
 
+void FriendList::KeepAliveResponse(Response resp)
+{
+
+}
+
+void FriendList::pullMessageFromServer()
+{
+    newMessage();
+}
+
+void FriendList::sendKeepAliveToServer()
+{
+    Nevent ev;
+    std::string str;
+
+    str.clear();
+    str.insert(0,"regular");
+    ev.req.setType(str);
+
+    str.clear();
+    str.insert(0,"keepalive");
+    ev.req.setMethod(str);
+
+    ev.callee = this;
+    strcpy(ev.signal, SLOT(keepAliveResponse(Response)));
+
+    nq.pushEvent(ev);
+}
+
 void FriendList::RefreshFromServer()
 {
-    //拉取消息
-    //emit getMessage();
-    //keep alive
-    //emit keepAlive();
+    static int flag;
+    flag++;
+
+    //刷新列表
+    if(0==flag%10)
+        getUserList();
+
+    //获取消息
+    pullMessageFromServer();
+
+    //告诉服务器我还在线
+    sendKeepAliveToServer();
 }
