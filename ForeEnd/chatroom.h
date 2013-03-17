@@ -42,6 +42,8 @@ private slots:
     //接收到回应
 
     void receiveMessageResponse(Response resp);
+    void on_viewFriendBtn_clicked();
+
 private:
     Ui::chatRoom *ui;
 

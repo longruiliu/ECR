@@ -3,8 +3,9 @@
 #include "messagelistener.h"
 #include "networkqueue.h"
 #include "msgRecord.h"
-
+#include "viewfriendinfo.h"
 extern messageListener ml;
+extern int myUserID;
 
 QMap<int, QString> FriendList::nickNameList;
 QMap<int, QString> FriendList::friendInfoList;
@@ -15,7 +16,6 @@ FriendList::FriendList(QWidget *parent) :
 {
 
     ui->setupUi(this);
-
 
     //add friend to list
     ui->FriendListWidget->setViewMode(QListView::ListMode);
@@ -51,9 +51,9 @@ void FriendList::addFriendToList(int friendID, QString nickName, QString friendI
 {
     if(friendID==myUserID)
     {
-        ChatRoomPanel* crp = (ChatRoomPanel*) parentWidget();
-        crp->ui->nameLineEdit->setText(nickName);
+        emit getMyInfo(nickName,friendInfo);
     }
+
     friendIDList.push_back(friendID);
     nickNameList[friendID] = nickName;
     friendInfoList[friendID] = friendInfo;
@@ -117,6 +117,11 @@ void FriendList::refreshFriendList()
 void FriendList::viewFriendInfo()
 {
     //View Friend Info
+    int currentFriendID= friendIDList[ui->FriendListWidget->currentRow()];
+    ViewFriendInfo *vfi = new ViewFriendInfo(nickNameList[currentFriendID],
+                                             friendInfoList[currentFriendID]);
+    vfi->show();
+
 }
 
 
@@ -128,6 +133,11 @@ void FriendList::receiveResponse(Response resp)
 QString& FriendList::getNickname(int userID)
 {
     return nickNameList[userID];
+}
+
+QString& FriendList::getFriendInfo(int userID)
+{
+    return friendInfoList[userID];
 }
 
 void FriendList::newMessage(){

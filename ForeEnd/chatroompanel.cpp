@@ -3,6 +3,7 @@
 #include "protocol/protocol.h"
 #include "networkqueue.h"
 #include "friendlist.h"
+#include "userinfoconfig.h"
 
 
 extern networkQueue nq;
@@ -33,10 +34,10 @@ ChatRoomPanel::ChatRoomPanel(QString userID, QString passwd, int sessionID):
     this->passwd = passwd;
     this->sessionID = sessionID;
 
-    //get User list and group list
+    //更新个人信息
 
-    ui->nameLineEdit->setText(FriendList::getNickname(myUserID));
-
+    connect(&friendlistWidget,SIGNAL(getMyInfo(QString,QString)),
+            this,SLOT(UpdateMyInfo(QString,QString)));
 }
 
 ChatRoomPanel::ChatRoomPanel(QWidget *parent) :
@@ -62,6 +63,13 @@ ChatRoomPanel::ChatRoomPanel(QWidget *parent) :
 
     //fade in fade out
     fadeEffect.startFadeInOut(FADEIN);
+}
+
+void ChatRoomPanel::UpdateMyInfo(QString myNickName, QString myInfo)
+{
+    ui->nameLineEdit->setText(myNickName);
+    userNickName=myNickName;
+    userInfo=myInfo;
 }
 
 
@@ -146,6 +154,8 @@ void ChatRoomPanel::on_CloseWinBtn_clicked()
 void ChatRoomPanel::on_headerImage_clicked()
 {
     //Change Personal's details
+    UserInfoConfig *uic = new UserInfoConfig(userID,userNickName,userInfo,this);
+    uic->show();
 }
 
 

@@ -336,7 +336,7 @@ border-image: url(:/btn/scrawl.png);</string>
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="senImageBtn">
+   <widget class="QPushButton" name="viewFriendBtn">
     <property name="geometry">
      <rect>
       <x>265</x>

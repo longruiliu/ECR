@@ -29,7 +29,9 @@ SOURCES += main.cpp \
     protocol/jsoncpp.cpp \
     protocol/protocol.cpp \
     ../src-srv/msgRecord.cpp \
-    managerwindow.cpp
+    managerwindow.cpp \
+    userinfoconfig.cpp \
+    viewfriendinfo.cpp
 
 HEADERS  += \
     chatroom.h \
@@ -47,7 +49,9 @@ HEADERS  += \
     networkqueue.h \
     network1.h \
     ../include/protocol_const.h \
-    managerwindow.h
+    managerwindow.h \
+    userinfoconfig.h \
+    viewfriendinfo.h
 
 FORMS    += \
     chatroom.ui \
@@ -58,7 +62,9 @@ FORMS    += \
     loginconfig.ui \
     groupchatdialog.ui \
     registerdialog.ui \
-    managerwindow.ui
+    managerwindow.ui \
+    userinfoconfig.ui \
+    viewfriendinfo.ui
 
 RESOURCES += \
     USay.qrc

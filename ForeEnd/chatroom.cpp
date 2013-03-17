@@ -4,6 +4,7 @@
 #include "networkqueue.h"
 #include "friendlist.h"
 #include "QWebFrame"
+#include "viewfriendinfo.h"
 
 chatRoom::chatRoom(int friendid,QWidget *parent) :
     QDialog(parent),ui(new Ui::chatRoom),fadeEffect(this),shakeEffect(this)
@@ -157,4 +158,12 @@ void chatRoom::receiveMessageResponse(Response resp)
     }else{
         ui->SendTextEdit->clear();
     }
+}
+
+void chatRoom::on_viewFriendBtn_clicked()
+{
+    ViewFriendInfo *vfi = new ViewFriendInfo(FriendList::getNickname(currentFriendID),
+                                             FriendList::getFriendInfo(currentFriendID));
+    vfi->show();
+
 }

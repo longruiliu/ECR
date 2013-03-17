@@ -31,5 +31,7 @@
         <file>bg/talk.png</file>
         <file>bg/loginDialogbg.png</file>
         <file>bg/registerDialogBg.png</file>
+        <file>bg/userInfoConfig.png</file>
+        <file>bg/viewFriendInfo .png</file>
     </qresource>
 </RCC>
