@@ -4,10 +4,13 @@
 #include "chatroom.h"
 
 #include <QWidget>
+#include <QTimer>
 
 namespace Ui {
     class FriendList;
 }
+
+#define FreshRate 3000
 
 class FriendList : public QWidget
 {
@@ -30,6 +33,9 @@ private:
     QQueue<int> userInfoRequestQueue;
     QVector<int> userIDList;
 
+    //定期拉取消息
+    QTimer *timerRefresh;
+
 signals:
     void getMyInfo(QString,QString);
 
@@ -50,6 +56,9 @@ private slots:
     void receiveResponse(Response resp);
     void receiveUserInfoResponse(Response resp);
     void getUserListResponse(Response resp);
+
+    //向服务器拉取消息
+    void RefreshFromServer();
 };
 
 #endif // FRIENDLIST_H

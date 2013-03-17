@@ -60,7 +60,6 @@ void LoginConfig::on_CloseWinBtn_clicked()
 
 void LoginConfig::getServerInfo()
 {
-    QString tmp;
     QFile file("config.ini");
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             qDebug()<<"Can't open the file!"<<endl;
@@ -82,4 +81,5 @@ void LoginConfig::saveServerInfo()
     file.write(serverIP.toAscii());
     file.write("\n");
     file.write(serverPort.toAscii());
+    file.close();
 }

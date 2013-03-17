@@ -30,7 +30,7 @@ public:
 signals:
     void closeDialog(int);
 public slots:
-    void AddMessageToList(QString mcontent,QString authorName,bool isSelf);
+    void AddMessageToList(QString mcontent,QString authorName,int senderType);
 private slots:
 
     void on_SendButton_clicked();

@@ -6,6 +6,8 @@
 #include "QWebFrame"
 #include "viewfriendinfo.h"
 
+extern int myUserID;
+
 chatRoom::chatRoom(int friendid,QWidget *parent) :
     QDialog(parent),ui(new Ui::chatRoom),fadeEffect(this),shakeEffect(this)
 {
@@ -29,6 +31,9 @@ chatRoom::chatRoom(int friendid,QWidget *parent) :
     file.close();
 
     timeStamp = 0;
+
+    if(FriendList::getNickname(currentFriendID).at(0)=='_')
+        AddMessageToList(tr("对方不在线的！"),tr("系统提示"),0);
 }
 
 chatRoom::~chatRoom()
@@ -83,7 +88,7 @@ void chatRoom::on_SendButton_clicked()
 
         nq.pushEvent(ev);
 
-        AddMessageToList(sendText,FriendList::getNickname(this->currentFriendID),true);
+        AddMessageToList(sendText,FriendList::getNickname(myUserID),-1);
     }
 
 
@@ -95,18 +100,20 @@ void chatRoom::on_CloseWinBtn_clicked()
     fadeEffect.startFadeInOut(FADEOUT_HIDE);
 }
 
-void chatRoom::AddMessageToList(QString mcontent, QString authorName, bool isSelf)
+void chatRoom::AddMessageToList(QString mcontent, QString authorName, int senderType)
 {
     if(mcontent == QString("/s"))
     {
         shakeEffect.startShake();
-        AddMessageToList(tr("对方给你发送了一个抖动"),tr("系统提示"),false);
+        AddMessageToList(tr("对方给你发送了一个抖动"),tr("系统提示"),0);
         return;
     }
-    if(isSelf)
+    if(senderType < 0)
         messageList+=tr("<p class=\"Me\"></p><p class=\"isaid\"><strong>[");
-    else
+    else if(senderType > 0)
         messageList+=tr("<p class=\"U\"></p><p class=\"usaid\">[<strong>");
+    else
+        messageList+=tr("<p class=\"root\"></p><p class=\"rootsaid\">[<strong>");
     messageList+=authorName;
     messageList+=tr(":]</strong></br>");
     messageList+=mcontent;
@@ -122,7 +129,7 @@ void chatRoom::on_shakeBtn_clicked()
 {
     //Shake Dialog
     shakeEffect.startShake();
-    AddMessageToList(tr("您给对方发了抖动"),tr("系统提示"),true);
+    AddMessageToList(tr("您给对方发了抖动"),tr("系统提示"),0);
 
     sendText="/s";
     //Send Text To Server
@@ -153,8 +160,8 @@ void chatRoom::on_shakeBtn_clicked()
 void chatRoom::receiveMessageResponse(Response resp)
 {
     if(resp.getStatus() >0){
-        AddMessageToList(QString("Send message Failed"),
-                         FriendList::getNickname(this->currentFriendID), true);
+        AddMessageToList(tr("您的消息没哟发出去！"),
+                         FriendList::getNickname(this->currentFriendID), 0);
     }else{
         ui->SendTextEdit->clear();
     }

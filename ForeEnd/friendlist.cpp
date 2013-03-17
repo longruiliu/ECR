@@ -33,6 +33,10 @@ FriendList::FriendList(QWidget *parent) :
  //   connect(&ml,SIGNAL())
     getUserList();
     connect(&ml, SIGNAL(youHaveMessage()), this, SLOT(newMessage()));
+
+    //向服务器拉取消息
+    timerRefresh = new QTimer(this);
+    connect(timerRefresh,SIGNAL(timeout()),this,SLOT(RefreshFromServer()));
 }
 
 FriendList::~FriendList()
@@ -59,7 +63,10 @@ void FriendList::addFriendToList(int friendID, QString nickName, QString friendI
     friendInfoList[friendID] = friendInfo;
 
     QListWidgetItem *friend1 = new QListWidgetItem(ui->FriendListWidget);
-    friend1->setIcon(QIcon(":/header/1.png"));
+    if(nickName.at(0)=='_')
+        friend1->setIcon(QIcon(":/header/1off.png"));
+    else
+        friend1->setIcon(QIcon(":/header/1on.png"));
     friend1->setText(nickName);
 
     friend1->setTextAlignment(Qt::AlignLeft);
@@ -97,14 +104,14 @@ void FriendList::onRightClick(QPoint pos)
     if(curitem == NULL)
     {
         //if selected nothing
-        popMenu->addAction(tr("Refresh Friend List"),this,SLOT(refreshFriendList()));
+        popMenu->addAction(tr("刷新列表"),this,SLOT(refreshFriendList()));
     }
     else
     {
         //if selected an item
-        popMenu->addAction(tr("View Friend Info"),this,SLOT(refreshFriendList()));
-        popMenu->addAction(tr("Talk With Friend"),this,SLOT(startChatWithSelectedFriend()));
-        popMenu->addAction(tr("Refresh Friend List"),this,SLOT(refreshFriendList()));
+        popMenu->addAction(tr("查看好友信息"),this,SLOT(viewFriendInfo()));
+        popMenu->addAction(tr("与该好友聊天"),this,SLOT(startChatWithSelectedFriend()));
+        popMenu->addAction(tr("刷新好友列表"),this,SLOT(refreshFriendList()));
     }
     popMenu->exec(QCursor::pos());//然后运行弹出菜单
 }
@@ -170,7 +177,7 @@ void FriendList::newMessaveResponse(Response resp){
         startChatWithSelectedFriend(srcID);
 
         chatRoomMap[srcID]->AddMessageToList(QString(i->msgText.c_str()),
-                                                    getNickname(srcID), false);
+                                                    getNickname(srcID), 1);
         chatRoomMap[srcID]->timeStamp = i->postTime;
     }
 }
@@ -241,5 +248,12 @@ void FriendList::receiveUserInfoResponse(Response resp)
     resp.getUserName(name);
 
     addFriendToList(id, QString(name.c_str()), QString(_ui.c_str()));
+}
 
+void FriendList::RefreshFromServer()
+{
+    //拉取消息
+    //emit getMessage();
+    //keep alive
+    //emit keepAlive();
 }

@@ -38,6 +38,9 @@
      <string notr="true">background-image: url(:/bg/content.png);
 border-image: url(:/bg/content.png);</string>
     </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
     <property name="placeholderText">
      <string>用户名</string>
     </property>
@@ -56,7 +59,7 @@ border-image: url(:/bg/content.png);</string>
 border-image: url(:/bg/content.png);</string>
     </property>
     <property name="readOnly">
-     <bool>true</bool>
+     <bool>false</bool>
     </property>
     <property name="placeholderText">
      <string>昵称</string>
