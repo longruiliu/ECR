@@ -1,11 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>header/1.png</file>
-        <file>header/2.png</file>
-        <file>header/3.png</file>
-        <file>header/4.png</file>
-        <file>header/1p.png</file>
-        <file>header/logo.png</file>
         <file>btn/chatHistory.png</file>
         <file>btn/cutPhoto.png</file>
         <file>btn/face.png</file>
@@ -14,7 +8,6 @@
         <file>btn/sendImage.png</file>
         <file>btn/shake.png</file>
         <file>btn/chatBlank.png</file>
-        <file>chatStyle.html</file>
         <file>bg/chatpanel.png</file>
         <file>bg/closeBtn.png</file>
         <file>bg/configBtn.png</file>
@@ -33,5 +26,12 @@
         <file>bg/registerDialogBg.png</file>
         <file>bg/userInfoConfig.png</file>
         <file>bg/viewFriendInfo .png</file>
+        <file>header/1off.png</file>
+        <file>header/1on.png</file>
+        <file>header/2.png</file>
+        <file>header/3.png</file>
+        <file>header/4.png</file>
+        <file>header/logo.png</file>
+        <file>chatStyle.html</file>
     </qresource>
 </RCC>

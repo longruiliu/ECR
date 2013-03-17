@@ -37,6 +37,8 @@ public:
 
     int sessionID;
 
+    void sendLogOutToServer();
+
 private:
     Ui::ChatRoomPanel *ui;
     //groupID list

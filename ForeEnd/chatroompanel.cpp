@@ -14,7 +14,7 @@ ChatRoomPanel::ChatRoomPanel(QString userID, QString passwd, int sessionID):
 {
     ui->setupUi(this);
     //add the friendlist and grouplist widget to the tabWidget
-    ui->tabWidget->addTab(&friendlistWidget,QIcon(":/header/1.png"),tr("好友列表"));
+    ui->tabWidget->addTab(&friendlistWidget,QIcon(":/header/1on.png"),tr("好友列表"));
     ui->tabWidget->addTab(&grouplistWidget,QIcon(":/header/2.png"),tr("群组列表"));
 
     //system tray
@@ -48,7 +48,7 @@ ChatRoomPanel::ChatRoomPanel(QWidget *parent) :
     ui->setupUi(this);
 
     //add the friendlist and grouplist widget to the tabWidget
-    ui->tabWidget->addTab(&friendlistWidget,QIcon(":/header/1.png"),tr("好友列表"));
+    ui->tabWidget->addTab(&friendlistWidget,QIcon(":/header/1on.png"),tr("好友列表"));
     ui->tabWidget->addTab(&grouplistWidget,QIcon(":/header/2.png"),tr("群组列表"));
 
     //system tray
@@ -68,6 +68,7 @@ ChatRoomPanel::ChatRoomPanel(QWidget *parent) :
 void ChatRoomPanel::UpdateMyInfo(QString myNickName, QString myInfo)
 {
     ui->nameLineEdit->setText(myNickName);
+    ui->userInfoText->setText(myInfo);
     userNickName=myNickName;
     userInfo=myInfo;
 }
@@ -99,12 +100,12 @@ void ChatRoomPanel::createTrayIcon()
     QIcon icon = QIcon(":/header/logo.png");
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setIcon(icon);
-    trayIcon->setToolTip(tr("God Talk"));
-    minimizeAction = new QAction(tr("Minimize (&I)"), this);
+    trayIcon->setToolTip(tr("子曰USay"));
+    minimizeAction = new QAction(tr("最小化 (&I)"), this);
     connect(minimizeAction, SIGNAL(triggered()), this, SLOT(hide()));
-    restoreAction = new QAction(tr("Restore (&R)"), this);
+    restoreAction = new QAction(tr("还原 (&R)"), this);
     connect(restoreAction, SIGNAL(triggered()), this, SLOT(showNormal()));
-    quitAction = new QAction(tr("Exit (&Q)"), this);
+    quitAction = new QAction(tr("退出 (&Q)"), this);
     connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
     trayIconMenu = new QMenu(this);
     trayIconMenu->addAction(minimizeAction);
@@ -117,8 +118,8 @@ void ChatRoomPanel::createTrayIcon()
 void ChatRoomPanel::startTray()
 {
     trayIcon->show();
-    QString titlec=tr("God Talk");
-    QString textc=tr("Give you different experience");
+    QString titlec=tr("子曰USay");
+    QString textc=tr("给你神一般的聊天体验");
     trayIcon->showMessage(titlec,textc,QSystemTrayIcon::Information,5000);
 
     connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,
@@ -141,6 +142,25 @@ void ChatRoomPanel::trayiconActivated(QSystemTrayIcon::ActivationReason reason)
 }
 
 
+void ChatRoomPanel::sendLogOutToServer()
+{
+    Nevent ev;
+    std::string str;
+
+    str.clear();
+    str.insert(0,"regular");
+    ev.req.setType(str);
+
+    str.clear();
+    str.insert(0,"logout");
+    ev.req.setMethod(str);
+
+    ev.callee = this;
+    strcpy(ev.signal, SLOT(NULL));
+
+    nq.pushEvent(ev);
+}
+
 void ChatRoomPanel::on_MiniButton_clicked()
 {
    fadeEffect.startFadeInOut(FADEOUT_HIDE);
@@ -149,12 +169,13 @@ void ChatRoomPanel::on_MiniButton_clicked()
 void ChatRoomPanel::on_CloseWinBtn_clicked()
 {
     fadeEffect.startFadeInOut(FADEOUT_EXIT_ALL);
+    sendLogOutToServer();
 }
 
 void ChatRoomPanel::on_headerImage_clicked()
 {
     //Change Personal's details
-    UserInfoConfig *uic = new UserInfoConfig(userID,userNickName,userInfo,this);
+    UserInfoConfig *uic = new UserInfoConfig(userID,userNickName,userInfo);
     uic->show();
 }
 
