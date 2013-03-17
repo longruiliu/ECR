@@ -179,5 +179,10 @@ void ChatRoomPanel::on_headerImage_clicked()
     uic->show();
 }
 
-
-
+void ChatRoomPanel::on_pushButton_clicked()
+{
+    if(!QDesktopServices::openUrl(QUrl::fromLocalFile("help.doc")))
+    {
+        QMessageBox::about( this , tr("子曰USay") , tr("打开帮助文档失败！") ) ;
+    }
+}

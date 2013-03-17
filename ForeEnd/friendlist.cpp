@@ -59,19 +59,22 @@ void FriendList::addFriendToList(int friendID, QString nickName, QString friendI
         emit getMyInfo(nickName,friendInfo);
     }
 
-    friendIDList.push_back(friendID);
-    nickNameList[friendID] = nickName;
-    friendInfoList[friendID] = friendInfo;
-
     QListWidgetItem *friend1 = new QListWidgetItem(ui->FriendListWidget);
     if(nickName.at(0)=='_')
+    {
         friend1->setIcon(QIcon(":/header/1off.png"));
+        nickName=nickName.right(nickName.size()-1);
+    }
     else
         friend1->setIcon(QIcon(":/header/1on.png"));
     friend1->setText(nickName);
-
     friend1->setTextAlignment(Qt::AlignLeft);
     friend1->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
+    friendIDList.push_back(friendID);
+    friendInfoList[friendID] = friendInfo;
+    nickNameList[friendID] = nickName;
+
 }
 
 void FriendList::startChatWithSelectedFriend(int currentFriendID)
@@ -105,7 +108,7 @@ void FriendList::onRightClick(QPoint pos)
     if(curitem == NULL)
     {
         //if selected nothing
-        popMenu->addAction(tr("刷新列表"),this,SLOT(refreshFriendList()));
+        popMenu->addAction(tr("刷新好友列表"),this,SLOT(refreshFriendList()));
     }
     else
     {

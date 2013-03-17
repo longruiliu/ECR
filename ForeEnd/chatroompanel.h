@@ -85,6 +85,7 @@ private slots:
 
     //接受FirendList发过来的自己信息
     void UpdateMyInfo(QString myNickName,QString myInfo);
+    void on_pushButton_clicked();
 };
 
 #endif // CHATROOMPANEL_H

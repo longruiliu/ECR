@@ -33,5 +33,7 @@
         <file>header/4.png</file>
         <file>header/logo.png</file>
         <file>chatStyle.html</file>
+        <file>bg/helpBtn.png</file>
+        <file>help.doc</file>
     </qresource>
 </RCC>

@@ -79,7 +79,14 @@ void GroupChatDialog::addFriendTolist(int friendid, QString nickname)
     friendIDList.push_back(friendid);
 
     QListWidgetItem *friend1 = new QListWidgetItem(ui->FriendListWidget);
-    friend1->setIcon(QIcon(":/header/1.png"));
+
+    if(nickname.at(0)=='_')
+    {
+        friend1->setIcon(QIcon(":/header/1off.png"));
+        nickname=nickname.right(nickname.size()-1);
+    }
+    else
+        friend1->setIcon(QIcon(":/header/1on.png"));
     friend1->setText(nickname);
     friend1->setTextAlignment(Qt::AlignLeft);
     friend1->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
