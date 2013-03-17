@@ -14,7 +14,6 @@
 #include "fadeinout.h"
 #include <QQueue>
 
-
 namespace Ui {
     class ChatRoomPanel;
 }
