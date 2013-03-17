@@ -24,7 +24,8 @@ class User(object):
     def isRoot(self):
         return self.checkPriv(logic.PRIVILEGE_MASK_ROOT)
     def checkPriv(self, mask):
-        return not ((self.privMask & mask) == 0)
+        print mask
+        return not ((int(self.privMask) & int(mask)) == 0)
     def sendMsg(self,msg):
         self.mailbox.append(msg)
         IP = session.getUserIP(self.userID)
