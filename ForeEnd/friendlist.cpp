@@ -4,6 +4,7 @@
 #include "networkqueue.h"
 #include "msgRecord.h"
 #include "viewfriendinfo.h"
+#include <QDebug>
 extern messageListener ml;
 extern int myUserID;
 

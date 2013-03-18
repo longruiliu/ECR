@@ -33,7 +33,8 @@ chatRoom::chatRoom(int friendid,QWidget *parent) :
     timeStamp = 0;
 
     if(FriendList::getNickname(currentFriendID).at(0)=='_')
-        AddMessageToList(tr("对方不在线的！"),tr("系统提示"),0);
+        AddMessageToList(tr("对方不在线,您发送的消息会在您的好友上线之后才会收到！"),
+                         tr("系统提示"),0);
     ui->SendTextEdit->installEventFilter(this);
 }
 
@@ -77,11 +78,17 @@ void chatRoom::raiseChatDialog()
 
 void chatRoom::on_SendButton_clicked()
 {
-    sendText = ui->SendTextEdit->toPlainText();
-
+    bool toolong=false;
+    if(ui->SendTextEdit->toPlainText().size()>=512)
+    {
+        toolong=true;
+        sendText=ui->SendTextEdit->toPlainText().left(512);
+    }
+    else
+        sendText=ui->SendTextEdit->toPlainText();
     if(!sendText.isEmpty())
     {
-       //Send Text To Server
+        //Send Text To Server
         Nevent ev;
         std::string str;
 
@@ -105,9 +112,62 @@ void chatRoom::on_SendButton_clicked()
         nq.pushEvent(ev);
 
         AddMessageToList(sendText,FriendList::getNickname(myUserID),-1);
+        if(toolong)
+        {
+            AddMessageToList(tr("由于你发送的内容太长，只有一部分内容可以发送！"),
+                             tr("系统提示"),0);
+        }
+    }
+    else
+    {
+        AddMessageToList(tr("抱歉，不能发送空消息!"),
+                         tr("系统提示"),0);
     }
 
+    /*
+    QString sendTextTotal = ui->SendTextEdit->toPlainText();
+    int textSize=sendTextTotal.size();
+    int currentPos=0;
+    while(currentPos<textSize)
+    {
+        if(currentPos+512>textSize)
+            sendText=sendTextTotal.mid(currentPos,textSize-currentPos);
+        else
+            sendText=sendTextTotal.mid(currentPos,512);
+        if(!sendText.isEmpty())
+        {
+            //Send Text To Server
+            Nevent ev;
+            std::string str;
 
+            str.clear();
+            str.insert(0,"regular");
+            ev.req.setType(str);
+
+            str.clear();
+            str.insert(0, "sendmsg");
+            ev.req.setMethod(str);
+
+            ev.req.addParams(this->currentFriendID);
+
+            str.clear();
+            str.insert(0, sendText.toLocal8Bit().data());
+            ev.req.addParams(str);
+
+            ev.callee = this;
+            strcpy(ev.signal, SLOT(receiveMessageResponse(Response)));
+
+            nq.pushEvent(ev);
+
+            AddMessageToList(sendText,FriendList::getNickname(myUserID),-1);
+        }
+        else
+        {
+            return;
+        }
+        currentPos+=512;
+    }
+    */
 }
 
 void chatRoom::on_CloseWinBtn_clicked()
@@ -176,7 +236,7 @@ void chatRoom::on_shakeBtn_clicked()
 void chatRoom::receiveMessageResponse(Response resp)
 {
     if(resp.getStatus() >0){
-        AddMessageToList(tr("您的消息没哟发出去！"),
+        AddMessageToList(tr("可能由于网络问题，您的消息没有发出去！"),
                          FriendList::getNickname(this->currentFriendID), 0);
     }else{
         ui->SendTextEdit->clear();

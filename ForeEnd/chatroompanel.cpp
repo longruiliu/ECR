@@ -181,8 +181,11 @@ void ChatRoomPanel::on_headerImage_clicked()
 
 void ChatRoomPanel::on_pushButton_clicked()
 {
-    if(!QDesktopServices::openUrl(QUrl::fromLocalFile("help.doc")))
+    if(!QDesktopServices::openUrl(QUrl::fromLocalFile("help.pdf")))
     {
-        QMessageBox::about( this , tr("子曰USay") , tr("打开帮助文档失败！") ) ;
+        if(!QDesktopServices::openUrl(QUrl::fromLocalFile("help.doc")))
+        {
+            QMessageBox::about( this , tr("子曰USay") , tr("打开帮助文档失败！") ) ;
+        }
     }
 }
