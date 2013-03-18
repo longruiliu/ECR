@@ -1,7 +1,7 @@
 import random
 import time
 import thread
-KAI = 3600 #Keep-alive interval
+KAI = 60 #Keep-alive interval
 sessionList_uk = {} 
 sessionList_sk = {}
 

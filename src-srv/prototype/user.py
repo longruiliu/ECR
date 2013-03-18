@@ -37,7 +37,7 @@ class User(object):
         if not self.groupListIsNew:
             self.groupList = []
             for i in group.groupList.values():
-                if i.isInGroup(self.userID) or i.isRoot():
+                if i.isInGroup(self.userID):
                     self.groupList.append((i.groupID, i.groupName))
             self.groupListIsNew = True
         return self.groupList
