@@ -15,7 +15,7 @@ BACKLOG = 127
 sockMapMutex = thread.allocate_lock()
 requestMutex = thread.allocate_lock()
 sockMap = {}
-MAX_BUFSZ = 4096
+MAX_BUFSZ = 16*2**20
 
 
 def checkSessionID(req_sessionID):
@@ -53,9 +53,9 @@ def fatal(error):
     thread.exit()
     
 def sendResponse(result):
-    print "before encap %s" % result
+    #print "before encap %s" % result
     final_result = json.dumps(result,encoding="utf8")
-    print "after encap %s" % final_result
+    #print "after encap %s" % final_result
     ident = thread.get_ident()
     sock = sockMap[ident][0]
     sock.send(final_result)
@@ -307,8 +307,9 @@ def recvRoutine(sock, addr):
     # not very well :(
     
     recv = sock.recv(MAX_BUFSZ)
+    print len(recv)
 
-    print recv
+    #print recv
     try:
         recv = recv.decode("utf8")
         request = json.loads(recv)

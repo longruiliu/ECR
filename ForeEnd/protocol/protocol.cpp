@@ -112,7 +112,7 @@ Response::Response() {
     root["status"] = ERROR;
 }
 
-Response::Response(std::string &s) {
+Response::Response(std::string s) {
     stringToJson(s, root);
 }
 

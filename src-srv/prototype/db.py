@@ -34,13 +34,11 @@ def restoreFromDB(dbFileName, timeL):
         g.groupMember[u.userID] = u
 
     results = c.execute("select * from Message where send_time > ?",(timeL,))
-    print "Msg Dump::"
     for result in results:
         g = group.findGroup(result[1])
         tmp = msgRecord.MsgRecord(result[2],result[1],result[5],result[4])
         tmp.timestamp = int(result[3])
         g.msgList.append(tmp)
-        print tmp
 
     conn.commit()
     conn.close()	

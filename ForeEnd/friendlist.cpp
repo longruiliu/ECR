@@ -99,7 +99,7 @@ void FriendList::startChatWithSelectedFriend(int currentFriendID)
         connect(chatRoomMap[currentFriendID],SIGNAL(closeDialog(int)),
                 this,SLOT(handleChatRoomClose(int)));
     }
-    qDebug()<<chatRoomMap[currentFriendID]->currentFriendID;
+    //qDebug()<<chatRoomMap[currentFriendID]->currentFriendID;
     //Chat
 }
 
@@ -181,9 +181,10 @@ void FriendList::newMessaveResponse(Response resp){
 
     resp.getMsgList(rec);
     for(i = rec.begin(); i != rec.end(); i++){
-        qDebug() << i->srcID;
+        //qDebug() << i->srcID;
         int srcID = i->srcID;
         startChatWithSelectedFriend(srcID);
+        qDebug()<<"MsgSize" << i->msgText.size();
 
         chatRoomMap[srcID]->AddMessageToList(QString(i->msgText.c_str()),
                                                     getNickname(srcID), 1);

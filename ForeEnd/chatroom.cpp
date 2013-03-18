@@ -78,13 +78,13 @@ void chatRoom::raiseChatDialog()
 
 void chatRoom::on_SendButton_clicked()
 {
-    bool toolong=false;
+    /*bool toolong=false;
     if(ui->SendTextEdit->toPlainText().size()>=512)
     {
         toolong=true;
         sendText=ui->SendTextEdit->toPlainText().left(512);
     }
-    else
+    else*/
         sendText=ui->SendTextEdit->toPlainText();
     if(!sendText.isEmpty())
     {
@@ -112,11 +112,11 @@ void chatRoom::on_SendButton_clicked()
         nq.pushEvent(ev);
 
         AddMessageToList(sendText,FriendList::getNickname(myUserID),-1);
-        if(toolong)
+        /*if(toolong)
         {
             AddMessageToList(tr("由于你发送的内容太长，只有一部分内容可以发送！"),
                              tr("系统提示"),0);
-        }
+        }*/
     }
     else
     {

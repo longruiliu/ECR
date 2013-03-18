@@ -25,7 +25,7 @@ void networkQueue::run(){
     while(1){
         lock.lock();
         cond.wait(&lock);
-        qDebug() << "I am awake";
+        //qDebug() << "I am awake";
         while(!eventQueue.isEmpty()){
             if(addr.isEmpty() || port.isEmpty()){
                 qDebug() << "You must assign server IP and port for network queueu" << endl;
@@ -37,14 +37,16 @@ void networkQueue::run(){
                              ev.callee, ev.signal, Qt::QueuedConnection);
 
             sendRequest(ev.req, respStr);
-            qDebug() << respStr.c_str();
+            qDebug() << "respStr size:" << respStr.size();
             eventQueue.pop_front();
 
-            if(respStr.empty()){
+            if(respStr.size() == 0){
                 Response resp;
+                qDebug()<<"No respStr present";
                 emit youHaveResponse(resp);
             }else{
                 Response resp(respStr);
+                qDebug() << "respStr" <<respStr.c_str();
                 emit youHaveResponse(resp);
             }
             QObject::disconnect(this, SIGNAL(youHaveResponse(Response)),
@@ -64,7 +66,6 @@ void networkQueue::sendRequest(Request &req, std::string &resp){
     req.encode(rawData);
     net.addData(rawData);
     resp.clear();
-    qDebug() << rawData.c_str() << endl;
     if(net.connectToRemote(addr, port.toInt()) == false){
         qDebug() << "Can not connect to remote" << endl;
         return;

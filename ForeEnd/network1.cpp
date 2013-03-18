@@ -33,9 +33,11 @@ bool Network::connectToRemote(QString &addr, int port){
 }
 
 bool Network::waitForDataReady(int ms){
-    if(socket.waitForReadyRead(ms) == false)
+    if(socket.waitForDisconnected(ms) == false)
+    {
+        qDebug()<<"No Data Arrive in time";
         return false;
-
+    }
     indata = socket.readAll();
     return true;
 }
