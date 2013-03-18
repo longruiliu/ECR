@@ -1,5 +1,9 @@
 #include <string.h>
 #include "network1.h"
+#include <windows.h>
+#include <winsock2.h>
+
+//#pragma comment(lib, "ws2_32.lib")
 
 Network::Network(QObject *parent) :
     QObject(parent)
@@ -11,6 +15,8 @@ bool Network::send(){
         return false;
 
     socket.write(outdata);
+    socket.waitForBytesWritten();
+    shutdown((SOCKET)socket.socketDescriptor(), SD_SEND);
     return true;
 }
 
@@ -33,7 +39,7 @@ bool Network::connectToRemote(QString &addr, int port){
 }
 
 bool Network::waitForDataReady(int ms){
-    if(socket.waitForReadyRead(ms) == false)
+    if(socket.waitForDisconnected(ms) == false)
     {
         qDebug()<<"No Data Arrive in time";
         return false;

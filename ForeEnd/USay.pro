@@ -69,6 +69,8 @@ FORMS    += \
 RESOURCES += \
     USay.qrc
 
+LIBS += -lws2_32
+
 INCLUDEPATH += ./protocol
 INCLUDEPATH += ../src-srv/include
 INCLUDEPATH += ../include

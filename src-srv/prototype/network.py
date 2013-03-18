@@ -3,7 +3,7 @@ import struct
 import socket
 import thread
 import pickle
-import logic
+import logic,time
 import sys
 
 from logic import ERR_SESSIONID_EXPECTED, ERR_METHOD_EXPECTED, ERR_TYPE_EXPECTED, ERR_PARAMS_EXPECTED, ERR_INVALID_METHOD, ERR_INVALID_PARAMS, ERR_INVALID_TYPE, ERR_OK, ERR_NOT_IN_GROUP, ERR_NO_PRIVILEGE, ERR_WRONG_PASSWD, ERR_INVALID_REQUEST
@@ -306,9 +306,15 @@ def recvRoutine(sock, addr):
     
     # not very well :(
     
-    recv = sock.recv(MAX_BUFSZ)
-    print len(recv)
 
+    total_data=[]
+    while True:
+        data = sock.recv(8192)
+        if not data: break
+        total_data.append(data)
+        print len(data)
+    recv =  ''.join(total_data)
+    print len(recv)
     #print recv
     try:
         recv = recv.decode("utf8")
@@ -326,6 +332,27 @@ def recvRoutine(sock, addr):
     sockMap.pop(ident)
     sockMapMutex.release()
     sock.close()
+
+def recv_timeout(the_socket,timeout=2):
+    the_socket.setblocking(0)
+    total_data=[];data='';begin=time.time()
+    while 1:
+        #if you got some data, then break after wait sec
+        if total_data and time.time()-begin>timeout:
+            break
+        #if you got no data at all, wait a little longer
+        elif time.time()-begin>timeout*2:
+            break
+        try:
+            data=the_socket.recv(8192)
+            if data:
+                total_data.append(data)
+                begin=time.time()
+            else:
+                time.sleep(0.1)
+        except:
+            pass
+    return ''.join(total_data)
 
 def main():
     sock = socket.socket()

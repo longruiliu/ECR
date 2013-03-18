@@ -299,6 +299,7 @@ void FriendList::RefreshFromServer()
         getUserList();
 
     //获取消息
+    if(0==flag%10)
     pullMessageFromServer();
 
     //告诉服务器我还在线 60S刷新一次

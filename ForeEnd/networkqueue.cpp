@@ -47,7 +47,6 @@ void networkQueue::run(){
                 emit youHaveResponse(resp);
             }else{
                 Response resp(respStr);
-                qDebug() << "respStr" <<respStr.c_str();
                 emit youHaveResponse(resp);
             }
             QObject::disconnect(this, SIGNAL(youHaveResponse(Response)),
