@@ -9,6 +9,7 @@
 #include <vector>
 #include <QWebFrame>
 #include "logindialog.h"
+#include "viewfriendinfo.h"
 
 GroupChatDialog::GroupChatDialog(int groupID,QWidget *parent) :
     QDialog(parent),
@@ -29,6 +30,11 @@ GroupChatDialog::GroupChatDialog(int groupID,QWidget *parent) :
     connect(ui->FriendListWidget,SIGNAL(doubleClicked(QModelIndex)),
             this,SLOT(startChatWithSelectedFriend()));
 
+    //Right click handle
+    ui->FriendListWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->FriendListWidget,SIGNAL(customContextMenuRequested(QPoint)),
+            this,SLOT(onRightClick(QPoint)));
+
     QFile file(":/chatStyle.html");
     if(!file.open(QIODevice::ReadOnly))
     {
@@ -42,6 +48,8 @@ GroupChatDialog::GroupChatDialog(int groupID,QWidget *parent) :
     }
     file.close();
 
+    ui->SendMessageText->installEventFilter(this);
+
     getMemberList();
     getGroupMsg();
 }
@@ -50,6 +58,21 @@ GroupChatDialog::~GroupChatDialog()
 {
     delete ui;
     emit closeDialog(currentGroupID);
+}
+
+bool GroupChatDialog::eventFilter(QObject *obj, QEvent *e)
+{
+    Q_ASSERT(obj == inputTextEdit);
+    if (e->type() == QEvent::KeyPress)
+    {
+        QKeyEvent *event = static_cast<QKeyEvent*>(e);
+        if (event->key() == Qt::Key_Return && (event->modifiers() & Qt::ControlModifier))
+        {
+            on_SendMessageBtn_clicked(); //发送消息的槽
+            return true;
+        }
+    }
+    return false;
 }
 
 void GroupChatDialog::mousePressEvent(QMouseEvent *event)
@@ -72,6 +95,28 @@ void GroupChatDialog::raiseChatDialog()
 void GroupChatDialog::on_CloseWinBtn_clicked()
 {
     fadeEffect.startFadeInOut(FADEOUT);
+}
+
+void GroupChatDialog::onRightClick(QPoint pos)
+{
+    //get the selected item
+    QListWidgetItem *curitem = ui->FriendListWidget->itemAt(pos);
+    //create menu
+    QMenu *popMenu = new QMenu(ui->FriendListWidget);
+    popMenu->setStyleSheet("background-color: rgba(255, 178, 102, 255)");
+    if(curitem == NULL)
+    {
+        //if selected nothing
+        popMenu->addAction(tr("刷新好友列表"),this,SLOT(getMemberList()));
+    }
+    else
+    {
+        //if selected an item
+        popMenu->addAction(tr("查看好友信息"),this,SLOT(viewFriendInfo()));
+        popMenu->addAction(tr("与该好友聊天"),this,SLOT(startChatWithSelectedFriend()));
+        popMenu->addAction(tr("刷新好友列表"),this,SLOT(getMemberList()));
+    }
+    popMenu->exec(QCursor::pos());//然后运行弹出菜单
 }
 
 void GroupChatDialog::addFriendTolist(int friendid, QString nickname)
@@ -116,6 +161,15 @@ void GroupChatDialog::startChatWithSelectedFriend(int friendid)
         connect(chatRoomMap[friendid],SIGNAL(closeDialog(int)),
                 this,SLOT(handleChatRoomClose(int)));
     }
+}
+
+void GroupChatDialog::viewFriendInfo()
+{
+    //View Friend Info
+    int currentFriendID= friendIDList[ui->FriendListWidget->currentRow()];
+    ViewFriendInfo *vfi = new ViewFriendInfo(FriendList::getNickname(currentFriendID),
+                                             FriendList::getFriendInfo(currentFriendID));
+    vfi->show();
 }
 
 void GroupChatDialog::AddMessageToList(QString mcontent, QString authorName,time_t postTime,int senderType)

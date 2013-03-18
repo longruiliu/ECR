@@ -63,11 +63,15 @@ void FriendList::addFriendToList(int friendID, QString nickName, QString friendI
     if(nickName.at(0)=='_')
     {
         friend1->setIcon(QIcon(":/header/1off.png"));
-        nickName=nickName.right(nickName.size()-1);
+     //   nickName=nickName.right(nickName.size()-1);
+        friend1->setText(nickName.right(nickName.size()-1));
     }
     else
+    {
         friend1->setIcon(QIcon(":/header/1on.png"));
-    friend1->setText(nickName);
+        friend1->setText(nickName);
+    }
+
     friend1->setTextAlignment(Qt::AlignLeft);
     friend1->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
@@ -288,13 +292,14 @@ void FriendList::RefreshFromServer()
     static int flag;
     flag++;
 
-    //刷新列表
+    //刷新列表,30S刷新一次
     if(0==flag%10)
         getUserList();
 
     //获取消息
     pullMessageFromServer();
 
-    //告诉服务器我还在线
-    sendKeepAliveToServer();
+    //告诉服务器我还在线 60S刷新一次
+    if(0==flag%20)
+        sendKeepAliveToServer();
 }

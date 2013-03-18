@@ -34,12 +34,28 @@ chatRoom::chatRoom(int friendid,QWidget *parent) :
 
     if(FriendList::getNickname(currentFriendID).at(0)=='_')
         AddMessageToList(tr("对方不在线的！"),tr("系统提示"),0);
+    ui->SendTextEdit->installEventFilter(this);
 }
 
 chatRoom::~chatRoom()
 {
     emit closeDialog(currentFriendID);
     delete ui;
+}
+
+bool chatRoom::eventFilter(QObject *obj, QEvent *e)
+{
+    Q_ASSERT(obj == inputTextEdit);
+    if (e->type() == QEvent::KeyPress)
+    {
+        QKeyEvent *event = static_cast<QKeyEvent*>(e);
+        if (event->key() == Qt::Key_Return && (event->modifiers() & Qt::ControlModifier))
+        {
+            on_SendButton_clicked(); //发送消息的槽
+            return true;
+        }
+    }
+    return false;
 }
 
 void chatRoom::mousePressEvent(QMouseEvent *event)

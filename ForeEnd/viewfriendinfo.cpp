@@ -11,6 +11,11 @@ ViewFriendInfo::ViewFriendInfo(QString nickName,QString userInfo,QWidget *parent
     setAttribute(Qt::WA_TranslucentBackground);
     fadeEffect.startFadeInOut(FADEIN);
 
+    if(nickName.at(0)=='_')
+    {
+        nickName=nickName.right(nickName.size()-1);
+    }
+
     ui->friendNickNameText->setText(nickName);
     ui->friendInfoText->setText(userInfo);
 }

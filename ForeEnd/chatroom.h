@@ -24,6 +24,9 @@ public:
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent (QMouseEvent *);
 
+    //按Ctrol+Enter发送消息
+    bool eventFilter(QObject *obj, QEvent *e);
+
     int currentFriendID;
     void raiseChatDialog();
     int timeStamp;

@@ -27,6 +27,9 @@ public:
 
     void AddMessageToList(QString mcontent, QString authorName,time_t postTime,int senderType);
 
+    //按Ctrol+Enter发送消息
+    bool eventFilter(QObject *obj, QEvent *e);
+
 signals:
     void closeDialog(int);
 
@@ -61,6 +64,9 @@ private slots:
     void on_CloseWinBtn_clicked();
     void on_SendMessageBtn_clicked();
     void handleChatRoomClose(int friendID);
+
+    void onRightClick(QPoint pos);
+    void viewFriendInfo();
 
     void on_shakeBtn_clicked();
 
