@@ -5,6 +5,7 @@
 #include "groupchatdialog.h"
 #include "messagelistener.h"
 #include "networkqueue.h"
+#include <QThread>
 
 
 networkQueue nq;
@@ -18,7 +19,6 @@ int main(int argc, char *argv[])
 
     QApplication::setStyle("cleanlooks");
     QApplication a(argc, argv);
-
 
     nq.start();
     ml.start();

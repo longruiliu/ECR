@@ -7,6 +7,7 @@ networkQueue::networkQueue(QThread *parent) :
 {
     qRegisterMetaType<Response>("Response");
     sessionID = 0;
+
 }
 
 void networkQueue::setRemote(QString &addr, QString &port){
@@ -55,7 +56,6 @@ void networkQueue::run(){
         lock.unlock();
     }
 
-    exec();
 }
 
 
@@ -63,6 +63,7 @@ void networkQueue::sendRequest(Request &req, std::string &resp){
     std::string rawData;
     Network net;
 
+    qDebug()<<"Thread ID:" << currentThreadId();
     req.encode(rawData);
     net.addData(rawData);
     resp.clear();

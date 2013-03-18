@@ -17,6 +17,8 @@ loginDialog::loginDialog(QWidget *parent) :
 
     fadeEffect.startFadeInOut(FADEIN);
 
+
+    qDebug()<<"Main Thread ID:" << QThread::currentThreadId();
     conf = new LoginConfig();
 }
 

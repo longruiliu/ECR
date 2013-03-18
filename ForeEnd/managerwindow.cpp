@@ -6,6 +6,7 @@ managerWindow::managerWindow(QWidget *parent) :
     ui(new Ui::managerWindow)
 {
     ui->setupUi(this);
+
 }
 
 managerWindow::~managerWindow()
