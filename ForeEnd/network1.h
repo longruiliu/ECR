@@ -14,7 +14,7 @@ public:
     void addData(std::string &rawData);
     void readData(std::string &rawData);
     bool connectToRemote(QString &addr, int port);
-    bool waitForDataReady(int ms = 3000);
+    bool waitForDataReady(int ms = 30000);
     bool send();
 signals:
 public slots:
